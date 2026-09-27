@@ -1,0 +1,46 @@
+# ForPrint Prepress Hub — local/generated artifacts
+
+# Python bytecode / caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Dedicated/local virtual environments
+.venv/
+.venv*/
+venv/
+env/
+
+# Local environment / secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Operator scratch space: never canonical
+/tmp/
+/tmp.py
+/preview
+/report.txt
+/bootstrap_*.txt
+
+# Runtime/generated local state
+/logs/
+/runtime/
+*.log
+
+# Packaging/build output
+build/
+dist/
+*.egg-info/

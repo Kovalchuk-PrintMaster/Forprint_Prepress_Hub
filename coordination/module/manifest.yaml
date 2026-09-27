@@ -1,0 +1,15 @@
+schema_version: forprint_module_manifest_v0_1
+module_id: forprint_prepress_hub
+display_name: ForPrint Prepress Hub
+module_role: prepress_and_file_preparation_lifecycle
+status: bootstrap_foundation
+python:
+  supported: ">=3.11,<3.12"
+  local_environment: .venv_prepress_hub
+canonical_runtime_ready: false
+production_write_enabled: false
+graphic_design_lab:
+  status: planned_not_initialized
+governance:
+  architecture_authority: forprint_system_blueprint
+  local_implementation_authority: forprint_prepress_hub

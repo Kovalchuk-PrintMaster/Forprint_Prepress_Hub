@@ -1,0 +1,8 @@
+schema_version: forprint_prepress_hub_status_v0_1
+module_id: forprint_prepress_hub
+state: BOOTSTRAP_FOUNDATION
+canonical_runtime_ready: false
+production_write_enabled: false
+graphic_design_lab: PLANNED_NOT_INITIALIZED
+current_focus: establish_minimal_canonical_module_foundation
+next_expected_focus: assistant_continuity_and_graphic_design_lab_boundary

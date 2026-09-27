@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "forprint-prepress-hub"
+version = "0.0.1"
+description = "ForPrint Prepress Hub"
+requires-python = ">=3.11,<3.12"
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=7,<9",
+  "PyYAML>=6,<7",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["app", "app.*"]
+namespaces = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-ra"
