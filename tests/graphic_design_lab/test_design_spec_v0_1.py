@@ -1,4 +1,5 @@
 from copy import deepcopy
+from datetime import date
 from pathlib import Path
 
 import yaml
@@ -84,3 +85,30 @@ def test_transition_week_contains_november_style():
     transition = next(x for x in fixture["spreads"] if x["id"].startswith("spread.week.transition"))
     sunday = next(x for x in transition["objects"] if x["role"] == "sunday")
     assert sunday["style_ref"] == "month.november"
+
+
+def test_calendar_period_is_explicit_not_inferred_from_id():
+    contract, profile, fixture = inputs()
+    broken = deepcopy(fixture)
+    del broken["spreads"][0]["period"]
+    errors = validate_design_spec(broken, contract, profile)
+    assert "spec.spreads[0].period:required_for_monthly" in errors
+
+
+def test_weekly_period_reversed_range_is_rejected():
+    contract, profile, fixture = inputs()
+    broken = deepcopy(fixture)
+    broken["spreads"][1]["period"] = {
+        "start_date": "2026-10-18",
+        "end_date": "2026-10-15",
+    }
+    errors = validate_design_spec(broken, contract, profile)
+    assert "spec.spreads[1].period:reversed_range" in errors
+
+def test_yaml_native_dates_are_accepted_by_contract_validation():
+    contract, profile, fixture = inputs()
+    start = fixture["spreads"][1]["period"]["start_date"]
+    end = fixture["spreads"][1]["period"]["end_date"]
+    assert isinstance(start, date)
+    assert isinstance(end, date)
+    assert validate_design_spec(fixture, contract, profile) == []

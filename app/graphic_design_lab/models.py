@@ -1,7 +1,7 @@
 """Core data structures for the experimental Graphic Design Lab contracts.
 
 These models are deliberately small. They represent contract-facing data only;
-they do not render SVG/PDF and do not initialize a design-generation runtime.
+they do not select a graphics provider or initialize production design runtime.
 """
 
 from __future__ import annotations
@@ -35,6 +35,7 @@ class DesignSpread:
     spread_id: str
     kind: str
     objects: tuple[DesignObject, ...]
+    period: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)

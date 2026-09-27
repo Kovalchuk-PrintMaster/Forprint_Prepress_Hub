@@ -40,12 +40,22 @@ spread:
     - id
     - kind
     - objects
+  optional:
+    - period
   kinds:
     - monthly
     - weekly
     - cover
     - content
     - custom
+
+period:
+  monthly:
+    required: [year, month]
+  weekly:
+    required: [start_date, end_date]
+    date_format: YYYY-MM-DD
+  rule: Calendar semantics must be explicit data and must not be inferred from stable object IDs.
 
 object:
   required:

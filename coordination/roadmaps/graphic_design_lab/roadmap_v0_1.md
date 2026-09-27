@@ -98,3 +98,9 @@ Graphic Design Lab runtime remains `PLANNED_NOT_INITIALIZED` after this planning
 ## H1 contract-foundation implementation note
 
 Design Specification v0.1, asset/reference, revision/patch and product-profile contracts plus the dated-diary A5 profile are now locally implemented **pending validation and acceptance**. Renderer/compiler work remains a separate later contour.
+
+## H2 deterministic SVG implementation note
+
+The H1 contract foundation is verified and published at `4df34d8`. H2 now implements a deterministic Python-stdlib SVG compiler and structural validation **pending H2 validation and acceptance**.
+
+A required schema refinement accompanies H2: monthly/weekly calendar periods are explicit Design Spec data and are never inferred from stable IDs. The 014 preflight found no confirmed SVG-to-preview renderer, so PNG/PDF preview remains unresolved and no provider is selected.

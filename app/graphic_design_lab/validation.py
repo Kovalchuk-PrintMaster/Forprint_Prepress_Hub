@@ -7,6 +7,7 @@ backend selection and no rendering/provider logic.
 from __future__ import annotations
 
 from collections.abc import Mapping
+from datetime import date
 from typing import Any
 
 
@@ -18,6 +19,22 @@ def _require(mapping: Mapping[str, Any], keys: list[str], prefix: str, errors: l
 
 def _positive_number(value: Any) -> bool:
     return isinstance(value, (int, float)) and not isinstance(value, bool) and value > 0
+
+
+def _coerce_date(value: Any) -> date | None:
+    """Normalize YAML-native dates and explicit ISO date strings."""
+    if isinstance(value, date):
+        return value
+    if isinstance(value, str):
+        try:
+            return date.fromisoformat(value)
+        except ValueError:
+            return None
+    return None
+
+
+def _valid_iso_date(value: Any) -> bool:
+    return _coerce_date(value) is not None
 
 
 def validate_product_profile(profile: Mapping[str, Any]) -> list[str]:
@@ -51,6 +68,40 @@ def validate_product_profile(profile: Mapping[str, Any]) -> list[str]:
                 if any(not isinstance(v, (int, float)) or isinstance(v, bool) or v < 0 or v > 100 for v in cmyk):
                     errors.append(f"profile.month_colors_cmyk.{month}:component_out_of_range")
     return errors
+
+
+def _validate_spread_period(spread: Mapping[str, Any], prefix: str, errors: list[str]) -> None:
+    kind = spread.get("kind")
+    if kind not in {"monthly", "weekly"}:
+        return
+
+    period = spread.get("period")
+    if not isinstance(period, Mapping):
+        errors.append(f"{prefix}.period:required_for_{kind}")
+        return
+
+    if kind == "monthly":
+        _require(period, ["year", "month"], f"{prefix}.period", errors)
+        year = period.get("year")
+        month = period.get("month")
+        if not isinstance(year, int) or isinstance(year, bool) or year < 1900:
+            errors.append(f"{prefix}.period.year:invalid")
+        if not isinstance(month, int) or isinstance(month, bool) or not 1 <= month <= 12:
+            errors.append(f"{prefix}.period.month:invalid")
+
+    if kind == "weekly":
+        _require(period, ["start_date", "end_date"], f"{prefix}.period", errors)
+        start = period.get("start_date")
+        end = period.get("end_date")
+        start_date = _coerce_date(start)
+        end_date = _coerce_date(end)
+        if start_date is None:
+            errors.append(f"{prefix}.period.start_date:invalid")
+        if end_date is None:
+            errors.append(f"{prefix}.period.end_date:invalid")
+        if start_date is not None and end_date is not None:
+            if start_date > end_date:
+                errors.append(f"{prefix}.period:reversed_range")
 
 
 def validate_design_spec(
@@ -120,6 +171,8 @@ def validate_design_spec(
 
         if spread.get("kind") not in spread_kinds:
             errors.append(f"{prefix}.kind:unsupported")
+
+        _validate_spread_period(spread, prefix, errors)
 
         objects = spread.get("objects")
         if not isinstance(objects, list):

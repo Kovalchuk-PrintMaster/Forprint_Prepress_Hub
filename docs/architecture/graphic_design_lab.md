@@ -52,3 +52,11 @@ The first H1 implementation contour introduces Design Specification, asset/refer
 Actual customer cases resolve through configured `cases_root` and are not committed by default. The tracked dated-diary fixture is a sanitized technical regression fixture.
 
 Stable object IDs are mandatory from Design Specification v0.1 so later revisions can target bounded objects instead of forcing full regeneration.
+
+## Deterministic editable SVG compiler v0.1
+
+The first compiler is Python-stdlib XML/SVG and produces one editable two-page SVG per spread. Calendar periods are explicit Design Spec data; stable IDs are never interpreted as business/calendar truth.
+
+The compiler preserves stable object IDs and emits temporary validation artifacts plus a manifest and structural-validation report. Screen RGB is only a deterministic approximation of explicit print CMYK data.
+
+No preview renderer was confirmed by the 014 environment preflight, so this contour does not claim PNG/PDF preview, review readiness, production readiness or provider selection.

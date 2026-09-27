@@ -39,6 +39,9 @@ design_system:
 spreads:
   - id: spread.monthly.2026-10
     kind: monthly
+    period:
+      year: 2026
+      month: 10
     objects:
       - id: october.header.month_name_uk
         type: text
@@ -61,6 +64,9 @@ spreads:
 
   - id: spread.week.partial.2026-10-15_18
     kind: weekly
+    period:
+      start_date: 2026-10-15
+      end_date: 2026-10-18
     objects:
       - id: week.partial.thursday
         type: day_block
@@ -80,6 +86,9 @@ spreads:
 
   - id: spread.week.full.2026-10-19_25
     kind: weekly
+    period:
+      start_date: 2026-10-19
+      end_date: 2026-10-25
     objects:
       - id: week.full.monday
         type: day_block
@@ -105,6 +114,9 @@ spreads:
 
   - id: spread.week.transition.2026-10-26_11-01
     kind: weekly
+    period:
+      start_date: 2026-10-26
+      end_date: 2026-11-01
     objects:
       - id: week.transition.monday
         type: day_block
