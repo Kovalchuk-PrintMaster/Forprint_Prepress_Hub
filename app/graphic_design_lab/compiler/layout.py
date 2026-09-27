@@ -71,9 +71,13 @@ def _layout_monthly(
     page_width_mm: float,
     page_height_mm: float,
 ) -> dict[str, Box]:
-    left_x = 10.0
-    right_x = page_width_mm + 10.0
-    usable_width = page_width_mm - 20.0
+    # Binding-aware asymmetry: retain the outer 10 mm margin while giving
+    # both pages 14 mm of inner safety at the glued gutter.
+    outer_margin = 10.0
+    inner_margin = 14.0
+    left_x = outer_margin
+    right_x = page_width_mm + inner_margin
+    usable_width = page_width_mm - outer_margin - inner_margin
     result: dict[str, Box] = {}
 
     title_y = 12.0
@@ -92,9 +96,19 @@ def _layout_monthly(
         elif role == "month_calendar":
             result[object_id] = Box(left_x, body_y, usable_width, body_h)
         elif role == "notes":
-            result[object_id] = Box(right_x, body_y, usable_width, body_h)
+            result[object_id] = Box(
+                right_x,
+                title_y,
+                usable_width,
+                page_height_mm - title_y - 12.0,
+            )
         else:
-            result[object_id] = Box(right_x, 12.0, usable_width, page_height_mm - 24.0)
+            result[object_id] = Box(
+                right_x,
+                12.0,
+                usable_width,
+                page_height_mm - 24.0,
+            )
 
     return result
 

@@ -89,21 +89,29 @@ def _add_rect(parent: ET.Element, box: Box, *, stroke: str = "#b0b0b0",
     return ET.SubElement(parent, _svg("rect"), attrs)
 
 
-def _add_text(parent: ET.Element, x: float, y: float, text: str, *,
-              size: float = 4.0, weight: str = "400",
-              fill: str = "#222222") -> ET.Element:
-    el = ET.SubElement(
-        parent,
-        _svg("text"),
-        {
-            "x": _fmt(x),
-            "y": _fmt(y),
-            "font-family": "Arial, sans-serif",
-            "font-size": _fmt(size),
-            "font-weight": weight,
-            "fill": fill,
-        },
-    )
+def _add_text(
+    parent: ET.Element,
+    x: float,
+    y: float,
+    text: str,
+    *,
+    size: float = 4.0,
+    weight: str = "400",
+    fill: str = "#222222",
+    anchor: str | None = None,
+) -> ET.Element:
+    attrs = {
+        "x": _fmt(x),
+        "y": _fmt(y),
+        "font-family": "Arial, sans-serif",
+        "font-size": _fmt(size),
+        "font-weight": weight,
+        "fill": fill,
+    }
+    if anchor:
+        attrs["text-anchor"] = anchor
+
+    el = ET.SubElement(parent, _svg("text"), attrs)
     el.text = text
     return el
 
@@ -115,22 +123,28 @@ def _render_calendar_grid(
     month: int,
     accent: str,
 ) -> None:
-    header_h = 10.0
-    weekday_h = 7.0
-    grid_y = box.y + header_h + weekday_h
-    grid_h = box.height - header_h - weekday_h
-
-    _add_text(group, box.x, box.y + 5.0, f"{calendar.month_name[month]} {year}",
-              size=3.6, weight="600", fill=accent)
+    # The bilingual month heading is already a separate semantic object.
+    # Keep the calendar itself quiet: weekday row + the exact number of weeks.
+    weekday_h = 8.0
+    grid_y = box.y + weekday_h
+    grid_h = box.height - weekday_h
 
     col_w = box.width / 7.0
-    weekdays = ["M", "T", "W", "T", "F", "S", "S"]
+    weekdays = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"]
     for idx, label in enumerate(weekdays):
-        _add_text(group, box.x + idx * col_w + 1.0, box.y + header_h + 4.5,
-                  label, size=2.8, weight="600", fill="#555555")
+        _add_text(
+            group,
+            box.x + (idx + 0.5) * col_w,
+            box.y + 5.0,
+            label,
+            size=2.4,
+            weight="500",
+            fill="#666666",
+            anchor="middle",
+        )
 
     weeks = calendar.Calendar(firstweekday=0).monthdayscalendar(year, month)
-    rows = max(len(weeks), 6)
+    rows = len(weeks)
     row_h = grid_h / rows
 
     for col in range(8):
@@ -143,10 +157,11 @@ def _render_calendar_grid(
                 "y1": _fmt(grid_y),
                 "x2": _fmt(x),
                 "y2": _fmt(grid_y + grid_h),
-                "stroke": "#c5c5c5",
-                "stroke-width": "0.25",
+                "stroke": "#d8d8d8",
+                "stroke-width": "0.18",
             },
         )
+
     for row in range(rows + 1):
         y = grid_y + row * row_h
         ET.SubElement(
@@ -157,8 +172,8 @@ def _render_calendar_grid(
                 "y1": _fmt(y),
                 "x2": _fmt(box.x + box.width),
                 "y2": _fmt(y),
-                "stroke": "#c5c5c5",
-                "stroke-width": "0.25",
+                "stroke": "#d8d8d8",
+                "stroke-width": "0.18",
             },
         )
 
@@ -167,17 +182,18 @@ def _render_calendar_grid(
             if day:
                 _add_text(
                     group,
-                    box.x + col * col_w + 1.2,
+                    box.x + col * col_w + 1.4,
                     grid_y + row * row_h + 4.0,
                     str(day),
-                    size=2.8,
-                    fill="#333333",
+                    size=2.6,
+                    fill="#444444",
                 )
 
 
 def _render_notes(group: ET.Element, box: Box, accent: str) -> None:
-    _add_text(group, box.x, box.y + 5.0, "NOTES", size=3.4, weight="600", fill=accent)
-    y = box.y + 14.0
+    _add_text(group, box.x, box.y + 5.0, "NOTES", size=3.0, weight="500", fill=accent)
+
+    y = box.y + 16.0
     while y <= box.y + box.height:
         ET.SubElement(
             group,
@@ -187,11 +203,11 @@ def _render_notes(group: ET.Element, box: Box, accent: str) -> None:
                 "y1": _fmt(y),
                 "x2": _fmt(box.x + box.width),
                 "y2": _fmt(y),
-                "stroke": "#d0d0d0",
-                "stroke-width": "0.25",
+                "stroke": "#dddddd",
+                "stroke-width": "0.18",
             },
         )
-        y += 7.0
+        y += 8.5
 
 
 def _render_day_block(
@@ -258,8 +274,8 @@ def _render_object(
 
     if object_type == "text":
         content = str(obj.get("content") or "")
-        size = 5.0 if role == "month_name_uk" else 3.2
-        weight = "600" if role == "month_name_uk" else "400"
+        size = 4.6 if role == "month_name_uk" else 2.8
+        weight = "500" if role == "month_name_uk" else "400"
         fill = accent if role.startswith("month_name") else "#222222"
         _add_text(group, box.x, box.y + min(box.height - 1.0, size + 1.0),
                   content, size=size, weight=weight, fill=fill)
@@ -346,20 +362,6 @@ def compile_spread(spec: Mapping[str, Any], spread: Mapping[str, Any]) -> Compil
     )
 
     _add_rect(root, Box(0.0, 0.0, spread_width, page_height), stroke="none", fill="#ffffff")
-    ET.SubElement(
-        root,
-        _svg("line"),
-        {
-            "x1": _fmt(page_width),
-            "y1": "0",
-            "x2": _fmt(page_width),
-            "y2": _fmt(page_height),
-            "stroke": "#dedede",
-            "stroke-width": "0.25",
-            "data-role": "gutter",
-        },
-    )
-
     spread_group = ET.SubElement(
         root,
         _svg("g"),
