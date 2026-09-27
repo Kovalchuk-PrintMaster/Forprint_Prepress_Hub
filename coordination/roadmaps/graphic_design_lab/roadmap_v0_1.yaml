@@ -151,7 +151,13 @@ near_term_practical:
     state: IMPLEMENTED_VERIFIED
   - id: GDL-N04
     title: Deterministic editable output skeleton
-    state: IMPLEMENTED_PENDING_VALIDATION
+    state: IMPLEMENTED_VERIFIED
+    h2_verification_commit: b410860da4ce3d377e095d870f50f188c1f02f56
+    verification:
+      tests: 38_passed
+      governance: PASS
+      continuity: PASS
+      structural_svg_validation: PASS
     implementation:
       - python_stdlib_xml_svg_compiler
       - stable_object_id_preservation
@@ -159,7 +165,8 @@ near_term_practical:
       - explicit_calendar_period_data
   - id: GDL-N05
     title: Preview and validation
-    state: PARTIAL_IMPLEMENTATION_PENDING_VALIDATION
+    state: PARTIAL_IMPLEMENTED_VERIFIED
+    h2_partial_verification_commit: b410860da4ce3d377e095d870f50f188c1f02f56
     implemented_scope:
       - svg_structural_validation
       - temporary_artifact_manifest
@@ -174,7 +181,8 @@ near_term_practical:
     guard: no_full_diary_rollout_before_phase1_approval
   - id: GDL-N07
     title: Product profiles, templates and reusable components
-    state: PARTIAL_IMPLEMENTATION_PENDING_VALIDATION
+    state: PARTIAL_IMPLEMENTED_VERIFIED
+    h1_partial_verification_commit: 4df34d8fadb2dcf3e72364348ca951ec54a1a2b2
     implemented_scope:
       - product_profile_contract_v0_1
       - dated_diary_a5_profile_v0_1

@@ -104,3 +104,17 @@ Design Specification v0.1, asset/reference, revision/patch and product-profile c
 The H1 contract foundation is verified and published at `4df34d8`. H2 now implements a deterministic Python-stdlib SVG compiler and structural validation **pending H2 validation and acceptance**.
 
 A required schema refinement accompanies H2: monthly/weekly calendar periods are explicit Design Spec data and are never inferred from stable IDs. The 014 preflight found no confirmed SVG-to-preview renderer, so PNG/PDF preview remains unresolved and no provider is selected.
+
+## H2 published checkpoint
+
+Published commit: `b410860da4ce3d377e095d870f50f188c1f02f56`.
+
+Verified at this checkpoint: deterministic Design Spec → editable SVG compilation,
+explicit calendar-period semantics, stable object-ID preservation, semantic
+`style_ref`/CMYK metadata preservation, structural SVG validation, temporary
+artifact manifest/report, 38 tests, governance and continuity checks.
+
+`GDL-N04` is verified. `GDL-N05` is only partially verified because PNG preview,
+review PDF and visual regression remain unresolved. `GDL-N07` is partially
+verified for the product-profile contract and dated-diary A5 profile only.
+Graphic Design Lab runtime and production write remain disabled.

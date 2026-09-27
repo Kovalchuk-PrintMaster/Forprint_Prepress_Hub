@@ -18,10 +18,10 @@ Cold-start/no-chat-history continuity acceptance has passed.
 The continuity packages transfer context only and do not grant execution,
 implementation, acceptance, release, or System Blueprint mutation authority.
 
-Current focus: validation of the deterministic editable-SVG compiler and
-structural SVG validation for the bounded Phase 1 diary fixture.
+The deterministic editable-SVG compiler is published and verified at
+`b410860da4ce3d377e095d870f50f188c1f02f56`: 38 tests, governance, continuity
+and structural SVG validation passed.
 
-The H1 contract foundation is published and verified. The 014 toolchain
-preflight found no confirmed preview renderer, so PNG/PDF preview remains a
-later bounded evaluation. Graphic Design Lab production/runtime remains
-uninitialized and no graphics provider is selected.
+Current focus: bounded preview-renderer evaluation. No renderer/provider has
+been selected yet. PNG preview, review PDF and visual regression remain
+unimplemented. Graphic Design Lab production/runtime remains uninitialized.
