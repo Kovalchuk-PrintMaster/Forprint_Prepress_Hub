@@ -1,0 +1,212 @@
+schema_version: forprint_graphic_design_lab_roadmap_v0_1
+document_type: MODULE_CAPABILITY_ROADMAP
+module_id: forprint_prepress_hub
+capability_id: graphic_design_lab
+status: PLANNING_BASELINE
+classification: EXPERIMENTAL_CAPABILITY_INSIDE_EXISTING_MODULE
+
+authority:
+  strategic_direction: HUMAN_OWNER
+  architecture_authority: FORPRINT_SYSTEM_BLUEPRINT
+  local_implementation_owner: FORPRINT_PREPRESS_HUB
+  roadmap_is_execution_authority: false
+  grants_execution_authority: false
+  grants_acceptance_authority: false
+  grants_release_authority: false
+
+current_state:
+  runtime: PLANNED_NOT_INITIALIZED
+  canonical_runtime_ready: false
+  production_write_enabled: false
+  first_pilot_selected: abram_diary_phase1
+
+planning_model:
+  rule: REUSE_EXTEND_ADAPT_REPLACE_NEW_BEFORE_IMPLEMENTATION
+  current_and_target_state_separate: true
+  preserve_provenance: true
+  dual_human_machine_representation: true
+  horizons:
+    - NEAR_TERM_PRACTICAL
+    - FARTHER_PRACTICAL
+    - STRATEGIC_REEVALUATE_BEFORE_PROMOTION
+
+architecture_theses:
+  - DESIGN_SPEC_IS_PRIMARY_SOURCE_OF_TRUTH
+  - DETERMINISTIC_FIRST_AI_WHERE_NEEDED
+  - CONFIG_DRIVEN_LOGICAL_PATHS
+  - STORAGE_FORMAT_NE_INTERCHANGE_FORMAT_NE_PRINT_FORMAT
+  - PATCH_BEFORE_FULL_REGENERATION_WHERE_POSSIBLE
+  - PRODUCT_PROFILES_ENCODE_REPEATABLE_PRODUCT_RULES
+  - SPECIALIZED_EXECUTORS_REUSE_SHARED_LOW_LEVEL_TOOLS
+  - ALL_OUTPUTS_REQUIRE_VALIDATION_AND_PROVENANCE
+  - PREPRESS_HUB_REMAINS_PARENT_AND_PRODUCTION_BOUNDARY
+
+task_classes:
+  planned:
+    - VECTOR_LAYOUT
+    - VECTOR_ARTWORK
+    - VECTOR_TRACE
+    - MIXED_LAYOUT
+    - RASTER_ARTWORK
+
+edit_routes:
+  planned:
+    - DIRECT_EDIT
+    - LAYOUT_EDIT
+    - SEMANTIC_EDIT
+    - GENERATIVE_EDIT
+    - FULL_REGENERATION
+
+human_intent_refs:
+  blueprint_module_ledger: coordination/human_intent/modules/forprint_prepress_hub.yaml
+  refs:
+    - HI-FP-PREPRESS-HUB-001
+    - HI-FP-PREPRESS-HUB-002
+    - HI-FP-PREPRESS-HUB-003
+    - HI-FP-PREPRESS-HUB-004
+    - HI-FP-PREPRESS-HUB-005
+    - HI-FP-PREPRESS-HUB-006
+    - HI-FP-PREPRESS-HUB-007
+    - HI-FP-PREPRESS-HUB-008
+    - HI-FP-PREPRESS-HUB-009
+    - HI-FP-PREPRESS-HUB-010
+    - HI-PREPRESS-ARCH-20260919-001
+    - HI-PREPRESS-CAPABILITY-20260922-001
+    - HI-PREPRESS-ASSISTANTS-20260922-001
+    - HI-PREPRESS-CANDIDATES-20260922-001
+    - HI-PREPRESS-EXECUTION-20260922-001
+    - HI-PREPRESS-RASTER-POLICY-20260922-001
+    - HI-PREPRESS-RASTER-POLICY-20260922-002
+    - HI-PREPRESS-PDF-AUTOMATION-20260922-001
+    - HI-PREPRESS-PDF-ENGINEERING-20260922-001
+    - HI-PREPRESS-PDF-STRATEGY-20260922-001
+    - HI-PREPRESS-RASTER-PIPELINE-20260922-001
+    - HI-PREPRESS-OPERATOR-SURFACE-20260922-001
+    - HI-FP-PREPRESS-HUB-20260925-VISUALIZATION-DISCOVERY-001
+  local_owner_direction_2026_09_27:
+    status: HUMAN_OWNER_CONFIRMED_FOR_LOCAL_PLANNING
+    notes:
+      - preserve_all_discussed_design_approaches_in_the_roadmap
+      - start_from_simpler_solutions_and_progress_to_more_complex_ones
+      - keep_storage_template_reference_and_output_locations_configurable
+      - use_abram_diary_as_the_first_practical_design_pilot
+    pending_blueprint_human_intent_sync: true
+
+disposition:
+  REUSE:
+    - existing_app_config_boundary
+    - existing_app_storage_boundary
+    - config_directory_and_logical_storage_role_policy
+    - contracts_directory
+    - docs_architecture_boundary
+    - tests_and_makefile_operator_map
+    - assistant_continuity
+  EXTEND:
+    - prepress_configuration_and_storage_roles
+    - prepress_preview_validation_revision_evidence_model
+    - prepress_capability_first_tool_evaluation
+    - prepress_multi_candidate_preview_and_risk_model
+  ADAPT:
+    - product_specific_assistant_model_into_specialized_design_executors
+    - unix_first_execution_with_bounded_windows_graphics_executor
+    - prepress_visualization_discovery_into_design_visualization_horizon
+  REPLACE: []
+  NEW:
+    - graphic_design_lab_module_roadmap
+    - graphic_design_lab_architecture_detail
+    - graphic_design_lab_config_contract
+    - design_specification_contract
+    - design_revision_patch_contract
+    - design_product_profile_contract
+    - deterministic_design_compiler
+    - abram_diary_design_pilot
+    - design_experiment_ledger
+
+tool_candidates:
+  status: EVALUATE_NOT_APPROVED
+  shared_vector_svg: [inkscape_cli, native_svg_xml, cairosvg]
+  raster: [pillow, pyvips, opencv]
+  pdf: [pymupdf, pikepdf, ghostscript, verapdf]
+  color: [littlecms, pillow_imagecms]
+  specialized_graphics_executors:
+    - adobe_photoshop
+    - adobe_illustrator
+    - coreldraw
+    - adobe_acrobat
+  ai_provider_classes:
+    - text_reasoning_provider
+    - image_generation_provider
+    - vectorization_provider
+  rule: Candidate presence in roadmap does not approve installation or production use.
+
+near_term_practical:
+  - id: GDL-N01
+    title: Planning, configuration and architecture baseline
+    state: ACTIVE_AUTHORIZED_CONTOUR
+  - id: GDL-N02
+    title: Design Specification v0.1
+    state: PLANNED
+  - id: GDL-N03
+    title: Asset, reference, revision and patch contracts
+    state: PLANNED
+  - id: GDL-N04
+    title: Deterministic editable output skeleton
+    state: PLANNED
+  - id: GDL-N05
+    title: Preview and validation
+    state: PLANNED
+  - id: GDL-N06
+    title: Abram diary Phase 1 pilot
+    state: PLANNED
+    guard: no_full_diary_rollout_before_phase1_approval
+  - id: GDL-N07
+    title: Product profiles, templates and reusable components
+    state: PLANNED
+
+farther_practical:
+  - id: GDL-F01
+    title: Multipage and full diary geometry
+    state: PLANNED
+  - id: GDL-F02
+    title: Mixed raster/vector composer
+    state: PLANNED
+  - id: GDL-F03
+    title: Vector artwork and trace workflows
+    state: PLANNED
+  - id: GDL-F04
+    title: AI task routing and design intelligence
+    state: PLANNED
+  - id: GDL-F05
+    title: Review and print PDF
+    state: PLANNED
+  - id: GDL-F06
+    title: Design Package and provenance
+    state: PLANNED
+  - id: GDL-F07
+    title: Wizard and operator intake
+    state: PLANNED
+  - id: GDL-F08
+    title: Experiment ledger and visual regression
+    state: PLANNED
+
+strategic_reevaluate_before_promotion:
+  - id: GDL-S01
+    thesis: Specialized executor ecosystem
+    candidates: [photoshop_executor, illustrator_executor, coreldraw_executor, pdf_acrobat_executor, shared_fact_oriented_file_tools]
+  - id: GDL-S02
+    thesis: ForPrint-owned PDF Control Layer
+  - id: GDL-S03
+    thesis: Product visualization discovery
+    candidates: [deterministic_2d_mockup, scripted_3d_rendering, ai_assisted_visualization, hybrid_visualization]
+    rule: fresh technology review required at actual implementation date
+  - id: GDL-S04
+    thesis: Advanced print design automation
+    candidates: [imposition, variable_data_design, pdf_vt, responsive_print_layout_rules, variants_and_feedback_analytics, dependency_graph_and_incremental_rebuild, hot_folder_or_watched_intake]
+  - id: GDL-S05
+    thesis: Mature managed design automation
+    candidates: [policy_gated_ai_execution, bounded_cost_retry_time_budgets, provider_failover, staged_promotion_to_production]
+
+acceptance_boundary:
+  roadmap_completion_does_not_accept_implementation: true
+  planning_check_is_not_runtime_verification: true
+  runtime_remains_uninitialized_after_this_baseline: true

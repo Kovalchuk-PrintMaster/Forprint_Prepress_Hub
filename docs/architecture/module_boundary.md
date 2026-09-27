@@ -20,3 +20,7 @@ The next governed step must reconcile its exact internal placement,
 assistant-continuity requirements, storage/configuration roles, case/revision
 model, package boundaries, and promotion path into proven Prepress Hub
 capabilities.
+
+Detailed planning boundary: `docs/architecture/graphic_design_lab.md`.
+
+The planning baseline preserves specialized graphics executors, shared fact-oriented tools, config-driven storage roles, and a deterministic-first Design Specification model without initializing Graphic Design Lab runtime.

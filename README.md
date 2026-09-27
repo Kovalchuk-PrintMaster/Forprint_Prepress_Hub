@@ -5,13 +5,13 @@ file-preparation lifecycle.
 
 ## Current state
 
-`BOOTSTRAP_FOUNDATION`
+Assistant continuity is `SELF_ONBOARD_VERIFIED`.
 
-The repository currently provides only the module foundation: canonical
-identity, operator map, configuration boundary, coordination/status surfaces,
-architecture boundary, validation, and tests.
+The repository has a validated module foundation plus the planning/configuration
+baseline for the experimental Graphic Design Lab capability. Graphic Design Lab
+runtime remains `PLANNED_NOT_INITIALIZED`.
 
-It does **not** claim production prepress capabilities.
+It does **not** claim production prepress or production design-generation capabilities.
 
 ## Safety boundary
 

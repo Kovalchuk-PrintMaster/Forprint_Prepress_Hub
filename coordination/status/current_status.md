@@ -18,5 +18,7 @@ Cold-start/no-chat-history continuity acceptance has passed.
 The continuity packages transfer context only and do not grant execution,
 implementation, acceptance, release, or System Blueprint mutation authority.
 
-Current focus: preparation for a separately authorized Graphic Design Lab
-experiment. Graphic Design Lab runtime has not been initialized.
+Current focus: Graphic Design Lab planning/configuration baseline.
+The next expected implementation contour is Design Specification v0.1 plus the
+bounded Abram Diary Phase 1 pilot. Graphic Design Lab runtime has not been
+initialized by this planning step.

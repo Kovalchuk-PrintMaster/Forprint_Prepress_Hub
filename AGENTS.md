@@ -35,6 +35,8 @@ repository surfaces, not from chat history.
 - Keep physical storage paths out of business logic; later storage capabilities
   must use configuration/logical roles.
 - Graphic Design Lab is planned but not initialized by foundation bootstrap.
+- Before Graphic Design Lab work, read `coordination/roadmaps/graphic_design_lab/roadmap_v0_1.md`, `docs/architecture/graphic_design_lab.md`, and `config/graphic_design_lab.yaml`.
+- Graphic Design Lab planning does not initialize runtime or grant production authority.
 
 ## Fresh-worker continuity
 

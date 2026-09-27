@@ -1,0 +1,78 @@
+schema_version: forprint_graphic_design_lab_config_v0_1
+status: PLANNING_ONLY_RUNTIME_NOT_INITIALIZED
+
+config_policy:
+  path_resolution: MODULE_RELATIVE_LOGICAL_ROLES
+  allow_local_override: true
+  committed_config_contains_secrets: false
+  validate_on_load: true
+  business_logic_must_not_use_absolute_storage_paths: true
+
+storage:
+  cases_root: runtime/graphic_design_lab/cases
+  templates_root: runtime/graphic_design_lab/templates
+  product_profiles_root: config/graphic_design_lab/product_profiles
+  references_root: runtime/graphic_design_lab/references
+  assets_root: runtime/graphic_design_lab/assets
+  generated_assets_root: runtime/graphic_design_lab/generated_assets
+  editable_outputs_root: runtime/graphic_design_lab/outputs/editable
+  review_outputs_root: runtime/graphic_design_lab/outputs/review
+  print_outputs_root: runtime/graphic_design_lab/outputs/print
+  previews_root: runtime/graphic_design_lab/previews
+  reports_root: runtime/graphic_design_lab/reports
+  temp_root: tmp/graphic_design_lab
+  cache_root: runtime/graphic_design_lab/cache
+
+providers:
+  svg_renderer:
+    selected: UNRESOLVED
+    candidates: [inkscape_cli, cairosvg, native_svg]
+  raster_processor:
+    selected: UNRESOLVED
+    candidates: [pillow, pyvips, opencv]
+  pdf_renderer:
+    selected: UNRESOLVED
+    candidates: [pymupdf, ghostscript]
+  pdf_validator:
+    selected: UNRESOLVED
+    candidates: [pikepdf, verapdf, custom_preflight]
+  color_manager:
+    selected: UNRESOLVED
+    candidates: [pillow_imagecms, littlecms_native]
+  vector_graphics_executor:
+    selected: UNRESOLVED
+    candidates: [inkscape_cli, adobe_illustrator, coreldraw]
+  raster_graphics_executor:
+    selected: UNRESOLVED
+    candidates: [pillow, pyvips, opencv, adobe_photoshop]
+  pdf_specialist_executor:
+    selected: UNRESOLVED
+    candidates: [pymupdf, pikepdf, ghostscript, adobe_acrobat]
+  ai_text_provider:
+    selected: UNRESOLVED
+  ai_image_provider:
+    selected: UNRESOLVED
+  vectorization_provider:
+    selected: UNRESOLVED
+
+document_defaults:
+  units: mm
+  editable_interchange: svg
+  review_output: pdf
+  preview_output: png
+  production_output: pdf
+  preserve_text_as_text_where_possible: true
+  stable_object_ids: true
+
+validation:
+  require_structural_validation: true
+  require_geometry_validation: true
+  require_artifact_manifest: true
+  require_validation_report: true
+  require_preview_for_review: true
+
+pilot:
+  id: abram_diary_phase1
+  enabled_for_planning: true
+  runtime_enabled: false
+  full_rollout_before_phase1_approval: false

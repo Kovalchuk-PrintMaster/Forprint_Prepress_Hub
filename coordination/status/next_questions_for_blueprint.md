@@ -9,3 +9,9 @@ escalated.
 3. Confirm the canonical storage-role/configuration contract before customer or
    generated design artifacts become canonical workflow inputs.
 4. Confirm the first governed Graphic Design Lab experiment boundary.
+
+## Graphic Design Lab planning follow-up
+
+Local planning treats Graphic Design Lab as `EXPERIMENTAL_CAPABILITY_INSIDE_EXISTING_MODULE` and keeps runtime uninitialized.
+
+Future Blueprint reconciliation should synchronize the 2026-09-27 Human Owner design-lab intent into the canonical Prepress Human Intent ledger, review any cross-module contract before external consumption, and re-evaluate strategic tool/provider choices at the actual implementation date.

@@ -1,6 +1,6 @@
 schema_version: forprint_module_bootstrap_manifest_v0_1
 module_id: forprint_prepress_hub
-bootstrap_state: continuity_implementation_pending_verification
+bootstrap_state: self_onboard_verified
 foundation:
   state: FOUNDATION_REMOTE_CONTAINED
   commit: cdb74ee52047b502d6d31c084a389d44fa07c913
