@@ -1,0 +1,26 @@
+schema_version: forprint_graphic_design_lab_contract_v0_1
+contract_id: product_profile_v0_1
+contract_type: product_profile
+status: EXPERIMENTAL_CONTRACT
+capability: graphic_design_lab
+
+required:
+  - schema_version
+  - product_profile_id
+  - product_type
+  - physical_defaults
+  - layout_rules
+  - constraints
+
+physical_defaults:
+  required:
+    - units
+    - page_width_mm
+    - page_height_mm
+    - orientation
+
+rules:
+  product_profile_is_reusable_product_semantics: true
+  customer_specific_content_must_not_be_required_in_profile: true
+  physical_paths_forbidden: true
+  profile_may_leave_production_values_unresolved: true

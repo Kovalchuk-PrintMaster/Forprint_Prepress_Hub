@@ -1,4 +1,4 @@
-.PHONY: help env test bootstrap-check governance-check status graphic-design-lab-planning-check
+.PHONY: help env test bootstrap-check governance-check status graphic-design-lab-planning-check graphic-design-lab-contracts-check
 
 PYTHON ?= .venv_prepress_hub/bin/python
 
@@ -10,6 +10,7 @@ help:
 	@echo "  make governance-check - run current local governance checks"
 	@echo "  make status           - show Git and module status"
 	@echo "  make graphic-design-lab-planning-check - validate GDL roadmap/config planning baseline"
+	@echo "  make graphic-design-lab-contracts-check - validate GDL Design Spec/profile contract foundation"
 
 env:
 	python3 -m venv .venv_prepress_hub
@@ -25,7 +26,10 @@ bootstrap-check:
 graphic-design-lab-planning-check:
 	$(PYTHON) scripts/validation/check_graphic_design_lab_planning.py
 
-governance-check: bootstrap-check graphic-design-lab-planning-check test
+graphic-design-lab-contracts-check:
+	$(PYTHON) scripts/validation/check_graphic_design_lab_contracts.py
+
+governance-check: bootstrap-check graphic-design-lab-planning-check graphic-design-lab-contracts-check test
 	@git diff --check
 	@echo "PREPRESS_HUB_GOVERNANCE_CHECK=PASS"
 

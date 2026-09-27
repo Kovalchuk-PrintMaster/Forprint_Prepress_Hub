@@ -1,0 +1,162 @@
+schema_version: forprint_design_spec_v0_1
+document_id: sample_dated_diary_a5_phase1
+revision_id: r001
+product_type: dated_diary
+
+document:
+  units: mm
+  page:
+    width_mm: 148
+    height_mm: 210
+    orientation: portrait
+  bleed_mm: null
+  safe_area_mm: null
+  binding:
+    type: glued
+    mirrored_margins: true
+    inner_margin_mm: null
+    outer_margin_mm: null
+  page_count:
+    estimated_content_pages: 158
+    production_target_pages: 160
+
+design_system:
+  aesthetic_direction:
+    - clean
+    - minimal
+    - modern
+    - practical
+    - writing_friendly
+    - delicate
+  month_colors:
+    october:
+      print_cmyk: [0, 25, 93, 9]
+      preview_rgb: null
+    november:
+      print_cmyk: [0, 38, 91, 23]
+      preview_rgb: null
+
+spreads:
+  - id: spread.monthly.2026-10
+    kind: monthly
+    objects:
+      - id: october.header.month_name_uk
+        type: text
+        layer: headers
+        role: month_name_uk
+        content: Жовтень
+      - id: october.header.month_name_en
+        type: text
+        layer: headers
+        role: month_name_en
+        content: October 2026
+      - id: october.calendar.grid
+        type: calendar_grid
+        layer: calendar
+        role: month_calendar
+      - id: october.notes
+        type: notes_block
+        layer: content
+        role: notes
+
+  - id: spread.week.partial.2026-10-15_18
+    kind: weekly
+    objects:
+      - id: week.partial.thursday
+        type: day_block
+        role: thursday
+      - id: week.partial.friday
+        type: day_block
+        role: friday
+      - id: week.partial.saturday
+        type: day_block
+        role: saturday
+      - id: week.partial.sunday
+        type: day_block
+        role: sunday
+      - id: week.partial.inactive_12_14
+        type: group
+        role: de_emphasized_prior_days
+
+  - id: spread.week.full.2026-10-19_25
+    kind: weekly
+    objects:
+      - id: week.full.monday
+        type: day_block
+        role: monday
+      - id: week.full.tuesday
+        type: day_block
+        role: tuesday
+      - id: week.full.wednesday
+        type: day_block
+        role: wednesday
+      - id: week.full.thursday
+        type: day_block
+        role: thursday
+      - id: week.full.friday
+        type: day_block
+        role: friday
+      - id: week.full.saturday
+        type: day_block
+        role: saturday
+      - id: week.full.sunday
+        type: day_block
+        role: sunday
+
+  - id: spread.week.transition.2026-10-26_11-01
+    kind: weekly
+    objects:
+      - id: week.transition.monday
+        type: day_block
+        role: monday
+        style_ref: month.october
+      - id: week.transition.tuesday
+        type: day_block
+        role: tuesday
+        style_ref: month.october
+      - id: week.transition.wednesday
+        type: day_block
+        role: wednesday
+        style_ref: month.october
+      - id: week.transition.thursday
+        type: day_block
+        role: thursday
+        style_ref: month.october
+      - id: week.transition.friday
+        type: day_block
+        role: friday
+        style_ref: month.october
+      - id: week.transition.saturday
+        type: day_block
+        role: saturday
+        style_ref: month.october
+      - id: week.transition.sunday
+        type: day_block
+        role: sunday
+        style_ref: month.november
+
+assets: []
+references:
+  - reference_id: october_svg_structure_reference
+    logical_role: structural_reference_only
+    provenance:
+      source_class: conversation_reference
+    preserve:
+      - editable_svg_viability
+      - two_page_spread_geometry
+      - semantic_text_line_rect_structure
+    change:
+      - visual_treatment
+      - typography
+      - color_delicacy
+
+output_intent:
+  editable_interchange: svg
+  preview_output: png
+  review_output: pdf
+  production_output: null
+
+review:
+  phase: phase1
+  full_rollout_allowed: false
+  human_review_state: review_requested

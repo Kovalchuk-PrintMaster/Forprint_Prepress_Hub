@@ -145,10 +145,10 @@ near_term_practical:
     state: ACTIVE_AUTHORIZED_CONTOUR
   - id: GDL-N02
     title: Design Specification v0.1
-    state: PLANNED
+    state: IMPLEMENTED_PENDING_VALIDATION
   - id: GDL-N03
     title: Asset, reference, revision and patch contracts
-    state: PLANNED
+    state: IMPLEMENTED_PENDING_VALIDATION
   - id: GDL-N04
     title: Deterministic editable output skeleton
     state: PLANNED
@@ -161,7 +161,17 @@ near_term_practical:
     guard: no_full_diary_rollout_before_phase1_approval
   - id: GDL-N07
     title: Product profiles, templates and reusable components
-    state: PLANNED
+    state: PARTIAL_IMPLEMENTATION_PENDING_VALIDATION
+    implemented_scope:
+      - product_profile_contract_v0_1
+      - dated_diary_a5_profile_v0_1
+    remaining_scope:
+      - reusable_template_system
+      - components_and_instances
+      - design_tokens
+      - text_fitting
+      - bleed_and_safe_area_resolution
+      - qr_and_barcode_objects
 
 farther_practical:
   - id: GDL-F01

@@ -44,3 +44,11 @@ Business logic must resolve paths and providers through
 
 The first practical pilot is Abram Diary Phase 1. Full diary rollout is not
 authorized by this document.
+
+## Contract foundation v0.1
+
+The first H1 implementation contour introduces Design Specification, asset/reference, revision/patch and product-profile contracts plus deterministic validation. It does not render SVG/PDF and does not select a graphics or AI provider.
+
+Actual customer cases resolve through configured `cases_root` and are not committed by default. The tracked dated-diary fixture is a sanitized technical regression fixture.
+
+Stable object IDs are mandatory from Design Specification v0.1 so later revisions can target bounded objects instead of forcing full regeneration.

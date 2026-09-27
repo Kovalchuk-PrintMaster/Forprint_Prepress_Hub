@@ -1,0 +1,51 @@
+schema_version: forprint_graphic_design_lab_contract_v0_1
+contract_id: asset_reference_v0_1
+contract_type: asset_reference
+status: EXPERIMENTAL_CONTRACT
+capability: graphic_design_lab
+
+asset:
+  required:
+    - asset_id
+    - kind
+    - logical_role
+    - provenance
+  kinds:
+    - vector
+    - raster
+    - font
+    - brand
+    - generated
+    - dynamic
+  optional:
+    - source_ref
+    - fingerprint_sha256
+    - mime_type
+    - dimensions
+    - color_space
+    - license_or_usage_note
+
+reference:
+  required:
+    - reference_id
+    - logical_role
+    - provenance
+  optional:
+    - source_ref
+    - fingerprint_sha256
+    - preserve
+    - change
+    - note
+
+provenance:
+  required:
+    - source_class
+  source_classes:
+    - customer_supplied
+    - operator_supplied
+    - forprint_library
+    - generated
+    - derived
+    - conversation_reference
+    - runtime_case
+  rule: assets_and_references_must_not_be_treated_as_authoritative_without_provenance

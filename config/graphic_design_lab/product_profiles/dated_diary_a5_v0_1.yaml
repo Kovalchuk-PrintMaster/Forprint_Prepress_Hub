@@ -1,0 +1,70 @@
+schema_version: forprint_product_profile_v0_1
+product_profile_id: dated_diary_a5_v0_1
+product_type: dated_diary
+status: EXPERIMENTAL_PROFILE
+
+physical_defaults:
+  units: mm
+  format_name: A5
+  page_width_mm: 148
+  page_height_mm: 210
+  orientation: portrait
+  bleed_mm: null
+  safe_area_mm: null
+
+binding_defaults:
+  type: glued
+  mirrored_margins: true
+  inner_margin_mm: null
+  outer_margin_mm: null
+  top_margin_mm: null
+  bottom_margin_mm: null
+  note: Exact production margins remain unresolved until the Phase 1 geometry review.
+
+layout_rules:
+  monthly:
+    enabled: true
+    placement: before_each_month
+    pages_per_spread: 2
+    month_title_languages: [uk, en]
+    includes_calendar_grid: true
+    includes_notes_area: true
+  weekly:
+    enabled: true
+    pages_per_spread: 2
+    time_grid: false
+    weekday_language: en
+    left_page_days: [monday, tuesday, wednesday]
+    right_page_days: [thursday, friday, saturday, sunday]
+    equal_day_blocks: true
+    transition_week_supported: true
+
+constraints:
+  writing_friendly: true
+  visual_direction:
+    - clean
+    - minimal
+    - modern
+    - practical
+    - delicate
+  full_rollout_requires_phase1_approval: true
+
+month_colors_cmyk:
+  "01": [89, 0, 0, 7]
+  "02": [91, 61, 0, 26]
+  "03": [46, 0, 86, 9]
+  "04": [80, 0, 89, 21]
+  "05": [89, 0, 59, 44]
+  "06": [0, 61, 40, 11]
+  "07": [0, 79, 79, 8]
+  "08": [0, 97, 92, 32]
+  "09": [3, 0, 93, 6]
+  "10": [0, 25, 93, 9]
+  "11": [0, 38, 91, 23]
+  "12": [96, 47, 0, 9]
+
+phase1_required_samples:
+  - october_2026_monthly_spread
+  - partial_week_2026_10_15_to_2026_10_18
+  - one_full_week
+  - transition_week_2026_10_26_to_2026_11_01

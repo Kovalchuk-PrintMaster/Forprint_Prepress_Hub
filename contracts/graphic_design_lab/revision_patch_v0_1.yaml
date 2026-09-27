@@ -1,0 +1,44 @@
+schema_version: forprint_graphic_design_lab_contract_v0_1
+contract_id: revision_patch_v0_1
+contract_type: revision_patch
+status: EXPERIMENTAL_CONTRACT
+capability: graphic_design_lab
+
+revision:
+  required:
+    - revision_id
+    - parent_revision_id
+    - change_request
+    - patches
+    - human_review_state
+  human_review_states:
+    - not_reviewed
+    - review_requested
+    - approved
+    - rejected
+    - superseded
+
+patch:
+  required:
+    - patch_id
+    - operation
+    - target_object_id
+  operations:
+    - SET
+    - MOVE
+    - RESIZE
+    - REPLACE_CONTENT
+    - REPLACE_STYLE_REF
+    - ADD_OBJECT
+    - REMOVE_OBJECT
+    - REORDER
+  optional:
+    - path
+    - before
+    - after
+    - reason
+
+rules:
+  prefer_bounded_patch_over_full_regeneration: true
+  stable_object_id_required_for_object_patch: true
+  full_regeneration_requires_explicit_route: true

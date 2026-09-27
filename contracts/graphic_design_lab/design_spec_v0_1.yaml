@@ -1,0 +1,94 @@
+schema_version: forprint_graphic_design_lab_contract_v0_1
+contract_id: design_spec_v0_1
+contract_type: design_specification
+status: EXPERIMENTAL_CONTRACT
+capability: graphic_design_lab
+
+spec_schema_version: forprint_design_spec_v0_1
+
+required_top_level:
+  - schema_version
+  - document_id
+  - revision_id
+  - product_type
+  - document
+  - spreads
+  - output_intent
+
+document:
+  required:
+    - units
+    - page
+    - binding
+  units:
+    allowed: [mm]
+  page:
+    required: [width_mm, height_mm, orientation]
+    orientation_allowed: [portrait, landscape]
+    positive_numeric:
+      - width_mm
+      - height_mm
+  optional_nullable_numeric:
+    - bleed_mm
+    - safe_area_mm
+  binding:
+    required: [type]
+    allowed_types: [none, glued, sewn, saddle_stitch, wire_o, spiral, other]
+
+spread:
+  required:
+    - id
+    - kind
+    - objects
+  kinds:
+    - monthly
+    - weekly
+    - cover
+    - content
+    - custom
+
+object:
+  required:
+    - id
+    - type
+  stable_id_required: true
+  id_scope: document
+  supported_types:
+    - text
+    - line
+    - rectangle
+    - group
+    - calendar_grid
+    - day_block
+    - notes_block
+    - vector_asset_ref
+    - raster_asset_ref
+    - dynamic_value
+  optional_fields:
+    - layer
+    - role
+    - content
+    - geometry
+    - style_ref
+    - constraints
+    - asset_ref
+
+color:
+  cmyk_component_min: 0
+  cmyk_component_max: 100
+  preview_color_is_not_print_authority: true
+
+output_intent:
+  required:
+    - editable_interchange
+    - preview_output
+    - review_output
+  editable_interchange_allowed: [svg]
+  preview_output_allowed: [png, pdf]
+  review_output_allowed: [pdf]
+  production_output_optional: true
+
+authority:
+  design_spec_is_primary_semantic_source: true
+  generated_svg_is_not_primary_source: true
+  generated_pdf_is_not_primary_source: true

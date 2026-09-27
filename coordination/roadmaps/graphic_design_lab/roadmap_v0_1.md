@@ -94,3 +94,7 @@ and incremental rebuild; watched/hot-folder intake; policy-gated managed automat
 > document → preview → validation report → reproducible revision.
 
 Graphic Design Lab runtime remains `PLANNED_NOT_INITIALIZED` after this planning baseline.
+
+## H1 contract-foundation implementation note
+
+Design Specification v0.1, asset/reference, revision/patch and product-profile contracts plus the dated-diary A5 profile are now locally implemented **pending validation and acceptance**. Renderer/compiler work remains a separate later contour.

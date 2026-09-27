@@ -18,7 +18,10 @@ Cold-start/no-chat-history continuity acceptance has passed.
 The continuity packages transfer context only and do not grant execution,
 implementation, acceptance, release, or System Blueprint mutation authority.
 
-Current focus: Graphic Design Lab planning/configuration baseline.
-The next expected implementation contour is Design Specification v0.1 plus the
-bounded Abram Diary Phase 1 pilot. Graphic Design Lab runtime has not been
-initialized by this planning step.
+Current focus: validation of the Graphic Design Lab contract foundation:
+Design Specification v0.1, asset/reference, revision/patch and dated-diary
+product-profile semantics.
+
+The next expected contour after contract acceptance is deterministic editable
+SVG plus preview/validation for the bounded Phase 1 diary fixture. Graphic
+Design Lab rendering/runtime remains uninitialized.
