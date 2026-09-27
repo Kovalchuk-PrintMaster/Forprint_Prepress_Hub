@@ -1,0 +1,16 @@
+schema_version: forprint_blueprint_source_v0_1
+module_id: forprint_prepress_hub
+blueprint_repository: forprint_system_blueprint
+expected_relative_location: ../forprint_system_blueprint
+access_mode: read_only
+continuity_reference:
+  implementation: tools/module_bootstrap/module_assistant_context.py
+  policy:
+    - coordination/standards/governance/new_module_bootstrap_protocol_v0_1.md
+    - coordination/standards/module_assistant_start_protocol.md
+    - coordination/standards/make_command_standard.md
+    - coordination/standards/module_make_target_contract.md
+owner_adaptation:
+  clean_root: true
+  canonical_manifest: coordination/module/manifest.yaml
+  root_manifest_forbidden: true

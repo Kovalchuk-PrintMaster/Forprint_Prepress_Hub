@@ -1,0 +1,9 @@
+schema_version: forprint_prompt_index_v0_1
+module_id: forprint_prepress_hub
+status: bootstrap_empty
+received: []
+active: []
+archived: []
+note: >
+  Prompt lifecycle surface initialized for continuity navigation. No formal
+  Design Lab implementation prompt is activated by this file.

@@ -35,3 +35,15 @@ repository surfaces, not from chat history.
 - Keep physical storage paths out of business logic; later storage capabilities
   must use configuration/logical roles.
 - Graphic Design Lab is planned but not initialized by foundation bootstrap.
+
+## Fresh-worker continuity
+
+Canonical bootstrap entrypoint: `coordination/bootstrap/START_HERE.md`.
+
+Before canonical work, use `make assistant-handoff-check`. For replacement
+assistant onboarding use `make assistant-pack` (`MODULE_ONBOARD`). For bounded
+topic continuation use `make assistant-context-pack TOPICS=<topic>`
+(`MODULE_CONTEXT`).
+
+These packages are evidence/navigation only and grant zero execution,
+acceptance, release, production, Git mutation, or Blueprint-write authority.

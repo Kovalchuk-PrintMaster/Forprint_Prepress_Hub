@@ -1,0 +1,38 @@
+schema_version: forprint_module_bootstrap_manifest_v0_1
+module_id: forprint_prepress_hub
+bootstrap_state: continuity_implementation_pending_verification
+foundation:
+  state: FOUNDATION_REMOTE_CONTAINED
+  commit: cdb74ee52047b502d6d31c084a389d44fa07c913
+continuity:
+  required_targets:
+    - assistant-handoff-check
+    - assistant-pack
+    - assistant-context-pack
+  package_semantics:
+    assistant-pack: MODULE_ONBOARD
+    assistant-context-pack: MODULE_CONTEXT
+  authority:
+    execution: false
+    dispatch: false
+    acceptance: false
+    roadmap_mutation: false
+    release: false
+    cross_repository_write: false
+manifest:
+  canonical_path: coordination/module/manifest.yaml
+  root_compatibility_copy_allowed: false
+blueprint:
+  repository: forprint_system_blueprint
+  access_from_module: read_only
+graphic_design_lab:
+  classification: EXPERIMENTAL_CAPABILITY_INSIDE_EXISTING_MODULE
+  owner: forprint_prepress_hub
+  runtime_initialized: false
+completion_gate:
+  required_sequence:
+    - CONTINUITY_COMMISSIONED
+    - MODULE_ONBOARD
+    - MODULE_CONTEXT
+    - COLD_START_NO_CHAT_HISTORY_ACCEPTANCE
+    - SELF_ONBOARD_VERIFIED

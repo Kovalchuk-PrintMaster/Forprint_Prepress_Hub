@@ -29,3 +29,26 @@ status:
 	@git status --short
 	@echo "---"
 	@cat coordination/status/current_status.yaml
+# --- Assistant continuity / fresh-worker commissioning ---
+
+MODULE_ROOT ?= $(CURDIR)
+MODULE_ID ?= forprint_prepress_hub
+BLUEPRINT_ROOT ?= ../forprint_system_blueprint
+MODULE_REGISTRATION_STATE ?= registered
+MODULE_ASSISTANT_CONTEXT_CLI ?= scripts/coordination/module_assistant_context.py
+SCOPE ?= bootstrap
+TOPICS ?=
+
+.PHONY: assistant-handoff-check assistant-pack assistant-context-pack
+
+# Read-only recovery gate for a fresh assistant.
+assistant-handoff-check:
+	$(PYTHON) $(MODULE_ASSISTANT_CONTEXT_CLI) --module-root "$(MODULE_ROOT)" --module "$(MODULE_ID)" --blueprint-root "$(BLUEPRINT_ROOT)" --registration-state "$(MODULE_REGISTRATION_STATE)" check
+
+# Build MODULE_ONBOARD under ignored tmp/ only.
+assistant-pack: assistant-handoff-check
+	$(PYTHON) $(MODULE_ASSISTANT_CONTEXT_CLI) --module-root "$(MODULE_ROOT)" --module "$(MODULE_ID)" --blueprint-root "$(BLUEPRINT_ROOT)" --registration-state "$(MODULE_REGISTRATION_STATE)" pack --package-type MODULE_ONBOARD --scope bootstrap
+
+# Build bounded MODULE_CONTEXT under ignored tmp/ only.
+assistant-context-pack: assistant-handoff-check
+	$(PYTHON) $(MODULE_ASSISTANT_CONTEXT_CLI) --module-root "$(MODULE_ROOT)" --module "$(MODULE_ID)" --blueprint-root "$(BLUEPRINT_ROOT)" --registration-state "$(MODULE_REGISTRATION_STATE)" pack --package-type MODULE_CONTEXT --scope "$(SCOPE)" --topics "$(TOPICS)"

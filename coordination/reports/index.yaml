@@ -1,0 +1,7 @@
+schema_version: forprint_report_index_v0_1
+module_id: forprint_prepress_hub
+status: bootstrap_empty
+reports: []
+note: >
+  Durable report index initialized for fresh-worker navigation. Temporary
+  continuity packages remain under ignored tmp/.

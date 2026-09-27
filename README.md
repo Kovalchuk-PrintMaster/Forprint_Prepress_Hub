@@ -35,3 +35,23 @@ make status
 ```
 
 The supported project environment is `.venv_prepress_hub`.
+
+## Assistant continuity
+
+Fresh-worker continuity is module-local and uses the live read-only System
+Blueprint as its governance/reference source.
+
+Supported operator commands:
+
+```text
+make assistant-handoff-check
+make assistant-pack
+make assistant-context-pack TOPICS=graphic_design_lab
+```
+
+`assistant-pack` produces `MODULE_ONBOARD`; `assistant-context-pack` produces
+`MODULE_CONTEXT`. Generated packages live under ignored `tmp/` and carry zero
+execution/acceptance/release authority.
+
+The canonical module manifest remains
+`coordination/module/manifest.yaml`; no root compatibility manifest is used.
