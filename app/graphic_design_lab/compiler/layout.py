@@ -118,8 +118,24 @@ def _layout_weekly(
     page_width_mm: float,
     page_height_mm: float,
 ) -> dict[str, Box]:
-    left_area = Box(10.0, 14.0, page_width_mm - 20.0, page_height_mm - 28.0)
-    right_area = Box(page_width_mm + 10.0, 14.0, page_width_mm - 20.0, page_height_mm - 28.0)
+    # Preserve the canonical Mon-Wed / Thu-Sun split while matching the
+    # accepted monthly binding-safe inner margin.
+    outer_margin = 10.0
+    inner_margin = 14.0
+    top_bottom_margin = 14.0
+
+    left_area = Box(
+        outer_margin,
+        top_bottom_margin,
+        page_width_mm - outer_margin - inner_margin,
+        page_height_mm - 2.0 * top_bottom_margin,
+    )
+    right_area = Box(
+        page_width_mm + inner_margin,
+        top_bottom_margin,
+        page_width_mm - outer_margin - inner_margin,
+        page_height_mm - 2.0 * top_bottom_margin,
+    )
 
     left_roles = ["monday", "tuesday", "wednesday"]
     right_roles = ["thursday", "friday", "saturday", "sunday"]
@@ -128,9 +144,11 @@ def _layout_weekly(
 
     result: dict[str, Box] = {}
     fallback_left = left_area
+
     for obj in objects:
         role = str(obj.get("role") or "")
         object_id = str(obj["id"])
+
         if role in left_boxes:
             result[object_id] = left_boxes[role]
         elif role in right_boxes:
@@ -139,9 +157,9 @@ def _layout_weekly(
             result[object_id] = fallback_left
         else:
             result[object_id] = Box(
-                page_width_mm + 10.0,
+                page_width_mm + inner_margin,
                 page_height_mm - 24.0,
-                page_width_mm - 20.0,
+                page_width_mm - outer_margin - inner_margin,
                 10.0,
             )
 

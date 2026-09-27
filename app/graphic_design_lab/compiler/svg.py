@@ -218,24 +218,64 @@ def _render_day_block(
     accent: str,
     print_cmyk: str | None,
 ) -> None:
-    _add_rect(group, box, stroke="#b8b8b8", radius=1.2)
-    ET.SubElement(
+    # Weekly pages are writing surfaces, not UI cards. A short month-color
+    # marker carries visual identity while a quiet bottom rule separates days.
+    marker_length = min(10.0, box.width * 0.12)
+    marker = ET.SubElement(
         group,
         _svg("line"),
         {
             "x1": _fmt(box.x),
-            "y1": _fmt(box.y),
-            "x2": _fmt(box.x + box.width),
-            "y2": _fmt(box.y),
+            "y1": _fmt(box.y + 2.0),
+            "x2": _fmt(box.x + marker_length),
+            "y2": _fmt(box.y + 2.0),
             "stroke": accent,
-            "stroke-width": "1.0",
+            "stroke-width": "0.55",
+            "data-role": "day-accent",
             **({"data-print-cmyk": print_cmyk} if print_cmyk else {}),
         },
     )
-    label = role.capitalize()
+    del marker
+
+    separator = ET.SubElement(
+        group,
+        _svg("line"),
+        {
+            "x1": _fmt(box.x),
+            "y1": _fmt(box.y + box.height),
+            "x2": _fmt(box.x + box.width),
+            "y2": _fmt(box.y + box.height),
+            "stroke": "#dddddd",
+            "stroke-width": "0.18",
+            "data-role": "day-separator",
+        },
+    )
+    del separator
+
+    day_name = role.capitalize()
+    day_text = _add_text(
+        group,
+        box.x,
+        box.y + 8.0,
+        day_name,
+        size=3.1,
+        weight="500",
+        fill="#333333",
+    )
+    day_text.set("data-role", "day-name")
+
     if day is not None:
-        label = f"{label}  {day.day:02d}.{day.month:02d}"
-    _add_text(group, box.x + 2.5, box.y + 6.0, label, size=3.6, weight="600")
+        date_text = _add_text(
+            group,
+            box.x + box.width,
+            box.y + 8.0,
+            f"{day.day:02d}.{day.month:02d}",
+            size=2.8,
+            weight="400",
+            fill="#666666",
+            anchor="end",
+        )
+        date_text.set("data-role", "day-date")
 
 
 def _render_object(
@@ -312,9 +352,62 @@ def _render_object(
         return
 
     if object_type == "group" and role == "de_emphasized_prior_days":
-        _add_rect(group, box, stroke="#d0d0d0", fill="#fafafa", opacity=0.65)
-        _add_text(group, box.x + 3.0, box.y + 7.0, "Prior days — not in diary range",
-                  size=3.0, fill="#8a8a8a")
+        # Show the real prior weekdays/dates, but quietly: they are context for
+        # the partial opening week, not active diary days and not a debug box.
+        start_value = period.get("start_date")
+        if isinstance(start_value, date):
+            start_day = start_value
+        else:
+            start_day = date.fromisoformat(str(start_value))
+
+        week_monday = start_day - timedelta(days=start_day.weekday())
+        prior_count = (start_day - week_monday).days
+
+        if prior_count > 0:
+            gap = 2.0
+            section_h = (box.height - gap * (prior_count - 1)) / prior_count
+
+            for index in range(prior_count):
+                prior_day = week_monday + timedelta(days=index)
+                section_y = box.y + index * (section_h + gap)
+
+                separator = ET.SubElement(
+                    group,
+                    _svg("line"),
+                    {
+                        "x1": _fmt(box.x),
+                        "y1": _fmt(section_y + section_h),
+                        "x2": _fmt(box.x + box.width),
+                        "y2": _fmt(section_y + section_h),
+                        "stroke": "#ededed",
+                        "stroke-width": "0.18",
+                        "data-role": "prior-day-separator",
+                    },
+                )
+                del separator
+
+                day_name = _add_text(
+                    group,
+                    box.x,
+                    section_y + 8.0,
+                    calendar.day_name[prior_day.weekday()],
+                    size=3.1,
+                    weight="400",
+                    fill="#9a9a9a",
+                )
+                day_name.set("data-role", "prior-day-name")
+
+                date_text = _add_text(
+                    group,
+                    box.x + box.width,
+                    section_y + 8.0,
+                    f"{prior_day.day:02d}.{prior_day.month:02d}",
+                    size=2.8,
+                    weight="400",
+                    fill="#aaaaaa",
+                    anchor="end",
+                )
+                date_text.set("data-role", "prior-day-date")
         return
 
     if object_type == "rectangle":

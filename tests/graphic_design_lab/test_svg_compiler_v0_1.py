@@ -67,16 +67,39 @@ def test_monthly_svg_contains_calendar_dates_and_bilingual_title():
 
 def test_weekly_svg_uses_explicit_period_for_day_labels():
     spec = fixture()
-    partial = compile_document(spec)[1].svg_text
-    assert "Thursday  15.10" in partial
-    assert "Sunday  18.10" in partial
+    partial = ET.fromstring(compile_document(spec)[1].svg_text)
+
+    thursday = partial.find(".//*[@id='week.partial.thursday']")
+    sunday = partial.find(".//*[@id='week.partial.sunday']")
+    assert thursday is not None
+    assert sunday is not None
+
+    thursday_text = [node.text for node in list(thursday) if node.tag.endswith("text")]
+    sunday_text = [node.text for node in list(sunday) if node.tag.endswith("text")]
+    assert "Thursday" in thursday_text
+    assert "15.10" in thursday_text
+    assert "Sunday" in sunday_text
+    assert "18.10" in sunday_text
 
 
 def test_transition_week_changes_accent_month_for_sunday():
     spec = fixture()
-    transition = compile_document(spec)[3].svg_text
-    assert "Sunday  01.11" in transition
-    assert 'data-print-cmyk="0,38,91,23"' in transition
+    root = ET.fromstring(compile_document(spec)[3].svg_text)
+
+    sunday = root.find(".//*[@id='week.transition.sunday']")
+    assert sunday is not None
+
+    text_values = [
+        node.text for node in list(sunday)
+        if node.tag.endswith("text")
+    ]
+    assert "Sunday" in text_values
+    assert "01.11" in text_values
+    assert sunday.get("data-print-cmyk") == "0,38,91,23"
+
+    accent = sunday.find("./*[@data-role='day-accent']")
+    assert accent is not None
+    assert accent.get("data-print-cmyk") == "0,38,91,23"
 
 
 def test_phase1_svg_contains_no_embedded_raster():
@@ -217,3 +240,136 @@ def test_monthly_v3_keeps_v2_geometry_and_strengthens_only_month_heading():
     assert uk_text.get("font-weight") == "500"
     assert en_text.get("font-size") == "2.8"
     assert en_text.get("font-weight") == "400"
+
+def test_weekly_visual_refinement_uses_open_sections_not_cards():
+    spec = fixture()
+    full = ET.fromstring(compile_document(spec)[2].svg_text)
+
+    for role in (
+        "monday",
+        "tuesday",
+        "wednesday",
+        "thursday",
+        "friday",
+        "saturday",
+        "sunday",
+    ):
+        group = full.find(f".//*[@data-role='{role}']")
+        assert group is not None
+
+        direct_rects = [node for node in list(group) if node.tag.endswith("rect")]
+        assert direct_rects == []
+
+        accent = group.find("./*[@data-role='day-accent']")
+        separator = group.find("./*[@data-role='day-separator']")
+        day_name = group.find("./*[@data-role='day-name']")
+        day_date = group.find("./*[@data-role='day-date']")
+
+        assert accent is not None
+        assert separator is not None
+        assert day_name is not None
+        assert day_date is not None
+
+        assert accent.get("stroke-width") == "0.55"
+        assert separator.get("stroke-width") == "0.18"
+        assert day_name.get("font-size") == "3.1"
+        assert day_name.get("font-weight") == "500"
+        assert day_date.get("font-size") == "2.8"
+        assert day_date.get("font-weight") == "400"
+        assert day_date.get("text-anchor") == "end"
+
+
+def test_weekly_visual_refinement_preserves_page_split_and_binding_safe_margins():
+    spec = fixture()
+    full_spread = spec["spreads"][2]
+    boxes = layout_spread(full_spread, 148.0, 210.0)
+
+    monday = boxes["week.full.monday"]
+    tuesday = boxes["week.full.tuesday"]
+    wednesday = boxes["week.full.wednesday"]
+    thursday = boxes["week.full.thursday"]
+    friday = boxes["week.full.friday"]
+    saturday = boxes["week.full.saturday"]
+    sunday = boxes["week.full.sunday"]
+
+    assert monday.x == tuesday.x == wednesday.x == 10.0
+    assert monday.width == tuesday.width == wednesday.width == 124.0
+    assert monday.x + monday.width == 134.0
+
+    assert thursday.x == friday.x == saturday.x == sunday.x == 162.0
+    assert thursday.width == friday.width == saturday.width == sunday.width == 124.0
+    assert thursday.x - 148.0 == 14.0
+
+    assert monday.height == tuesday.height == wednesday.height
+    assert thursday.height == friday.height == saturday.height == sunday.height
+
+
+def test_transition_week_keeps_day_specific_month_color_on_short_markers():
+    spec = fixture()
+    transition = ET.fromstring(compile_document(spec)[3].svg_text)
+
+    monday = transition.find(".//*[@id='week.transition.monday']")
+    sunday = transition.find(".//*[@id='week.transition.sunday']")
+    assert monday is not None
+    assert sunday is not None
+
+    monday_accent = monday.find("./*[@data-role='day-accent']")
+    sunday_accent = sunday.find("./*[@data-role='day-accent']")
+    assert monday_accent is not None
+    assert sunday_accent is not None
+
+    assert monday_accent.get("data-print-cmyk") == "0,25,93,9"
+    assert sunday_accent.get("data-print-cmyk") == "0,38,91,23"
+
+    monday_length = float(monday_accent.get("x2")) - float(monday_accent.get("x1"))
+    sunday_length = float(sunday_accent.get("x2")) - float(sunday_accent.get("x1"))
+    assert monday_length == sunday_length == 10.0
+
+
+def test_partial_week_renders_real_prior_days_as_deemphasized_sections():
+    spec = fixture()
+    partial = ET.fromstring(compile_document(spec)[1].svg_text)
+
+    prior = partial.find(".//*[@data-role='de_emphasized_prior_days']")
+    assert prior is not None
+
+    text_nodes = [node for node in list(prior) if node.tag.endswith("text")]
+    text_values = [node.text for node in text_nodes]
+
+    assert "Monday" in text_values
+    assert "12.10" in text_values
+    assert "Tuesday" in text_values
+    assert "13.10" in text_values
+    assert "Wednesday" in text_values
+    assert "14.10" in text_values
+    assert "Prior days — not in diary range" not in text_values
+
+    names = [
+        node for node in text_nodes
+        if node.get("data-role") == "prior-day-name"
+    ]
+    dates = [
+        node for node in text_nodes
+        if node.get("data-role") == "prior-day-date"
+    ]
+    assert len(names) == 3
+    assert len(dates) == 3
+    assert all(node.get("font-weight") == "400" for node in names)
+    assert all(node.get("fill") == "#9a9a9a" for node in names)
+    assert all(node.get("fill") == "#aaaaaa" for node in dates)
+
+
+def test_partial_week_prior_days_have_no_active_month_accent_markers():
+    spec = fixture()
+    partial = ET.fromstring(compile_document(spec)[1].svg_text)
+
+    prior = partial.find(".//*[@data-role='de_emphasized_prior_days']")
+    assert prior is not None
+    assert prior.find("./*[@data-role='day-accent']") is None
+
+    separators = [
+        node for node in list(prior)
+        if node.get("data-role") == "prior-day-separator"
+    ]
+    assert len(separators) == 3
+    assert all(node.get("stroke-width") == "0.18" for node in separators)
