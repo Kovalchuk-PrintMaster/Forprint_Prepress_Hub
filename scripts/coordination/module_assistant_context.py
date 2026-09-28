@@ -34,6 +34,12 @@ SCRIPT_ID = "forprint_module_assistant_context_v0_1"
 DEFAULT_MAX_FILE_BYTES = 256 * 1024
 DEFAULT_MAX_TOTAL_BYTES = 4 * 1024 * 1024
 
+SYSTEM_BLUEPRINT_ACCESS_FROM_PREPRESS = "READ_ONLY_STRICT"
+SYSTEM_BLUEPRINT_POLICY_MARKER = (
+    "SYSTEM_BLUEPRINT_ACCESS_FROM_PREPRESS="
+    + SYSTEM_BLUEPRINT_ACCESS_FROM_PREPRESS
+)
+
 ALWAYS_LOCAL = [
     "AGENTS.md",
     "README.md",
@@ -228,6 +234,10 @@ def verify(
         "errors": errors,
         "warnings": warnings,
         "status": "PASS" if not errors else "FAIL",
+        "policy_markers": {
+            "system_blueprint_access_from_prepress":
+                SYSTEM_BLUEPRINT_ACCESS_FROM_PREPRESS,
+        },
         "authority": {
             "execution": False,
             "acceptance": False,
@@ -433,6 +443,10 @@ def build_pack(
             "release": False,
             "cross_repository_write": False,
         },
+        "policy_markers": {
+            "system_blueprint_access_from_prepress":
+                SYSTEM_BLUEPRINT_ACCESS_FROM_PREPRESS,
+        },
         "selection": {
             "file_count": len(copied),
             "total_bytes": total,
@@ -455,6 +469,19 @@ Module HEAD: `{head}`
 Blueprint HEAD observed: `{check['blueprint']['head']}`
 Scope: `{scope}`
 Topics: `{', '.join(topics) if topics else 'none'}`
+
+## System Blueprint access boundary
+
+`{SYSTEM_BLUEPRINT_POLICY_MARKER}`
+
+From ForPrint Prepress Hub, System Blueprint is strictly read-only.
+A Prepress assistant may read Blueprint state, directives and context, but must
+not create, edit, stage, commit, push, apply, release or otherwise mutate the
+System Blueprint repository.
+
+If a Blueprint-owned change is needed, create a Prepress-owned request or
+completion package and hand it to Blueprint for Blueprint-side processing and
+confirmation.
 
 ## Authority boundary
 
@@ -552,6 +579,7 @@ def main() -> int:
                 f"MISSING_BLUEPRINT_COUNT={len(result['missing_blueprint'])}"
             )
             print(f"WARNING_COUNT={len(result['warnings'])}")
+            print(f"{SYSTEM_BLUEPRINT_POLICY_MARKER}")
             print("BLUEPRINT_MUTATED=false")
             print("GIT_MUTATED=false")
             return 0 if result["status"] == "PASS" else 2
@@ -577,6 +605,7 @@ def main() -> int:
         print(f"ARCHIVE={result['archive']}")
         print(f"ARCHIVE_SHA256={result['archive_sha256']}")
         print("GRANTS_EXECUTION_AUTHORITY=false")
+        print(f"{SYSTEM_BLUEPRINT_POLICY_MARKER}")
         print("BLUEPRINT_MUTATED=false")
         print("GIT_MUTATED=false")
         return 0
