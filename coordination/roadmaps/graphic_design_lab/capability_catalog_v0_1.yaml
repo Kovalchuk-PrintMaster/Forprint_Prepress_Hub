@@ -1,0 +1,103 @@
+schema_version: forprint_gdl_capability_catalog_v0_1
+document_type: GDL_CAPABILITY_CATALOG
+module_id: forprint_prepress_hub
+capability_id: graphic_design_lab
+status: PLANNING_REFERENCE
+authority:
+  grants_execution_authority: false
+  grants_provider_selection: false
+  grants_runtime_initialization: false
+  grants_production_write: false
+rules:
+  - catalog_presence_does_not_activate_roadmap_or_execution
+  - roadmap_and_catalog_are_cross_linked_but_not_interchangeable
+  - experimentally_verified_does_not_mean_canonical_provider_selected
+  - production_and_review_artifacts_have_distinct_roles
+maturity_states:
+  - IMPLEMENTED_VERIFIED
+  - PARTIAL_IMPLEMENTED_VERIFIED
+  - EXPERIMENTALLY_VERIFIED
+  - PLANNED_NEAR_TERM
+  - PLANNED
+  - STRATEGIC_EVALUATE
+entries:
+  - id: structured_design_specification
+    title: Structured Design Specification
+    state: IMPLEMENTED_VERIFIED
+    purpose: canonical_machine_readable_design_semantics
+    related_roadmap: [GDL-N02]
+  - id: deterministic_editable_svg_compilation
+    title: Deterministic editable SVG compilation
+    state: IMPLEMENTED_VERIFIED
+    purpose: reproducible_editable_vector_layout
+    related_roadmap: [GDL-N04]
+  - id: svg_to_png_review_preview
+    title: SVG to PNG review preview
+    state: EXPERIMENTALLY_VERIFIED
+    purpose: fast_client_or_human_visual_review
+    inputs: [editable_svg]
+    outputs: [png_preview]
+    candidates:
+      - id: librsvg_rsvg_convert
+        state: EXPERIMENTALLY_VERIFIED
+      - id: inkscape_cli
+        state: PLANNED
+      - id: cairosvg
+        state: PLANNED
+    print_output: false
+    canonical_provider_selected: false
+    related_roadmap: [GDL-N05]
+  - id: product_profile_semantics
+    title: Reusable product-profile semantics
+    state: PARTIAL_IMPLEMENTED_VERIFIED
+    purpose: encode_repeatable_product_rules
+    related_roadmap: [GDL-N07]
+  - id: product_playbook
+    title: Product Playbook
+    state: PLANNED_NEAR_TERM
+    purpose: combine_product_rules_guided_questions_asset_expectations_and_creator_instructions
+    related_roadmap: [GDL-N07, GDL-F07]
+  - id: guided_design_intake
+    title: Guided Design Intake / Design Brief Builder
+    state: PLANNED_NEAR_TERM
+    purpose: turn_raw_customer_inputs_into_normalized_design_request
+    inputs: [customer_files, customer_notes, references, product_playbook]
+    outputs: [normalized_design_request, asset_mapping, unresolved_questions]
+    ambiguity_rule: require_human_confirmation
+    related_roadmap: [GDL-F07]
+  - id: creator_handoff_package
+    title: Creator Handoff Package
+    state: PLANNED_NEAR_TERM
+    purpose: package_normalized_brief_assets_and_mapping_for_specialized_creator
+    outputs: [creator_brief, design_request, asset_manifest, source_assets, references]
+    related_roadmap: [GDL-F06, GDL-F07]
+  - id: creator_result_package
+    title: Creator Result Package
+    state: PLANNED_NEAR_TERM
+    purpose: return_editable_artifact_preview_and_machine_readable_design_manifest
+    outputs: [editable_artifact, preview, creator_manifest, notes]
+    related_roadmap: [GDL-F06]
+  - id: mixed_raster_vector_composition
+    title: Mixed raster/vector composition
+    state: PLANNED
+    related_roadmap: [GDL-F02]
+  - id: classical_vector_trace
+    title: Classical raster/vector trace
+    state: PLANNED
+    related_roadmap: [GDL-F03]
+  - id: semantic_raster_to_vector_reconstruction
+    title: Semantic raster to editable-vector reconstruction
+    state: STRATEGIC_EVALUATE
+    candidate_routes:
+      - classical_trace
+      - ai_semantic_reconstruction
+      - hybrid_raster_vector_rebuild
+    related_roadmap: [GDL-F02, GDL-F03, GDL-F04]
+  - id: bounded_revision_patch
+    title: Stable-object bounded revision patches
+    state: PARTIAL_IMPLEMENTED_VERIFIED
+    related_roadmap: [GDL-N03]
+  - id: review_and_print_pdf
+    title: Review and print PDF
+    state: PLANNED
+    related_roadmap: [GDL-F05]

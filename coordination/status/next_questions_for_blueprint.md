@@ -14,4 +14,4 @@ escalated.
 
 Local planning treats Graphic Design Lab as `EXPERIMENTAL_CAPABILITY_INSIDE_EXISTING_MODULE` and keeps runtime uninitialized.
 
-Future Blueprint reconciliation should synchronize the 2026-09-27 Human Owner design-lab intent into the canonical Prepress Human Intent ledger, review any cross-module contract before external consumption, and re-evaluate strategic tool/provider choices at the actual implementation date.
+Future Blueprint reconciliation should synchronize the 2026-09-27 and 2026-09-28 Human Owner design-lab intent into the canonical Prepress Human Intent ledger, including the guided-intake / creator-handoff priority refinement and Capability Catalog rationale. It should review any cross-module contract before external consumption and re-evaluate strategic tool/provider choices at the actual implementation date.

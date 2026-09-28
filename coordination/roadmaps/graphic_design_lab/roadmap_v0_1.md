@@ -41,6 +41,19 @@ These 2026-09-27 statements are local planning evidence pending normal sync into
 the central Blueprint Human Intent ledger; this file does not create a competing
 Human Intent authority.
 
+On 2026-09-28 the Human Owner refined the practical sequence: get a useful,
+repeatable **customer input → guided brief → creator handoff → structured creator
+result** workflow before investing further in heavier runtime infrastructure.
+Product-specific playbooks should drive wizard questions and asset normalization.
+The recurring greeting-card workflow is the first intake/handoff pilot; a
+business-card wizard is the next validation scenario. A separate Capability
+Catalog should preserve available and future tools/capabilities without turning
+every idea into an active roadmap item.
+
+The compressed rationale is preserved separately as local planning evidence at
+`coordination/roadmaps/graphic_design_lab/planning_evidence/2026-09-28_guided_intake_creator_handoff_direction.md`.
+It is not a competing Human Intent authority.
+
 ## Reconciliation with recovered Prepress direction
 
 This baseline extends, rather than replaces, recovered Prepress intent:
@@ -69,15 +82,52 @@ This baseline extends, rather than replaces, recovered Prepress intent:
    margins, bilingual month heading, English weekdays, month colors, editable
    output, review output and validation report.
 7. Product profiles/templates/components only as required by the pilot.
+8. Promote the existing `GDL-F07` Wizard/operator intake item into the near-term
+   planning horizon as a Product-Playbook-driven Design Brief Builder / Guided
+   Design Intake workflow.
+9. Promote the existing `GDL-F06` Design Package item into the near-term planning
+   horizon and refine it into Creator Handoff + Creator Result packages with
+   machine-readable manifests and provenance.
 
 The full ~160-page diary remains outside Phase 1 until the first design logic is approved.
+Roadmap promotion does not activate either intake/handoff item.
 
 ## Farther practical horizon
 
 Multipage generation, mixed raster/vector composition, vector artwork/trace,
 AI routing and semantic edits, generative assets, review/print PDF, CMYK/ICC,
-fonts and image-resolution checks, preflight, Design Package, Wizard/operator
-intake, experiment metrics, structural and visual regression.
+fonts and image-resolution checks, preflight, experiment metrics, structural
+and visual regression.
+
+`GDL-F06` Design Package and `GDL-F07` Wizard/operator intake retain their stable
+IDs but are promoted to the near-term planning horizon as of 2026-09-28.
+
+## Intake / creator-handoff priority refinement
+
+The first low-programming automation target is deliberately simple:
+
+```text
+customer files + references + product playbook
+        ↓
+guided intake / Design Brief Builder
+        ↓
+normalized design request + asset mapping
+        ↓
+Creator Handoff Package
+        ↓
+specialized creator
+        ↓
+Creator Result Package
+(editable artifact + preview + machine-readable manifest)
+```
+
+Ambiguous file-to-role mapping must be surfaced for human confirmation rather
+than silently guessed. The first planned pilot is a repeated greeting-card
+workflow with a stable template; the second is a business-card guided wizard.
+
+The Capability Catalog is a separate planning/reference surface, cross-linked to
+roadmap IDs. It records what ForPrint can already do, can experimentally do, or
+may evaluate later without granting runtime/provider/production authority.
 
 ## Strategic horizon — visible, not activated
 
@@ -118,3 +168,23 @@ artifact manifest/report, 38 tests, governance and continuity checks.
 review PDF and visual regression remain unresolved. `GDL-N07` is partially
 verified for the product-profile contract and dated-diary A5 profile only.
 Graphic Design Lab runtime and production write remain disabled.
+
+
+## Post-H2 visual-baseline reconciliation
+
+After the H2 checkpoint, a bounded `librsvg / rsvg-convert` SVG→PNG review-preview
+candidate was experimentally verified. It remains **NOT SELECTED** as the
+canonical provider and PNG remains a review artifact, not a production print
+artifact.
+
+Monthly and weekly visual-baseline refinements were published at `f0559f5` and
+`8103ef6`. The later weekly closeout passed 48 repository tests plus governance,
+continuity and structural SVG validation.
+
+`GDL-N06` is now partially implemented/verified for the internal Abram Phase 1
+monthly, partial-week, full-week and transition-week visual baselines. This is
+not customer approval and does not authorize full diary rollout.
+
+The current practical planning focus has moved to Product-Playbook-driven Guided
+Design Intake / Design Brief Builder and structured Creator Handoff/Result
+packages.

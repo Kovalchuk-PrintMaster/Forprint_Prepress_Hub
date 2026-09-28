@@ -19,9 +19,18 @@ The continuity packages transfer context only and do not grant execution,
 implementation, acceptance, release, or System Blueprint mutation authority.
 
 The deterministic editable-SVG compiler is published and verified at
-`b410860da4ce3d377e095d870f50f188c1f02f56`: 38 tests, governance, continuity
-and structural SVG validation passed.
+`b410860da4ce3d377e095d870f50f188c1f02f56`. Monthly and weekly visual-baseline
+refinements were later published at `f0559f5` and
+`8103ef670beaf0f309fe644200277cf257b67037`; the latest closeout had 48 tests,
+governance, continuity and structural SVG validation passing.
 
-Current focus: bounded preview-renderer evaluation. No renderer/provider has
-been selected yet. PNG preview, review PDF and visual regression remain
-unimplemented. Graphic Design Lab production/runtime remains uninitialized.
+`librsvg / rsvg-convert` has been **experimentally verified** for bounded SVG→PNG
+review previews. It is not the selected canonical provider. Review PDF and
+automated visual regression remain unfinished.
+
+Current focus: planning the Product-Playbook-driven Guided Design Intake /
+Design Brief Builder and Creator Handoff/Result Package flow. The first planned
+intake/handoff pilot is a repeated greeting-card workflow; a business-card
+wizard follows as a validation scenario. Planning does not activate execution.
+
+Graphic Design Lab production/runtime remains uninitialized.

@@ -13,6 +13,10 @@ def test_planning_surfaces_exist():
         "docs/architecture/graphic_design_lab.md",
         "config/graphic_design_lab.yaml",
         "scripts/validation/check_graphic_design_lab_planning.py",
+        "coordination/roadmaps/graphic_design_lab/capability_catalog_v0_1.yaml",
+        "coordination/roadmaps/graphic_design_lab/capability_catalog_v0_1.md",
+        "coordination/roadmaps/graphic_design_lab/planning_evidence/index.yaml",
+        "coordination/roadmaps/graphic_design_lab/planning_evidence/2026-09-28_guided_intake_creator_handoff_direction.md",
     ):
         assert (ROOT / rel).is_file(), rel
 
@@ -41,3 +45,71 @@ def test_root_runtime_boundary_remains_uninitialized():
     assert status["graphic_design_lab"] == "PLANNED_NOT_INITIALIZED"
     assert status["graphic_design_lab_runtime_initialized"] is False
     assert not (ROOT / "graphic_design_lab").exists()
+
+
+def test_capability_catalog_is_reference_not_execution_authority():
+    catalog = load_yaml(
+        "coordination/roadmaps/graphic_design_lab/capability_catalog_v0_1.yaml"
+    )
+    assert catalog["document_type"] == "GDL_CAPABILITY_CATALOG"
+    assert catalog["status"] == "PLANNING_REFERENCE"
+    assert all(value is False for value in catalog["authority"].values())
+
+    ids = [entry["id"] for entry in catalog["entries"]]
+    assert len(ids) == len(set(ids))
+    assert "guided_design_intake" in ids
+    assert "creator_handoff_package" in ids
+    assert "semantic_raster_to_vector_reconstruction" in ids
+
+    preview = next(
+        entry for entry in catalog["entries"]
+        if entry["id"] == "svg_to_png_review_preview"
+    )
+    assert preview["state"] == "EXPERIMENTALLY_VERIFIED"
+    assert preview["canonical_provider_selected"] is False
+    assert preview["print_output"] is False
+
+
+def test_intake_and_design_package_are_promoted_without_duplicate_ids():
+    roadmap = load_yaml(
+        "coordination/roadmaps/graphic_design_lab/roadmap_v0_1.yaml"
+    )
+    near_ids = [item["id"] for item in roadmap["near_term_practical"]]
+    farther_ids = [item["id"] for item in roadmap["farther_practical"]]
+
+    assert "GDL-F07" in near_ids
+    assert "GDL-F06" in near_ids
+    assert "GDL-F07" not in farther_ids
+    assert "GDL-F06" not in farther_ids
+    assert len(near_ids + farther_ids) == len(set(near_ids + farther_ids))
+
+
+def test_local_planning_evidence_does_not_claim_human_intent_authority():
+    index = load_yaml(
+        "coordination/roadmaps/graphic_design_lab/planning_evidence/index.yaml"
+    )
+    assert (
+        index["authority"]
+        == "LOCAL_PLANNING_EVIDENCE_NOT_HUMAN_INTENT_AUTHORITY"
+    )
+    assert index["entries"][0]["id"] == "GDL-PE-20260928-INTAKE-HANDOFF"
+    assert index["entries"][0]["blueprint_human_intent_sync_pending"] is True
+
+
+def test_status_records_preview_experiment_without_selecting_provider():
+    status = load_yaml("coordination/status/current_status.yaml")
+    config = load_yaml("config/graphic_design_lab.yaml")
+
+    assert (
+        status["current_focus"]
+        == "gdl_guided_design_intake_and_creator_handoff_planning"
+    )
+    assert (
+        status["preview_renderer_candidate_state"]
+        == "EXPERIMENTALLY_VERIFIED_NOT_SELECTED"
+    )
+    assert status["preview_renderer_candidate"] == "librsvg_rsvg_convert"
+    assert "librsvg_rsvg_convert" in config["providers"]["svg_renderer"]["candidates"]
+    assert config["providers"]["svg_renderer"]["selected"] == "UNRESOLVED"
+    assert status["graphic_design_lab_runtime_initialized"] is False
+    assert status["production_write_enabled"] is False

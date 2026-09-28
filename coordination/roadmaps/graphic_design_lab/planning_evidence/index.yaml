@@ -1,0 +1,28 @@
+schema_version: forprint_gdl_planning_evidence_index_v0_1
+document_type: GDL_LOCAL_PLANNING_EVIDENCE_INDEX
+module_id: forprint_prepress_hub
+capability_id: graphic_design_lab
+authority: LOCAL_PLANNING_EVIDENCE_NOT_HUMAN_INTENT_AUTHORITY
+entries:
+  - id: GDL-PE-20260928-INTAKE-HANDOFF
+    date: '2026-09-28'
+    path: coordination/roadmaps/graphic_design_lab/planning_evidence/2026-09-28_guided_intake_creator_handoff_direction.md
+    source_class: human_owner_planning_conversation_digest
+    topics:
+      - guided_design_intake
+      - design_brief_builder
+      - creator_handoff_package
+      - creator_result_package
+      - product_playbook
+      - capability_catalog
+      - raster_vector_reconstruction
+      - roadmap_portfolio_views
+    related_roadmap:
+      - GDL-N05
+      - GDL-N07
+      - GDL-F02
+      - GDL-F03
+      - GDL-F04
+      - GDL-F06
+      - GDL-F07
+    blueprint_human_intent_sync_pending: true

@@ -91,6 +91,20 @@ human_intent_refs:
       - keep_storage_template_reference_and_output_locations_configurable
       - use_abram_diary_as_the_first_practical_design_pilot
     pending_blueprint_human_intent_sync: true
+  local_owner_direction_2026_09_28:
+    status: HUMAN_OWNER_CONFIRMED_FOR_LOCAL_PLANNING
+    evidence_ref: GDL-PE-20260928-INTAKE-HANDOFF
+    evidence_path: coordination/roadmaps/graphic_design_lab/planning_evidence/2026-09-28_guided_intake_creator_handoff_direction.md
+    notes:
+      - prioritize_fast_practical_intake_to_creator_workflow_before_heavier_runtime_infrastructure
+      - use_product_playbooks_and_guided_wizard_questions_to_normalize_customer_inputs
+      - creator_handoff_and_creator_result_packages_should_be_structured_and_machine_readable
+      - recurring_greeting_card_workflow_is_first_intake_handoff_pilot
+      - business_card_wizard_is_next_validation_scenario
+      - keep_capability_catalog_separate_from_roadmap_but_cross_linked
+      - preserve_raster_vector_hybrid_and_semantic_reconstruction_as_future_capabilities
+      - keep_conversation_rationale_as_durable_local_planning_evidence
+    pending_blueprint_human_intent_sync: true
 
 disposition:
   REUSE:
@@ -106,10 +120,15 @@ disposition:
     - prepress_preview_validation_revision_evidence_model
     - prepress_capability_first_tool_evaluation
     - prepress_multi_candidate_preview_and_risk_model
+    - gdl_f07_wizard_into_guided_design_intake
+    - gdl_f06_design_package_into_creator_handoff_and_result_packages
+    - gdl_n05_preview_candidate_evidence
+    - gdl_capability_reference_catalog
   ADAPT:
     - product_specific_assistant_model_into_specialized_design_executors
     - unix_first_execution_with_bounded_windows_graphics_executor
     - prepress_visualization_discovery_into_design_visualization_horizon
+    - product_profile_semantics_into_product_playbook_layer
   REPLACE: []
   NEW:
     - graphic_design_lab_module_roadmap
@@ -124,7 +143,7 @@ disposition:
 
 tool_candidates:
   status: EVALUATE_NOT_APPROVED
-  shared_vector_svg: [inkscape_cli, native_svg_xml, cairosvg]
+  shared_vector_svg: [inkscape_cli, native_svg_xml, cairosvg, librsvg_rsvg_convert]
   raster: [pillow, pyvips, opencv]
   pdf: [pymupdf, pikepdf, ghostscript, verapdf]
   color: [littlecms, pillow_imagecms]
@@ -167,18 +186,44 @@ near_term_practical:
     title: Preview and validation
     state: PARTIAL_IMPLEMENTED_VERIFIED
     h2_partial_verification_commit: b410860da4ce3d377e095d870f50f188c1f02f56
+    preview_experiment:
+      candidate: librsvg_rsvg_convert
+      evidence_state: EXPERIMENTALLY_VERIFIED_NOT_SELECTED
+      review_role: PNG_VISUAL_REVIEW_ONLY
+      print_role: false
+      provider_selected: false
     implemented_scope:
       - svg_structural_validation
       - temporary_artifact_manifest
       - temporary_validation_report
+      - bounded_svg_to_png_preview_experiment
+      - deterministic_repeated_png_render_observed
+      - monthly_visual_baseline_reviewed
+      - weekly_visual_baseline_reviewed
+    verification_commits:
+      monthly_visual_baseline: f0559f5e970bf7d2d74ede307265e3e768efe5e2
+      weekly_visual_baseline: 8103ef670beaf0f309fe644200277cf257b67037
     blocked_or_remaining_scope:
-      - png_preview_renderer_selection
+      - canonical_png_preview_provider_selection
       - review_pdf
-      - visual_regression
+      - automated_visual_regression
   - id: GDL-N06
     title: Abram diary Phase 1 pilot
-    state: PLANNED
+    state: PARTIAL_IMPLEMENTED_VERIFIED
     guard: no_full_diary_rollout_before_phase1_approval
+    implemented_scope:
+      - october_monthly_visual_baseline
+      - partial_week_visual_baseline
+      - full_week_visual_baseline
+      - transition_week_visual_baseline
+    evidence_commits:
+      - f0559f5e970bf7d2d74ede307265e3e768efe5e2
+      - 8103ef670beaf0f309fe644200277cf257b67037
+    remaining_scope:
+      - creator_handoff_package
+      - review_pdf
+      - customer_approval
+      - full_diary_rollout_after_approval_only
   - id: GDL-N07
     title: Product profiles, templates and reusable components
     state: PARTIAL_IMPLEMENTED_VERIFIED
@@ -193,6 +238,46 @@ near_term_practical:
       - text_fitting
       - bleed_and_safe_area_resolution
       - qr_and_barcode_objects
+      - product_playbook_layer
+  - id: GDL-F07
+    title: Wizard and operator intake
+    state: PLANNED
+    planning_horizon: NEAR_TERM_PRACTICAL
+    horizon_history:
+      previous: FARTHER_PRACTICAL
+      promoted_on: '2026-09-28'
+      stable_id_preserved: true
+    disposition: EXTEND
+    scope_refinement:
+      - design_brief_builder
+      - guided_design_intake_wizard
+      - product_playbook_driven_questions
+      - source_asset_inventory_and_normalization
+      - contextual_asset_mapping
+      - ambiguous_mapping_requires_human_confirmation
+      - normalized_design_request
+      - creator_handoff_package_output
+    dependencies: [GDL-N02, GDL-N03, GDL-N07]
+    execution_authority_granted: false
+  - id: GDL-F06
+    title: Design Package and provenance
+    state: PLANNED
+    planning_horizon: NEAR_TERM_PRACTICAL
+    horizon_history:
+      previous: FARTHER_PRACTICAL
+      promoted_on: '2026-09-28'
+      stable_id_preserved: true
+    disposition: EXTEND
+    scope_refinement:
+      - creator_handoff_package
+      - creator_result_package
+      - machine_readable_design_request
+      - asset_manifest_and_mapping
+      - editable_artifact_manifest
+      - preview_manifest
+      - object_layer_and_provenance_manifest
+    dependencies: [GDL-N03, GDL-F07]
+    execution_authority_granted: false
 
 farther_practical:
   - id: GDL-F01
@@ -210,15 +295,19 @@ farther_practical:
   - id: GDL-F05
     title: Review and print PDF
     state: PLANNED
-  - id: GDL-F06
-    title: Design Package and provenance
-    state: PLANNED
-  - id: GDL-F07
-    title: Wizard and operator intake
-    state: PLANNED
   - id: GDL-F08
     title: Experiment ledger and visual regression
     state: PLANNED
+
+intake_handoff_pilot_sequence:
+  status: PLANNED_NOT_ACTIVATED
+  first:
+    id: recurring_greeting_card_workflow
+    rationale: stable_template_repeated_customer_inputs_fast_practical_feedback
+  second:
+    id: business_card_guided_wizard
+    rationale: validate_general_product_playbook_and_guided_question_flow
+  rule: pilot_sequence_does_not_activate_execution
 
 strategic_reevaluate_before_promotion:
   - id: GDL-S01

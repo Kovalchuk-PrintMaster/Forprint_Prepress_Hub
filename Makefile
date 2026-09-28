@@ -9,7 +9,7 @@ help:
 	@echo "  make bootstrap-check  - validate bootstrap foundation"
 	@echo "  make governance-check - run current local governance checks"
 	@echo "  make status           - show Git and module status"
-	@echo "  make graphic-design-lab-planning-check - validate GDL roadmap/config planning baseline"
+	@echo "  make graphic-design-lab-planning-check - validate GDL roadmap/catalog/evidence/config planning baseline"
 	@echo "  make graphic-design-lab-contracts-check - validate GDL Design Spec/profile contract foundation"
 	@echo "  make graphic-design-lab-svg-check - compile and structurally validate deterministic editable SVG"
 

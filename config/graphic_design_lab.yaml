@@ -26,7 +26,7 @@ storage:
 providers:
   svg_renderer:
     selected: UNRESOLVED
-    candidates: [inkscape_cli, cairosvg, native_svg]
+    candidates: [librsvg_rsvg_convert, inkscape_cli, cairosvg, native_svg]
   raster_processor:
     selected: UNRESOLVED
     candidates: [pillow, pyvips, opencv]
