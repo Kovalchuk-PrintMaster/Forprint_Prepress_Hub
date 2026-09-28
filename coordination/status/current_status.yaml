@@ -16,3 +16,13 @@ next_expected_focus: gdl_product_playbook_and_greeting_card_intake_pilot_foundat
 preview_renderer_candidate_state: EXPERIMENTALLY_VERIFIED_NOT_SELECTED
 preview_renderer_candidate: librsvg_rsvg_convert
 latest_gdl_visual_baseline_commit: 8103ef670beaf0f309fe644200277cf257b67037
+source_prompt_id: prepress_gdl_guided_intake_creator_handoff_foundation_v0_1
+prompt_intake:
+  status: active
+  source: forprint_system_blueprint
+  active_prompt_id: prepress_gdl_guided_intake_creator_handoff_foundation_v0_1
+  blueprint_queue_status: ready_for_module_pull
+  received_file: coordination/prompts/received/2026-09-28__forprint_prepress_hub__gdl_guided_intake_creator_handoff_foundation_v0_1.md
+  active_file: coordination/prompts/active/2026-09-28__forprint_prepress_hub__gdl_guided_intake_creator_handoff_foundation_v0_1.md
+  implementation_started: false
+  blueprint_access: READ_ONLY_STRICT

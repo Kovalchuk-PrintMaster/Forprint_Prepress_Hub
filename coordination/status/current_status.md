@@ -34,3 +34,23 @@ intake/handoff pilot is a repeated greeting-card workflow; a business-card
 wizard follows as a validation scenario. Planning does not activate execution.
 
 Graphic Design Lab production/runtime remains uninitialized.
+
+<!-- BEGIN ACTIVE_BLUEPRINT_PROMPT -->
+## Active Blueprint prompt
+
+- Prompt ID: `prepress_gdl_guided_intake_creator_handoff_foundation_v0_1`
+- Title: Prepress GDL Guided Intake / Creator Handoff Foundation v0.1
+- Phase: `gdl_guided_intake_creator_handoff_foundation_v0_1`
+- Priority: `high`
+- Blueprint queue status: `ready_for_module_pull`
+- Received copy: `coordination/prompts/received/2026-09-28__forprint_prepress_hub__gdl_guided_intake_creator_handoff_foundation_v0_1.md`
+- Active copy: `coordination/prompts/active/2026-09-28__forprint_prepress_hub__gdl_guided_intake_creator_handoff_foundation_v0_1.md`
+
+Formal module prompt intake is synchronized. Implementation has not started yet.
+
+`SYSTEM_BLUEPRINT_ACCESS_FROM_PREPRESS=READ_ONLY_STRICT`
+
+System Blueprint remains strictly read-only from Prepress Hub. Any Blueprint-owned
+change must be requested through module-owned evidence/handoff and executed from
+the Blueprint context.
+<!-- END ACTIVE_BLUEPRINT_PROMPT -->

@@ -12,6 +12,11 @@ help:
 	@echo "  make graphic-design-lab-planning-check - validate GDL roadmap/catalog/evidence/config planning baseline"
 	@echo "  make graphic-design-lab-contracts-check - validate GDL Design Spec/profile contract foundation"
 	@echo "  make graphic-design-lab-svg-check - compile and structurally validate deterministic editable SVG"
+	@echo "  make blueprint-prompts-check - verify Prepress Blueprint prompt queue is readable"
+	@echo "  make blueprint-prompts-sync  - synchronize Blueprint prompt into local received/active state"
+	@echo "  make blueprint-prompt-check  - validate exactly one active local prompt"
+	@echo "  make blueprint-prompt-status - show active local prompt metadata"
+	@echo "  make prompt-read-next         - print the active local prompt"
 
 env:
 	python3 -m venv .venv_prepress_hub
@@ -64,3 +69,65 @@ assistant-pack: assistant-handoff-check
 # Build bounded MODULE_CONTEXT under ignored tmp/ only.
 assistant-context-pack: assistant-handoff-check
 	$(PYTHON) $(MODULE_ASSISTANT_CONTEXT_CLI) --module-root "$(MODULE_ROOT)" --module "$(MODULE_ID)" --blueprint-root "$(BLUEPRINT_ROOT)" --registration-state "$(MODULE_REGISTRATION_STATE)" pack --package-type MODULE_CONTEXT --scope "$(SCOPE)" --topics "$(TOPICS)"
+
+# --- Blueprint prompt intake / module-owned synchronization ---
+
+BLUEPRINT_PROMPT_INDEX ?= $(BLUEPRINT_ROOT)/coordination/outgoing_prompts/$(MODULE_ID)/index.yaml
+BLUEPRINT_PROMPT_MODULE_DIR ?= $(BLUEPRINT_ROOT)/coordination/outgoing_prompts/$(MODULE_ID)
+LOCAL_PROMPT_DIR ?= coordination/prompts/received
+LOCAL_ACTIVE_PROMPT_DIR ?= coordination/prompts/active
+LOCAL_ARCHIVED_PROMPT_DIR ?= coordination/prompts/archived
+LOCAL_PROMPT_INDEX ?= coordination/prompts/index.yaml
+PROMPT_STATE_SYNC ?= scripts/coordination/sync_prompt_state.py
+PROMPT_ID ?=
+
+.PHONY: blueprint-prompts-list blueprint-prompts-check blueprint-prompts-sync \
+        blueprint-prompt blueprint-prompt-check blueprint-prompt-status prompt-read-next
+
+# Read-only view of Blueprint-owned approved prompt artifacts.
+blueprint-prompts-list:
+	@test -d "$(BLUEPRINT_PROMPT_MODULE_DIR)/approved"
+	@find "$(BLUEPRINT_PROMPT_MODULE_DIR)/approved" -maxdepth 1 -type f -name '*.md' | sort
+
+# Read-only queue availability check. Never mutates Blueprint.
+blueprint-prompts-check:
+	@test -f "$(BLUEPRINT_PROMPT_INDEX)"
+	@test -d "$(BLUEPRINT_PROMPT_MODULE_DIR)/approved"
+	@echo "PREPRESS_BLUEPRINT_PROMPT_QUEUE_READABLE=PASS"
+	@echo "SYSTEM_BLUEPRINT_ACCESS_FROM_PREPRESS=READ_ONLY_STRICT"
+
+# Module-owned synchronization. Source queue is read-only; all writes remain local.
+blueprint-prompts-sync: blueprint-prompts-check
+	$(PYTHON) $(PROMPT_STATE_SYNC) \
+		--module-id "$(MODULE_ID)" \
+		--blueprint-index "$(BLUEPRINT_PROMPT_INDEX)" \
+		--blueprint-module-dir "$(BLUEPRINT_PROMPT_MODULE_DIR)" \
+		--received-dir "$(LOCAL_PROMPT_DIR)" \
+		--active-dir "$(LOCAL_ACTIVE_PROMPT_DIR)" \
+		--archived-dir "$(LOCAL_ARCHIVED_PROMPT_DIR)" \
+		--local-index "$(LOCAL_PROMPT_INDEX)" \
+		--status-yaml coordination/status/current_status.yaml \
+		--status-md coordination/status/current_status.md \
+		--prompt-id "$(PROMPT_ID)"
+
+# Print exactly one active local prompt.
+blueprint-prompt:
+	@count="$$(find "$(LOCAL_ACTIVE_PROMPT_DIR)" -maxdepth 1 -type f -name '*.md' | wc -l)"; \
+		test "$$count" -eq 1 || \
+		(echo "Expected exactly one active local prompt, found $$count."; exit 1)
+	@cat "$$(find "$(LOCAL_ACTIVE_PROMPT_DIR)" -maxdepth 1 -type f -name '*.md' | sort | head -n 1)"
+
+prompt-read-next: blueprint-prompt
+
+blueprint-prompt-check:
+	$(PYTHON) $(PROMPT_STATE_SYNC) \
+		--local-index "$(LOCAL_PROMPT_INDEX)" \
+		--status-yaml coordination/status/current_status.yaml \
+		--received-dir "$(LOCAL_PROMPT_DIR)" \
+		--active-dir "$(LOCAL_ACTIVE_PROMPT_DIR)" \
+		--check-only
+
+blueprint-prompt-status:
+	$(PYTHON) $(PROMPT_STATE_SYNC) \
+		--local-index "$(LOCAL_PROMPT_INDEX)" \
+		--status-only

@@ -1,9 +1,21 @@
-schema_version: forprint_prompt_index_v0_1
+schema_version: module_prompt_index_v0_1
 module_id: forprint_prepress_hub
-status: bootstrap_empty
-received: []
-active: []
-archived: []
-note: >
-  Prompt lifecycle surface initialized for continuity navigation. No formal
-  Design Lab implementation prompt is activated by this file.
+prompts:
+- prompt_id: prepress_gdl_guided_intake_creator_handoff_foundation_v0_1
+  sequence: 1
+  title: Prepress GDL Guided Intake / Creator Handoff Foundation v0.1
+  phase: gdl_guided_intake_creator_handoff_foundation_v0_1
+  priority: high
+  source: forprint_system_blueprint
+  source_file: coordination/outgoing_prompts/forprint_prepress_hub/approved/2026-09-28__forprint_prepress_hub__gdl_guided_intake_creator_handoff_foundation_v0_1.md
+  file: coordination/prompts/received/2026-09-28__forprint_prepress_hub__gdl_guided_intake_creator_handoff_foundation_v0_1.md
+  status: active
+  received_at: '2026-09-28'
+  module_execution_status: ready_for_module_pull
+  blueprint_review_status: not_started
+  completion_report: null
+  completion_commit: null
+  blueprint_acceptance_commit: null
+  blueprint_accepted_at: null
+  active_file: coordination/prompts/active/2026-09-28__forprint_prepress_hub__gdl_guided_intake_creator_handoff_foundation_v0_1.md
+active_prompt_id: prepress_gdl_guided_intake_creator_handoff_foundation_v0_1
