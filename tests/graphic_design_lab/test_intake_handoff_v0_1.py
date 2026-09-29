@@ -238,4 +238,3 @@ def test_final_open_question_contract_is_typed():
     errors = validate_product_playbook(broken)
 
     assert "playbook.final_open_question.enabled:must_be_boolean" in errors
-
