@@ -1,0 +1,34 @@
+schema_version: forprint_graphic_design_lab_contract_v0_1
+contract_id: product_playbook_v0_1
+contract_type: product_playbook
+status: EXPERIMENTAL_CONTRACT
+capability: graphic_design_lab
+
+instance_schema_version: forprint_product_playbook_v0_1
+
+required_top_level:
+  - schema_version
+  - product_playbook_id
+  - product_type
+  - questions
+  - asset_roles
+  - creator_instructions
+  - final_open_question
+  - required_creator_outputs
+
+question:
+  required: [question_id, prompt, required, answer_type, normalized_field]
+  answer_types: [text, choice, boolean]
+  optional: [choices, note]
+
+asset_role:
+  required: [role_id, required, accepted_source_kinds]
+  accepted_source_kinds: [asset, reference]
+  optional: [mapping_hints, note]
+
+rules:
+  product_playbook_is_reusable_across_customer_instances: true
+  customer_specific_content_must_not_be_required_in_playbook: true
+  product_profile_semantics_remain_separate: true
+  asset_identity_and_provenance_remain_owned_by_asset_reference_v0_1: true
+  guided_intake_is_pre_design_spec: true

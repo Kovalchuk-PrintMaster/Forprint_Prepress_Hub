@@ -12,6 +12,7 @@ storage:
   cases_root: runtime/graphic_design_lab/cases
   templates_root: runtime/graphic_design_lab/templates
   product_profiles_root: config/graphic_design_lab/product_profiles
+  product_playbooks_root: config/graphic_design_lab/product_playbooks
   references_root: runtime/graphic_design_lab/references
   assets_root: runtime/graphic_design_lab/assets
   generated_assets_root: runtime/graphic_design_lab/generated_assets

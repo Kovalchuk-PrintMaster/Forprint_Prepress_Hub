@@ -1,0 +1,30 @@
+schema_version: forprint_graphic_design_lab_contract_v0_1
+contract_id: creator_handoff_v0_1
+contract_type: creator_handoff
+status: EXPERIMENTAL_CONTRACT
+capability: graphic_design_lab
+
+instance_schema_version: forprint_creator_handoff_v0_1
+
+required_top_level:
+  - schema_version
+  - handoff_id
+  - guided_intake_id
+  - product_playbook_id
+  - product_type
+  - creator_brief
+  - design_request
+  - asset_manifest
+  - unresolved_questions
+  - required_outputs
+  - creator_execution_authorized
+  - provider_execution_required
+
+rules:
+  creator_handoff_is_input_to_creator: true
+  creator_execution_authorized_must_be_false: true
+  provider_execution_required_must_be_false: true
+  asset_manifest_references_existing_identity_only: true
+  embedded_provenance_copy_forbidden: true
+  numeric_confidence_scoring_forbidden: true
+  creator_result_contract_not_created_by_this_boundary: true

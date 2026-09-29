@@ -1,4 +1,4 @@
-.PHONY: help env test bootstrap-check governance-check status graphic-design-lab-planning-check graphic-design-lab-contracts-check graphic-design-lab-svg-check
+.PHONY: help env test bootstrap-check governance-check status graphic-design-lab-planning-check graphic-design-lab-contracts-check graphic-design-lab-svg-check gdl-intake-handoff-check
 
 PYTHON ?= .venv_prepress_hub/bin/python
 
@@ -12,6 +12,7 @@ help:
 	@echo "  make graphic-design-lab-planning-check - validate GDL roadmap/catalog/evidence/config planning baseline"
 	@echo "  make graphic-design-lab-contracts-check - validate GDL Design Spec/profile contract foundation"
 	@echo "  make graphic-design-lab-svg-check - compile and structurally validate deterministic editable SVG"
+	@echo "  make gdl-intake-handoff-check - validate Product Playbook, Guided Intake and Creator Handoff"
 	@echo "  make blueprint-prompts-check - verify Prepress Blueprint prompt queue is readable"
 	@echo "  make blueprint-prompts-sync  - synchronize Blueprint prompt into local received/active state"
 	@echo "  make blueprint-prompt-check  - validate exactly one active local prompt"
@@ -38,7 +39,10 @@ graphic-design-lab-contracts-check:
 graphic-design-lab-svg-check:
 	$(PYTHON) scripts/validation/check_graphic_design_lab_svg_compiler.py
 
-governance-check: bootstrap-check graphic-design-lab-planning-check graphic-design-lab-contracts-check graphic-design-lab-svg-check test
+gdl-intake-handoff-check:
+	$(PYTHON) scripts/validation/check_graphic_design_lab_intake_handoff.py
+
+governance-check: bootstrap-check graphic-design-lab-planning-check graphic-design-lab-contracts-check graphic-design-lab-svg-check gdl-intake-handoff-check test
 	@git diff --check
 	@echo "PREPRESS_HUB_GOVERNANCE_CHECK=PASS"
 

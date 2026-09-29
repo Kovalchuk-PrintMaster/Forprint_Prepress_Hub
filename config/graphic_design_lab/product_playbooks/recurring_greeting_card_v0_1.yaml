@@ -1,0 +1,64 @@
+schema_version: forprint_product_playbook_v0_1
+product_playbook_id: recurring_greeting_card_v0_1
+product_type: greeting_card
+status: EXPERIMENTAL_PLAYBOOK
+
+questions:
+  - question_id: occasion
+    prompt: Яка подія або привід для листівки?
+    required: true
+    answer_type: choice
+    choices: [birthday, anniversary, holiday, other]
+    normalized_field: occasion
+  - question_id: greeting_text
+    prompt: Який текст привітання треба використати?
+    required: true
+    answer_type: text
+    normalized_field: greeting_text
+  - question_id: recipient_context
+    prompt: Для кого призначена листівка?
+    required: true
+    answer_type: text
+    normalized_field: recipient_context
+  - question_id: tone
+    prompt: Який тон оформлення потрібен?
+    required: false
+    answer_type: choice
+    choices: [warm_professional, friendly, minimal]
+    normalized_field: tone
+
+asset_roles:
+  - role_id: logo
+    required: true
+    accepted_source_kinds: [asset]
+    mapping_hints: [brand, logo]
+  - role_id: hero_photo
+    required: false
+    accepted_source_kinds: [asset, reference]
+    mapping_hints: [photo, portrait, primary_photo]
+  - role_id: supporting_photo
+    required: false
+    accepted_source_kinds: [asset, reference]
+    mapping_hints: [photo, supporting_photo]
+  - role_id: background_photo
+    required: false
+    accepted_source_kinds: [asset, reference]
+    mapping_hints: [photo, background]
+
+creator_instructions:
+  - Preserve confirmed logo identity by reference.
+  - Use confirmed greeting text without silently rewriting customer meaning.
+  - Do not infer photo hierarchy when mapping remains ambiguous.
+  - Surface every PROPOSED or UNRESOLVED mapping for human confirmation.
+
+final_open_question:
+  enabled: true
+  prompt: Чи є ще побажання, які треба врахувати перед передачею дизайнеру?
+
+required_creator_outputs: [editable_artifact, preview, notes]
+
+rules:
+  reusable_across_customer_instances: true
+  customer_specific_content_present: false
+  product_profile_replacement: false
+  creator_execution_authorized: false

@@ -1,0 +1,74 @@
+schema_version: forprint_gdl_intake_fixture_v0_1
+fixture_id: sanitized_recurring_greeting_card_v0_1
+sanitized: true
+product_playbook_id: recurring_greeting_card_v0_1
+
+raw_input:
+  request_id: sanitized_greeting_card_request_001
+  customer_notes: >
+    Sanitized regression case for a recurring birthday greeting card.
+    No real customer identity or live customer file is used.
+  answers:
+    occasion: birthday
+    greeting_text: "Вітаємо з днем народження!"
+    tone: warm_professional
+
+  assets:
+    - asset_id: asset_demo_logo
+      kind: brand
+      logical_role: logo
+      provenance:
+        source_class: customer_supplied
+      source_ref: sanitized://assets/demo_logo.svg
+    - asset_id: asset_demo_photo_01
+      kind: raster
+      logical_role: candidate_photo
+      provenance:
+        source_class: customer_supplied
+      source_ref: sanitized://assets/photo_01.jpg
+    - asset_id: asset_demo_photo_02
+      kind: raster
+      logical_role: candidate_photo
+      provenance:
+        source_class: customer_supplied
+      source_ref: sanitized://assets/photo_02.jpg
+
+  references: []
+
+  mappings:
+    - role_id: logo
+      source_kind: asset
+      source_id: asset_demo_logo
+      mapping_state: CONFIRMED
+      mapping_source: customer_assignment
+      human_confirmation_required: false
+      note: Explicit sanitized customer assignment.
+    - role_id: hero_photo
+      source_kind: asset
+      source_id: asset_demo_photo_01
+      mapping_state: PROPOSED
+      mapping_source: candidate_listing
+      human_confirmation_required: true
+      note: Two photos are available and hierarchy is intentionally ambiguous.
+    - role_id: supporting_photo
+      source_kind: asset
+      source_id: asset_demo_photo_02
+      mapping_state: PROPOSED
+      mapping_source: candidate_listing
+      human_confirmation_required: true
+      note: Human confirmation is required before photo-role assignment is final.
+    - role_id: background_photo
+      source_kind: none
+      source_id: null
+      mapping_state: UNRESOLVED
+      mapping_source: no_assignment
+      human_confirmation_required: true
+      note: No background role has been selected.
+
+expected:
+  answered_question_ids: [occasion, greeting_text, tone]
+  unresolved_question_ids: [recipient_context]
+  mapping_states: [CONFIRMED, PROPOSED, UNRESOLVED]
+  human_confirmation_required: true
+  creator_execution_authorized: false
+  provider_execution_required: false

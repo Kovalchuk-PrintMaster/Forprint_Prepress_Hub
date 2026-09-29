@@ -1,0 +1,31 @@
+schema_version: forprint_graphic_design_lab_contract_v0_1
+contract_id: guided_intake_v0_1
+contract_type: guided_intake
+status: EXPERIMENTAL_CONTRACT
+capability: graphic_design_lab
+
+instance_schema_version: forprint_guided_intake_v0_1
+
+required_top_level:
+  - schema_version
+  - guided_intake_id
+  - request_id
+  - product_playbook_id
+  - product_type
+  - normalized_request
+  - answered_questions
+  - unresolved_questions
+  - asset_mappings
+
+mapping_states: [CONFIRMED, PROPOSED, UNRESOLVED]
+source_kinds: [asset, reference, none]
+
+rules:
+  asset_reference_v0_1_owns_identity_and_provenance: true
+  mappings_reference_identity_only: true
+  confirmed_requires_explicit_deterministic_basis: true
+  proposed_requires_human_confirmation: true
+  unresolved_requires_human_confirmation: true
+  silent_ambiguity_resolution_forbidden: true
+  numeric_confidence_scoring_forbidden: true
+  intake_state_must_not_be_written_into_design_spec_v0_1: true
