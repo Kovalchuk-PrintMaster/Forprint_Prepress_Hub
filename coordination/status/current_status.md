@@ -28,12 +28,27 @@ governance, continuity and structural SVG validation passing.
 review previews. It is not the selected canonical provider. Review PDF and
 automated visual regression remain unfinished.
 
-Current focus: planning the Product-Playbook-driven Guided Design Intake /
-Design Brief Builder and Creator Handoff/Result Package flow. The first planned
-intake/handoff pilot is a repeated greeting-card workflow; a business-card
-wizard follows as a validation scenario. Planning does not activate execution.
+Current GDL direction remains Product-Playbook-driven Guided Design Intake /
+Design Brief Builder and structured Creator Handoff/Result Package evolution.
+
+The first bounded recurring greeting-card intake/handoff foundation is now
+partially implemented and verified. The business-card wizard, Creator Result
+Package, live customer-file ingestion and creator/provider execution remain
+deferred. No next execution contour is activated.
 
 Graphic Design Lab production/runtime remains uninitialized.
+
+## Verified GDL intake/handoff foundation
+
+- Implementation commit: `730134323b814929380d8d6287dbbcb088504116`
+- Hygiene commit: `e7cf1151a123eb4acc3135a29fe37acd79c9b630`
+- Roadmap state: `GDL-N07/F07/F06 = PARTIAL_IMPLEMENTED_VERIFIED`
+- Primary pilot: `recurring_greeting_card_v0_1`
+- Next contour activated: `false`
+- Provider selected/executed: `false`
+- GDL runtime initialized: `false`
+- Production write enabled: `false`
+- System Blueprint mutated from Prepress: `false`
 
 <!-- BEGIN ACTIVE_BLUEPRINT_PROMPT -->
 ## Active Blueprint prompt
@@ -46,7 +61,7 @@ Graphic Design Lab production/runtime remains uninitialized.
 - Received copy: `coordination/prompts/received/2026-09-28__forprint_prepress_hub__gdl_guided_intake_creator_handoff_foundation_v0_1.md`
 - Active copy: `coordination/prompts/active/2026-09-28__forprint_prepress_hub__gdl_guided_intake_creator_handoff_foundation_v0_1.md`
 
-Formal module prompt intake is synchronized. Implementation has not started yet.
+Formal module prompt intake is synchronized. Verified module-side implementation state is tracked in the current status surfaces and is not reset by prompt synchronization.
 
 `SYSTEM_BLUEPRINT_ACCESS_FROM_PREPRESS=READ_ONLY_STRICT`
 

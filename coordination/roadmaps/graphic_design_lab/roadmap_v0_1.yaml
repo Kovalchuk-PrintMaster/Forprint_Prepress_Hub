@@ -231,6 +231,11 @@ near_term_practical:
     implemented_scope:
       - product_profile_contract_v0_1
       - dated_diary_a5_profile_v0_1
+      - product_playbook_contract_v0_1
+      - recurring_greeting_card_playbook_v0_1
+    intake_handoff_verification_commits:
+      - 730134323b814929380d8d6287dbbcb088504116
+      - e7cf1151a123eb4acc3135a29fe37acd79c9b630
     remaining_scope:
       - reusable_template_system
       - components_and_instances
@@ -238,10 +243,9 @@ near_term_practical:
       - text_fitting
       - bleed_and_safe_area_resolution
       - qr_and_barcode_objects
-      - product_playbook_layer
   - id: GDL-F07
     title: Wizard and operator intake
-    state: PLANNED
+    state: PARTIAL_IMPLEMENTED_VERIFIED
     planning_horizon: NEAR_TERM_PRACTICAL
     horizon_history:
       previous: FARTHER_PRACTICAL
@@ -257,11 +261,19 @@ near_term_practical:
       - ambiguous_mapping_requires_human_confirmation
       - normalized_design_request
       - creator_handoff_package_output
+    verified_scope:
+      - guided_intake_contract_v0_1
+      - deterministic_guided_intake_normalization
+      - explicit_mapping_states_and_human_confirmation
+      - recurring_greeting_card_sanitized_fixture
+    verification_commits:
+      - 730134323b814929380d8d6287dbbcb088504116
+      - e7cf1151a123eb4acc3135a29fe37acd79c9b630
     dependencies: [GDL-N02, GDL-N03, GDL-N07]
     execution_authority_granted: false
   - id: GDL-F06
     title: Design Package and provenance
-    state: PLANNED
+    state: PARTIAL_IMPLEMENTED_VERIFIED
     planning_horizon: NEAR_TERM_PRACTICAL
     horizon_history:
       previous: FARTHER_PRACTICAL
@@ -276,6 +288,14 @@ near_term_practical:
       - editable_artifact_manifest
       - preview_manifest
       - object_layer_and_provenance_manifest
+    verified_scope:
+      - creator_handoff_contract_v0_1
+      - deterministic_creator_handoff_builder
+      - machine_readable_design_request
+      - asset_manifest_and_mapping
+    verification_commits:
+      - 730134323b814929380d8d6287dbbcb088504116
+      - e7cf1151a123eb4acc3135a29fe37acd79c9b630
     dependencies: [GDL-N03, GDL-F07]
     execution_authority_granted: false
 
@@ -300,12 +320,14 @@ farther_practical:
     state: PLANNED
 
 intake_handoff_pilot_sequence:
-  status: PLANNED_NOT_ACTIVATED
+  status: PARTIAL_IMPLEMENTED_VERIFIED
   first:
     id: recurring_greeting_card_workflow
+    state: FOUNDATION_IMPLEMENTED_VERIFIED
     rationale: stable_template_repeated_customer_inputs_fast_practical_feedback
   second:
     id: business_card_guided_wizard
+    state: DEFERRED_NOT_AUTHORIZED_IN_THIS_CONTOUR
     rationale: validate_general_product_playbook_and_guided_question_flow
   rule: pilot_sequence_does_not_activate_execution
 

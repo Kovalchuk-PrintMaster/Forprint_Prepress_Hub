@@ -188,3 +188,34 @@ not customer approval and does not authorize full diary rollout.
 The current practical planning focus has moved to Product-Playbook-driven Guided
 Design Intake / Design Brief Builder and structured Creator Handoff/Result
 packages.
+
+
+## Verified Guided Intake / Creator Handoff foundation
+
+The bounded recurring greeting-card intake/handoff foundation is now
+**partially implemented and verified**.
+
+Published implementation evidence:
+
+- `730134323b814929380d8d6287dbbcb088504116` — Product Playbook contract, recurring greeting-card playbook,
+  Guided Intake, Creator Handoff, deterministic builder/validator, sanitized
+  fixture, focused tests and `gdl-intake-handoff-check`;
+- `e7cf1151a123eb4acc3135a29fe37acd79c9b630` — post-implementation whitespace hygiene correction.
+
+Verified roadmap effect:
+
+- `GDL-N07` — Product Playbook contract and first reusable product playbook;
+- `GDL-F07` — deterministic Guided Intake normalization, explicit
+  `CONFIRMED` / `PROPOSED` / `UNRESOLVED` mappings and mandatory human
+  confirmation for ambiguity;
+- `GDL-F06` — deterministic Creator Handoff boundary with machine-readable
+  request and asset mapping.
+
+These roadmap items remain **PARTIAL_IMPLEMENTED_VERIFIED**, not complete.
+The business-card wizard, live customer-file ingestion, DOCX parsing,
+Creator Result Package, creator/provider execution, review/print PDF and
+cross-module integration remain outside this verified contour.
+
+Completion of this foundation does not activate the next GDL contour.
+Graphic Design Lab runtime remains uninitialized and production write remains
+disabled.

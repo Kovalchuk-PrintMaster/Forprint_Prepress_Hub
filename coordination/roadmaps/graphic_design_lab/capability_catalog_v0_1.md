@@ -43,3 +43,23 @@ First planned intake/handoff pilots:
 2. business-card guided wizard.
 
 Catalog presence does not activate either pilot.
+
+
+## Verified intake/handoff capability slice
+
+The deterministic intake/handoff foundation now has verified partial
+implementation:
+
+- Product Playbook — generic contract plus
+  `recurring_greeting_card_v0_1`;
+- Guided Design Intake — deterministic answer validation, normalized request
+  generation and explicit ambiguity handling;
+- Creator Handoff Package — deterministic creator brief, machine-readable
+  design request and asset/reference mapping.
+
+Implementation evidence: `730134323b814929380d8d6287dbbcb088504116` with hygiene follow-up `e7cf1151a123eb4acc3135a29fe37acd79c9b630`.
+
+`creator_result_package` remains `PLANNED_NEAR_TERM`.
+The business-card guided wizard remains deferred and is not activated by this
+capability evidence. Provider selection, creator execution, runtime
+initialization and production write remain outside this state.

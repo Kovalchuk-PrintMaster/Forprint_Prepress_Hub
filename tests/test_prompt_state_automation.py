@@ -278,3 +278,49 @@ def test_wrong_blueprint_module_is_rejected(tmp_path: Path) -> None:
         assert "does not match" in str(exc)
     else:
         raise AssertionError("Expected wrong-module refusal")
+
+def test_sync_preserves_verified_implementation_evidence(tmp_path: Path) -> None:
+    paths = prepare_project(tmp_path)
+
+    sync_prompt_state(
+        module_id=MODULE_ID,
+        blueprint_index_path=paths["blueprint_index"],
+        blueprint_module_dir=paths["blueprint_module"],
+        received_dir=paths["received"],
+        active_dir=paths["active"],
+        archived_dir=paths["archived"],
+        local_index_path=paths["local_index"],
+        status_yaml_path=paths["status_yaml"],
+        status_markdown_path=paths["status_md"],
+        prompt_id=PROMPT_ID,
+    )
+
+    status = yaml.safe_load(paths["status_yaml"].read_text(encoding="utf-8"))
+    status["prompt_intake"]["implementation_started"] = True
+    status["prompt_intake"]["implementation_status"] = (
+        "VERIFIED_LOCAL_IMPLEMENTATION_PUBLISHED"
+    )
+    status["prompt_intake"]["implementation_commits"] = ["7301343", "e7cf115"]
+    status["prompt_intake"]["next_contour_activated"] = False
+    write_yaml(paths["status_yaml"], status)
+
+    sync_prompt_state(
+        module_id=MODULE_ID,
+        blueprint_index_path=paths["blueprint_index"],
+        blueprint_module_dir=paths["blueprint_module"],
+        received_dir=paths["received"],
+        active_dir=paths["active"],
+        archived_dir=paths["archived"],
+        local_index_path=paths["local_index"],
+        status_yaml_path=paths["status_yaml"],
+        status_markdown_path=paths["status_md"],
+        prompt_id=PROMPT_ID,
+    )
+
+    status = yaml.safe_load(paths["status_yaml"].read_text(encoding="utf-8"))
+    intake = status["prompt_intake"]
+
+    assert intake["implementation_started"] is True
+    assert intake["implementation_status"] == "VERIFIED_LOCAL_IMPLEMENTATION_PUBLISHED"
+    assert intake["implementation_commits"] == ["7301343", "e7cf115"]
+    assert intake["next_contour_activated"] is False

@@ -54,22 +54,38 @@ entries:
     related_roadmap: [GDL-N07]
   - id: product_playbook
     title: Product Playbook
-    state: PLANNED_NEAR_TERM
+    state: PARTIAL_IMPLEMENTED_VERIFIED
     purpose: combine_product_rules_guided_questions_asset_expectations_and_creator_instructions
+    verified_scope:
+      - product_playbook_contract_v0_1
+      - recurring_greeting_card_playbook_v0_1
+    verification_commit: 730134323b814929380d8d6287dbbcb088504116
     related_roadmap: [GDL-N07, GDL-F07]
   - id: guided_design_intake
     title: Guided Design Intake / Design Brief Builder
-    state: PLANNED_NEAR_TERM
+    state: PARTIAL_IMPLEMENTED_VERIFIED
     purpose: turn_raw_customer_inputs_into_normalized_design_request
     inputs: [customer_files, customer_notes, references, product_playbook]
     outputs: [normalized_design_request, asset_mapping, unresolved_questions]
     ambiguity_rule: require_human_confirmation
+    verified_scope:
+      - deterministic_intake_normalization
+      - answer_type_and_choice_validation
+      - mapping_states_confirmed_proposed_unresolved
+      - ambiguous_mapping_requires_human_confirmation
+    verification_commit: 730134323b814929380d8d6287dbbcb088504116
     related_roadmap: [GDL-F07]
   - id: creator_handoff_package
     title: Creator Handoff Package
-    state: PLANNED_NEAR_TERM
+    state: PARTIAL_IMPLEMENTED_VERIFIED
     purpose: package_normalized_brief_assets_and_mapping_for_specialized_creator
     outputs: [creator_brief, design_request, asset_manifest, source_assets, references]
+    verified_scope:
+      - creator_handoff_contract_v0_1
+      - deterministic_creator_handoff_builder
+      - machine_readable_design_request
+      - asset_manifest_and_mapping
+    verification_commit: 730134323b814929380d8d6287dbbcb088504116
     related_roadmap: [GDL-F06, GDL-F07]
   - id: creator_result_package
     title: Creator Result Package

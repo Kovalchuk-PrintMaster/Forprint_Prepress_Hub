@@ -90,6 +90,55 @@ if not errors:
     if evidence_index.get("authority") != "LOCAL_PLANNING_EVIDENCE_NOT_HUMAN_INTENT_AUTHORITY":
         errors.append("planning_evidence_authority_invalid")
 
+    near_by_id = {
+        item.get("id"): item
+        for item in roadmap.get("near_term_practical", [])
+        if isinstance(item, dict)
+    }
+
+    for item_id in ("GDL-N07", "GDL-F07", "GDL-F06"):
+        item = near_by_id.get(item_id)
+        if not isinstance(item, dict):
+            errors.append(f"verified_intake_roadmap_item_missing:{item_id}")
+        elif item.get("state") != "PARTIAL_IMPLEMENTED_VERIFIED":
+            errors.append(f"verified_intake_roadmap_state_invalid:{item_id}")
+
+    catalog_by_id = {
+        entry.get("id"): entry
+        for entry in entries
+        if isinstance(entry, dict)
+    }
+
+    for capability_id in (
+        "product_playbook",
+        "guided_design_intake",
+        "creator_handoff_package",
+    ):
+        entry = catalog_by_id.get(capability_id)
+        if not isinstance(entry, dict):
+            errors.append(f"verified_intake_capability_missing:{capability_id}")
+        elif entry.get("state") != "PARTIAL_IMPLEMENTED_VERIFIED":
+            errors.append(f"verified_intake_capability_state_invalid:{capability_id}")
+
+    creator_result = catalog_by_id.get("creator_result_package")
+    if not isinstance(creator_result, dict):
+        errors.append("creator_result_package_missing")
+    elif creator_result.get("state") != "PLANNED_NEAR_TERM":
+        errors.append("creator_result_package_promoted_too_early")
+
+    # human_readable_verified_intake_markers
+    human_markers = {
+        "coordination/roadmaps/graphic_design_lab/roadmap_v0_1.md":
+            "## Verified Guided Intake / Creator Handoff foundation",
+        "coordination/roadmaps/graphic_design_lab/capability_catalog_v0_1.md":
+            "## Verified intake/handoff capability slice",
+        "coordination/status/current_status.md":
+            "## Verified GDL intake/handoff foundation",
+    }
+    for rel, marker in human_markers.items():
+        if marker not in (ROOT / rel).read_text(encoding="utf-8"):
+            errors.append(f"human_readable_verified_state_missing:{rel}")
+
     if status.get("current_focus") != "gdl_guided_design_intake_and_creator_handoff_planning":
         errors.append("gdl_current_focus_not_reconciled")
 
@@ -114,5 +163,5 @@ print("PROVIDER_SELECTION=UNRESOLVED")
 print("ROOT_GRAPHIC_DESIGN_LAB_PRESENT=false")
 print("CAPABILITY_CATALOG=PASS")
 print("LOCAL_PLANNING_EVIDENCE=PASS")
-print("INTAKE_HANDOFF_HORIZON=NEAR_TERM_PLANNED_NOT_ACTIVATED")
+print("INTAKE_HANDOFF_FOUNDATION=PARTIAL_IMPLEMENTED_VERIFIED")
 print("PREVIEW_CANDIDATE=EXPERIMENTALLY_VERIFIED_NOT_SELECTED")

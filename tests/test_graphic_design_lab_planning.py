@@ -113,3 +113,66 @@ def test_status_records_preview_experiment_without_selecting_provider():
     assert config["providers"]["svg_renderer"]["selected"] == "UNRESOLVED"
     assert status["graphic_design_lab_runtime_initialized"] is False
     assert status["production_write_enabled"] is False
+
+
+def test_verified_intake_handoff_partial_state():
+    roadmap = load_yaml(
+        "coordination/roadmaps/graphic_design_lab/roadmap_v0_1.yaml"
+    )
+    catalog = load_yaml(
+        "coordination/roadmaps/graphic_design_lab/capability_catalog_v0_1.yaml"
+    )
+
+    near = {item["id"]: item for item in roadmap["near_term_practical"]}
+
+    for item_id in ("GDL-N07", "GDL-F07", "GDL-F06"):
+        assert near[item_id]["state"] == "PARTIAL_IMPLEMENTED_VERIFIED"
+
+    pilot = roadmap["intake_handoff_pilot_sequence"]
+    assert pilot["status"] == "PARTIAL_IMPLEMENTED_VERIFIED"
+    assert pilot["first"]["state"] == "FOUNDATION_IMPLEMENTED_VERIFIED"
+    assert (
+        pilot["second"]["state"]
+        == "DEFERRED_NOT_AUTHORIZED_IN_THIS_CONTOUR"
+    )
+
+    entries = {entry["id"]: entry for entry in catalog["entries"]}
+
+    for capability_id in (
+        "product_playbook",
+        "guided_design_intake",
+        "creator_handoff_package",
+    ):
+        assert entries[capability_id]["state"] == "PARTIAL_IMPLEMENTED_VERIFIED"
+
+    assert entries["creator_result_package"]["state"] == "PLANNED_NEAR_TERM"
+
+
+def test_human_readable_views_match_verified_intake_state():
+    status = load_yaml("coordination/status/current_status.yaml")
+
+    assert (
+        status["next_expected_focus"]
+        == "blueprint_completion_review_no_next_contour_activated"
+    )
+
+    latest = status["latest_gdl_intake_handoff_foundation"]
+    assert latest["status"] == "PARTIAL_IMPLEMENTED_VERIFIED"
+    assert latest["next_contour_activated"] is False
+    assert latest["provider_selected"] is False
+    assert latest["provider_executed"] is False
+    assert latest["runtime_initialized"] is False
+    assert latest["production_write_enabled"] is False
+    assert latest["blueprint_mutated"] is False
+
+    markers = {
+        "coordination/roadmaps/graphic_design_lab/roadmap_v0_1.md":
+            "## Verified Guided Intake / Creator Handoff foundation",
+        "coordination/roadmaps/graphic_design_lab/capability_catalog_v0_1.md":
+            "## Verified intake/handoff capability slice",
+        "coordination/status/current_status.md":
+            "## Verified GDL intake/handoff foundation",
+    }
+
+    for rel, marker in markers.items():
+        assert marker in (ROOT / rel).read_text(encoding="utf-8")
