@@ -302,6 +302,13 @@ def test_sync_preserves_verified_implementation_evidence(tmp_path: Path) -> None
     )
     status["prompt_intake"]["implementation_commits"] = ["7301343", "e7cf115"]
     status["prompt_intake"]["next_contour_activated"] = False
+    status["prompt_intake"]["completion_report"] = (
+        "coordination/reports/completion/report.md"
+    )
+    status["prompt_intake"]["completion_commit"] = "17a21d4"
+    status["prompt_intake"]["completion_state"] = (
+        "READY_FOR_BLUEPRINT_REVIEW"
+    )
     write_yaml(paths["status_yaml"], status)
 
     sync_prompt_state(
@@ -324,3 +331,12 @@ def test_sync_preserves_verified_implementation_evidence(tmp_path: Path) -> None
     assert intake["implementation_status"] == "VERIFIED_LOCAL_IMPLEMENTATION_PUBLISHED"
     assert intake["implementation_commits"] == ["7301343", "e7cf115"]
     assert intake["next_contour_activated"] is False
+    assert (
+        intake["completion_report"]
+        == "coordination/reports/completion/report.md"
+    )
+    assert intake["completion_commit"] == "17a21d4"
+    assert (
+        intake["completion_state"]
+        == "READY_FOR_BLUEPRINT_REVIEW"
+    )

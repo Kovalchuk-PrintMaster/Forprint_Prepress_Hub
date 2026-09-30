@@ -379,6 +379,8 @@ def update_status_surfaces(
             "implementation_commits",
             "next_contour_activated",
             "completion_report",
+            "completion_commit",
+            "completion_state",
         ):
             if key in existing_intake:
                 status["prompt_intake"][key] = existing_intake[key]

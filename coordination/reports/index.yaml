@@ -1,7 +1,13 @@
 schema_version: forprint_report_index_v0_1
 module_id: forprint_prepress_hub
-status: bootstrap_empty
-reports: []
-note: >
-  Durable report index initialized for fresh-worker navigation. Temporary
-  continuity packages remain under ignored tmp/.
+status: active
+reports:
+- report_id: prepress_gdl_guided_intake_creator_handoff_foundation_v0_1_completion
+  report_type: completion_report
+  prompt_id: prepress_gdl_guided_intake_creator_handoff_foundation_v0_1
+  path: coordination/reports/completion/prepress_gdl_guided_intake_creator_handoff_foundation_v0_1_completion.md
+  status: ready_for_blueprint_review
+  evidence_commit: 17a21d4ff72131f508ed3d4a479531159a7203f8
+  date: '2026-09-30'
+note: Durable module-side report index. Completion reports are local evidence and do not grant Blueprint
+  acceptance.
