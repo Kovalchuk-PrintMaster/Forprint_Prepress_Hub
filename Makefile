@@ -14,9 +14,9 @@ help:
 	@echo "  make graphic-design-lab-svg-check - compile and structurally validate deterministic editable SVG"
 	@echo "  make gdl-intake-handoff-check - validate Product Playbook, Guided Intake and Creator Handoff"
 	@echo "  make blueprint-prompts-check - verify Prepress Blueprint prompt queue is readable"
-	@echo "  make blueprint-prompts-sync  - synchronize Blueprint prompt into local received/active state"
-	@echo "  make blueprint-prompt-check  - validate exactly one active local prompt"
-	@echo "  make blueprint-prompt-status - show active local prompt metadata"
+	@echo "  make blueprint-prompts-sync  - synchronize Blueprint prompt into local received/active/terminal state"
+	@echo "  make blueprint-prompt-check  - validate local prompt lifecycle state"
+	@echo "  make blueprint-prompt-status - show active/terminal local prompt metadata"
 	@echo "  make prompt-read-next         - print the active local prompt"
 
 env:

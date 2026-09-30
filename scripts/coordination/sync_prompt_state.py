@@ -203,15 +203,25 @@ def choose_active_prompt(
 
     if requested_prompt_id:
         record = by_id.get(requested_prompt_id)
+
         if record is None:
             raise ValueError(
-                f"Requested prompt is not present in Blueprint queue: {requested_prompt_id}"
+                f"Requested prompt is not present in Blueprint queue: "
+                f"{requested_prompt_id}"
             )
+
+        if (
+            execution_status(record) == "completed_by_module"
+            or review_status(record) == "accepted_by_blueprint"
+        ):
+            return None
+
         if execution_status(record) not in READY_BLUEPRINT_STATUSES:
             raise ValueError(
                 f"Requested prompt is not consumable: "
                 f"{requested_prompt_id}={execution_status(record)}"
             )
+
         return record
 
     current_active = [
@@ -219,25 +229,40 @@ def choose_active_prompt(
         for prompt_id, prompt in existing.items()
         if prompt.get("status") == "active"
     ]
+
     if len(current_active) > 1:
-        raise ValueError("Local prompt index contains multiple active prompts")
+        raise ValueError(
+            "Local prompt index contains multiple active prompts"
+        )
 
     if current_active:
         active_id = current_active[0]
         record = by_id.get(active_id)
-        if record is not None and execution_status(record) in READY_BLUEPRINT_STATUSES:
-            return record
+
+        if record is not None:
+            if (
+                execution_status(record) in READY_BLUEPRINT_STATUSES
+                and review_status(record) != "accepted_by_blueprint"
+            ):
+                return record
 
     for record in records:
         prompt_id = str(record.get("prompt_id", ""))
-        local_status = existing.get(prompt_id, {}).get("status")
+        local_status = existing.get(
+            prompt_id,
+            {},
+        ).get("status")
+
         if local_status in TERMINAL_LOCAL_STATUSES:
             continue
-        if execution_status(record) in READY_BLUEPRINT_STATUSES:
+
+        if (
+            execution_status(record) in READY_BLUEPRINT_STATUSES
+            and review_status(record) != "accepted_by_blueprint"
+        ):
             return record
 
     return None
-
 
 def received_date(source_file: Path) -> str:
     prefix = source_file.name[:10]
@@ -259,20 +284,44 @@ def build_local_entry(
     active_prompt_id: str | None,
 ) -> dict[str, Any]:
     entry = dict(existing)
+
     execution = record.get("module_execution")
     review = record.get("blueprint_review")
-    execution = execution if isinstance(execution, dict) else {}
-    review = review if isinstance(review, dict) else {}
+
+    execution = (
+        execution
+        if isinstance(execution, dict)
+        else {}
+    )
+    review = (
+        review
+        if isinstance(review, dict)
+        else {}
+    )
 
     prompt_id = str(record["prompt_id"])
+
     if prompt_id == active_prompt_id:
         local_status = "active"
     elif entry.get("status") in TERMINAL_LOCAL_STATUSES:
         local_status = str(entry["status"])
+    elif execution_status(record) == "completed_by_module":
+        local_status = "completed_in_module"
+    elif review_status(record) == "accepted_by_blueprint":
+        local_status = "accepted_by_blueprint"
     elif execution_status(record) in READY_BLUEPRINT_STATUSES:
         local_status = "received"
     else:
         local_status = execution_status(record)
+
+    completion_report = (
+        execution.get("completion_report")
+        or entry.get("completion_report")
+    )
+    completion_commit = (
+        execution.get("completion_commit")
+        or entry.get("completion_commit")
+    )
 
     entry.update(
         {
@@ -283,32 +332,48 @@ def build_local_entry(
             "priority": str(record.get("priority", "normal")),
             "source": "forprint_system_blueprint",
             "source_file": (
-                f"coordination/outgoing_prompts/{module_id}/{record['file']}"
+                f"coordination/outgoing_prompts/"
+                f"{module_id}/{record['file']}"
             ),
-            "file": relative_path(received_file, project_root),
+            "file": relative_path(
+                received_file,
+                project_root,
+            ),
             "status": local_status,
-            "received_at": entry.get("received_at", received_date(source_file)),
+            "received_at": entry.get(
+                "received_at",
+                received_date(source_file),
+            ),
             "module_execution_status": execution_status(record),
             "blueprint_review_status": review_status(record),
-            "completion_report": execution.get("completion_report"),
-            "completion_commit": execution.get("completion_commit"),
-            "blueprint_acceptance_commit": review.get("acceptance_commit"),
-            "blueprint_accepted_at": review.get("accepted_at"),
+            "completion_report": completion_report,
+            "completion_commit": completion_commit,
+            "blueprint_acceptance_commit": review.get(
+                "acceptance_commit"
+            ),
+            "blueprint_accepted_at": review.get(
+                "accepted_at"
+            ),
         }
     )
 
     if active_file.is_file():
-        entry["active_file"] = relative_path(active_file, project_root)
+        entry["active_file"] = relative_path(
+            active_file,
+            project_root,
+        )
     else:
         entry.pop("active_file", None)
 
     if archived_file.is_file():
-        entry["archived_file"] = relative_path(archived_file, project_root)
+        entry["archived_file"] = relative_path(
+            archived_file,
+            project_root,
+        )
     else:
         entry.pop("archived_file", None)
 
     return entry
-
 
 def render_prompt_status_section(
     *,
@@ -408,6 +473,247 @@ def update_status_surfaces(
 
     write_text_if_changed(status_markdown_path, merged)
 
+
+
+def update_terminal_status_surfaces(
+    *,
+    status_yaml_path: Path,
+    status_markdown_path: Path,
+    record: dict[str, Any],
+    archived_file: Path,
+    project_root: Path,
+) -> None:
+    status = load_mapping(status_yaml_path)
+
+    if status.get("module_id") != MODULE_ID:
+        raise ValueError(
+            "Current status belongs to a different module"
+        )
+
+    if status.get("production_write_enabled") is not False:
+        raise ValueError(
+            "Prepress production_write_enabled must remain false"
+        )
+
+    if (
+        status.get("graphic_design_lab_runtime_initialized")
+        is not False
+    ):
+        raise ValueError(
+            "Graphic Design Lab runtime must remain uninitialized"
+        )
+
+    prompt_id = str(record["prompt_id"])
+
+    status["status"] = "completed_in_module"
+    status["source_prompt_id"] = prompt_id
+    status["current_focus"] = (
+        "gdl_guided_intake_creator_handoff_foundation_accepted"
+    )
+    status["next_expected_focus"] = (
+        "separately_authorized_next_gdl_contour"
+    )
+
+    prompt_progress = status.get("prompt_progress")
+
+    if not isinstance(prompt_progress, dict):
+        prompt_progress = {}
+
+    prompt_progress.update(
+        {
+            "intake": "completed",
+            "implementation": "completed",
+            "tests": "passed",
+            "completion": "completed",
+        }
+    )
+
+    status["prompt_progress"] = prompt_progress
+
+    current_step = status.get("current_step")
+
+    if not isinstance(current_step, dict):
+        current_step = {}
+
+    current_step.update(
+        {
+            "id": prompt_id,
+            "status": "completed",
+            "next_action": (
+                "await_separately_authorized_next_gdl_contour"
+            ),
+        }
+    )
+
+    status["current_step"] = current_step
+
+    intake = status.get("prompt_intake")
+
+    if not isinstance(intake, dict):
+        intake = {}
+
+    intake["status"] = "completed_in_module"
+    intake["source"] = "forprint_system_blueprint"
+    intake["blueprint_queue_status"] = execution_status(record)
+    intake["blueprint_review_status"] = review_status(record)
+    intake["archived_file"] = relative_path(
+        archived_file,
+        project_root,
+    )
+    intake["completion_state"] = "ACCEPTED_BY_BLUEPRINT"
+    intake["next_contour_activated"] = False
+    intake["blueprint_access"] = "READ_ONLY_STRICT"
+
+    review = record.get("blueprint_review")
+    review = review if isinstance(review, dict) else {}
+
+    intake["blueprint_acceptance_commit"] = review.get(
+        "acceptance_commit"
+    )
+    intake["blueprint_accepted_at"] = review.get(
+        "accepted_at"
+    )
+
+    intake.pop("active_prompt_id", None)
+    intake.pop("active_file", None)
+
+    status["prompt_intake"] = intake
+
+    latest = status.get(
+        "latest_gdl_intake_handoff_foundation"
+    )
+
+    if isinstance(latest, dict):
+        latest["blueprint_acceptance"] = (
+            "ACCEPTED_BOUNDED_FOUNDATION"
+        )
+        latest["next_contour_activated"] = False
+
+    write_yaml_if_changed(
+        status_yaml_path,
+        status,
+    )
+
+    current_md = status_markdown_path.read_text(
+        encoding="utf-8"
+    )
+
+    begin = "<!-- BEGIN ACTIVE_BLUEPRINT_PROMPT -->"
+    end = "<!-- END ACTIVE_BLUEPRINT_PROMPT -->"
+
+    if current_md.count(begin) != 1:
+        raise ValueError(
+            "Expected exactly one prompt section begin marker"
+        )
+
+    if current_md.count(end) != 1:
+        raise ValueError(
+            "Expected exactly one prompt section end marker"
+        )
+
+    before, tail = current_md.split(begin, 1)
+    _, after = tail.split(end, 1)
+
+    accepted_at = review.get("accepted_at")
+
+    section = f"""<!-- BEGIN ACTIVE_BLUEPRINT_PROMPT -->
+## Completed Blueprint prompt
+
+- Prompt ID: `{prompt_id}`
+- Module execution: `{execution_status(record)}`
+- Blueprint review: `{review_status(record)}`
+- Blueprint accepted at: `{accepted_at}`
+- Protocol acceptance commit: `{review.get('acceptance_commit')}`
+- Local prompt state: `completed_in_module`
+- Archived copy: `{relative_path(archived_file, project_root)}`
+- Next contour activated: `false`
+
+The bounded GDL Guided Intake / Creator Handoff foundation
+is canonically accepted by System Blueprint.
+
+This acceptance does not activate a subsequent GDL contour.
+
+`SYSTEM_BLUEPRINT_ACCESS_FROM_PREPRESS=READ_ONLY_STRICT`
+<!-- END ACTIVE_BLUEPRINT_PROMPT -->"""
+
+    merged = (
+        before.rstrip()
+        + "\n\n"
+        + section
+        + after
+    )
+
+    merged = merged.replace(
+        "## Local completion ready for Blueprint review",
+        "## Local completion accepted by Blueprint",
+    )
+
+    merged = merged.replace(
+        "- Blueprint review: pending",
+        "- Blueprint review: accepted_by_blueprint",
+    )
+
+    stale = (
+        "The local prompt remains visible as the current "
+        "synchronized Blueprint prompt\n"
+        "until Blueprint-side review changes authoritative "
+        "queue/review state.\n"
+        "Prepress does not mutate that Blueprint state directly."
+    )
+
+    replacement = (
+        "The completed prompt is archived in the module-local "
+        "prompt lifecycle.\n"
+        "No next GDL contour is activated by this acceptance."
+    )
+
+    merged = merged.replace(
+        stale,
+        replacement,
+    )
+
+    write_text_if_changed(
+        status_markdown_path,
+        merged,
+    )
+
+    questions_path = status_yaml_path.with_name(
+        "next_questions_for_blueprint.md"
+    )
+
+    if questions_path.is_file():
+        questions = questions_path.read_text(
+            encoding="utf-8"
+        )
+
+        marker = (
+            "## GDL intake/handoff completion review request"
+        )
+
+        if marker in questions:
+            prefix = questions.split(
+                marker,
+                1,
+            )[0].rstrip()
+
+            questions = (
+                prefix
+                + "\n\n"
+                + "## GDL intake/handoff acceptance recorded\n\n"
+                + "The bounded Guided Intake / Creator Handoff "
+                + "foundation has been accepted by System Blueprint.\n\n"
+                + "There is no remaining Blueprint review request "
+                + "for this contour.\n\n"
+                + "Any subsequent GDL execution contour requires "
+                + "separate Human Owner / Blueprint authorization.\n\n"
+                + "`SYSTEM_BLUEPRINT_ACCESS_FROM_PREPRESS="
+                + "READ_ONLY_STRICT`\n"
+            )
+
+            write_text_if_changed(
+                questions_path,
+                questions,
+            )
 
 def sync_prompt_state(
     *,
@@ -528,6 +834,42 @@ def sync_prompt_state(
             project_root=project_root,
         )
 
+    if selected is None:
+        terminal_from_active = [
+            record
+            for record in records
+            if existing.get(
+                str(record["prompt_id"]),
+                {},
+            ).get("status") == "active"
+            and (
+                execution_status(record) == "completed_by_module"
+                or review_status(record) == "accepted_by_blueprint"
+            )
+        ]
+
+        if len(terminal_from_active) > 1:
+            raise ValueError(
+                "Multiple previously active prompts became terminal"
+            )
+
+        if len(terminal_from_active) == 1:
+            terminal_record = terminal_from_active[0]
+            terminal_id = str(
+                terminal_record["prompt_id"]
+            )
+
+            update_terminal_status_surfaces(
+                status_yaml_path=status_yaml_path,
+                status_markdown_path=status_markdown_path,
+                record=terminal_record,
+                archived_file=(
+                    archived_dir
+                    / source_files[terminal_id].name
+                ),
+                project_root=project_root,
+            )
+
     return PromptSyncResult(
         active_prompt_id=active_prompt_id,
         active_prompt_title=(
@@ -555,122 +897,591 @@ def validate_prompt_state(
 
     try:
         local_index = load_mapping(local_index_path)
+    except (OSError, ValueError, yaml.YAMLError) as exc:
+        return [
+            f"Unable to read local prompt index: {exc}"
+        ]
+
+    try:
         status = load_mapping(status_yaml_path)
     except (OSError, ValueError, yaml.YAMLError) as exc:
-        return [f"Unable to read prompt/status state: {exc}"]
-
-    if local_index.get("schema_version") != "module_prompt_index_v0_1":
-        errors.append("Local prompt index must use module_prompt_index_v0_1")
+        return [
+            f"Unable to read current status: {exc}"
+        ]
 
     prompts = local_index.get("prompts")
+
     if not isinstance(prompts, list):
-        return errors + ["Local prompt index prompts must be a list"]
+        return [
+            "Local prompt index prompts must be a list"
+        ]
 
     project_root = local_index_path.resolve().parents[2]
-    prompt_entries = [item for item in prompts if isinstance(item, dict)]
-    active_entries = [
-        item for item in prompt_entries if item.get("status") == "active"
+
+    prompt_entries = [
+        entry
+        for entry in prompts
+        if isinstance(entry, dict)
     ]
-    active_files = sorted(active_dir.glob("*.md"))
-    active_prompt_id = local_index.get("active_prompt_id")
 
-    if len(active_entries) != 1:
-        errors.append("Local prompt index must contain exactly one active prompt entry")
-    if len(active_files) != 1:
-        errors.append(
-            "coordination/prompts/active must contain exactly one Markdown prompt"
-        )
-    if not isinstance(active_prompt_id, str) or not active_prompt_id.strip():
-        errors.append("active_prompt_id must identify the active prompt")
+    prompt_ids: list[str] = []
 
-    if len(active_entries) == 1 and len(active_files) == 1:
-        entry = active_entries[0]
-        active_file = active_files[0]
+    for entry in prompt_entries:
+        prompt_id = entry.get("prompt_id")
 
-        if entry.get("prompt_id") != active_prompt_id:
-            errors.append("active_prompt_id does not match active prompt entry")
+        if (
+            not isinstance(prompt_id, str)
+            or not prompt_id.strip()
+        ):
+            errors.append(
+                "Every prompt entry must contain "
+                "a non-empty prompt_id"
+            )
+            continue
+
+        prompt_ids.append(prompt_id)
 
         received_value = entry.get("file")
-        active_value = entry.get("active_file")
 
-        if not isinstance(received_value, str):
-            errors.append("Active prompt entry has no received file path")
-        else:
-            received_file = project_root / received_value
-            if not received_file.is_file():
-                errors.append(f"Received prompt file is missing: {received_value}")
-            elif file_hash(received_file) != file_hash(active_file):
-                errors.append("Active prompt differs from received prompt")
+        if (
+            not isinstance(received_value, str)
+            or not received_value.strip()
+        ):
+            errors.append(
+                f"Prompt {prompt_id} has no received file path"
+            )
+            continue
 
-        if not isinstance(active_value, str):
-            errors.append("Active prompt entry has no active_file path")
-        else:
-            expected_active = project_root / active_value
-            if expected_active.resolve() != active_file.resolve():
-                errors.append("Active prompt file does not match index active_file")
+        received_path = project_root / received_value
+
+        if not received_path.is_file():
+            errors.append(
+                f"Received prompt file is missing for "
+                f"{prompt_id}: {received_value}"
+            )
+
+    if len(prompt_ids) != len(set(prompt_ids)):
+        errors.append(
+            "Local prompt index contains duplicate prompt_id values"
+        )
+
+    active_files = sorted(
+        active_dir.glob("*.md")
+    )
+
+    active_entries = [
+        entry
+        for entry in prompt_entries
+        if entry.get("status") == "active"
+    ]
+
+    active_prompt_id = local_index.get(
+        "active_prompt_id"
+    )
 
     prompt_intake = status.get("prompt_intake")
+
     if not isinstance(prompt_intake, dict):
-        errors.append("Current status must contain prompt_intake mapping")
-    else:
-        if prompt_intake.get("status") != "active":
-            errors.append("Current status prompt_intake.status must be active")
-        if prompt_intake.get("active_prompt_id") != active_prompt_id:
-            errors.append("Current status active prompt does not match local prompt index")
-        if prompt_intake.get("blueprint_access") != "READ_ONLY_STRICT":
-            errors.append("Current status must preserve strict Blueprint read-only boundary")
-        implementation_started = prompt_intake.get("implementation_started")
-        if not isinstance(implementation_started, bool):
-            errors.append("Current status implementation_started must be boolean")
+        errors.append(
+            "Current status must contain prompt_intake mapping"
+        )
+        prompt_intake = {}
+
+    intake_status = prompt_intake.get("status")
+
+    active_mode = bool(
+        active_files
+        or active_entries
+        or active_prompt_id is not None
+        or intake_status == "active"
+    )
+
+    # --------------------------------------------------------------
+    # ACTIVE MODE
+    # --------------------------------------------------------------
+
+    if active_mode:
+        if len(active_files) != 1:
+            errors.append(
+                "coordination/prompts/active must contain "
+                "exactly one Markdown prompt"
+            )
+
+        if len(active_entries) != 1:
+            errors.append(
+                "Local prompt index must contain "
+                "exactly one active prompt entry"
+            )
+
+        if (
+            not isinstance(active_prompt_id, str)
+            or not active_prompt_id.strip()
+        ):
+            errors.append(
+                "active_prompt_id must identify "
+                "the active prompt"
+            )
+
+        if intake_status != "active":
+            errors.append(
+                "Current status prompt intake must be active"
+            )
+
+        if len(active_entries) == 1:
+            entry = active_entries[0]
+            entry_prompt_id = entry.get("prompt_id")
+
+            if active_prompt_id != entry_prompt_id:
+                errors.append(
+                    "active_prompt_id does not match "
+                    "the active prompt entry"
+                )
+
+            if (
+                status.get("source_prompt_id")
+                != entry_prompt_id
+            ):
+                errors.append(
+                    "Current status active prompt does not "
+                    "match local prompt index"
+                )
+
+            if (
+                prompt_intake.get("active_prompt_id")
+                != entry_prompt_id
+            ):
+                errors.append(
+                    "Current status prompt intake active prompt "
+                    "does not match local prompt index"
+                )
+
+            expected_active = entry.get("active_file")
+
+            if (
+                not isinstance(expected_active, str)
+                or not expected_active.strip()
+            ):
+                errors.append(
+                    "Active prompt entry has no active_file path"
+                )
+            else:
+                expected_active_path = (
+                    project_root / expected_active
+                )
+
+                if (
+                    len(active_files) == 1
+                    and expected_active_path.resolve()
+                    != active_files[0].resolve()
+                ):
+                    errors.append(
+                        "Active prompt file does not match "
+                        "index active_file"
+                    )
+
+            received_value = entry.get("file")
+
+            if (
+                isinstance(received_value, str)
+                and len(active_files) == 1
+            ):
+                received_file = (
+                    project_root / received_value
+                )
+
+                if (
+                    received_file.is_file()
+                    and active_files[0].read_bytes()
+                    != received_file.read_bytes()
+                ):
+                    errors.append(
+                        "Active prompt differs from "
+                        "its received copy"
+                    )
+
+        if (
+            prompt_intake.get("blueprint_access")
+            != "READ_ONLY_STRICT"
+        ):
+            errors.append(
+                "Current status must preserve strict "
+                "Blueprint read-only boundary"
+            )
+
+        implementation_started = prompt_intake.get(
+            "implementation_started"
+        )
+
+        if not isinstance(
+            implementation_started,
+            bool,
+        ):
+            errors.append(
+                "Current status implementation_started "
+                "must be boolean"
+            )
+
         elif implementation_started is True:
             if (
-                prompt_intake.get("implementation_status")
+                prompt_intake.get(
+                    "implementation_status"
+                )
                 != "VERIFIED_LOCAL_IMPLEMENTATION_PUBLISHED"
             ):
                 errors.append(
-                    "Started implementation must carry verified local implementation status"
+                    "Started implementation must carry "
+                    "verified local implementation status"
                 )
 
-            commits = prompt_intake.get("implementation_commits")
-            if not isinstance(commits, list) or not commits:
+            commits = prompt_intake.get(
+                "implementation_commits"
+            )
+
+            if (
+                not isinstance(commits, list)
+                or not commits
+            ):
                 errors.append(
-                    "Started implementation must carry implementation commit evidence"
+                    "Started implementation must carry "
+                    "implementation commit evidence"
                 )
 
-    if status.get("production_write_enabled") is not False:
-        errors.append("Production write must remain disabled")
-    if status.get("graphic_design_lab_runtime_initialized") is not False:
-        errors.append("Graphic Design Lab runtime must remain uninitialized")
+    # --------------------------------------------------------------
+    # TERMINAL MODE
+    # --------------------------------------------------------------
+
+    else:
+        if active_files:
+            errors.append(
+                "Completed prompt state must not contain "
+                "files in coordination/prompts/active"
+            )
+
+        if active_entries:
+            errors.append(
+                "Completed prompt state must not contain "
+                "an active prompt index entry"
+            )
+
+        if active_prompt_id is not None:
+            errors.append(
+                "active_prompt_id must be null "
+                "when no prompt is active"
+            )
+
+        source_prompt_id = status.get(
+            "source_prompt_id"
+        )
+
+        if (
+            not isinstance(source_prompt_id, str)
+            or not source_prompt_id.strip()
+        ):
+            errors.append(
+                "Terminal current status must contain "
+                "source_prompt_id"
+            )
+        else:
+            matching = [
+                entry
+                for entry in prompt_entries
+                if entry.get("prompt_id")
+                == source_prompt_id
+            ]
+
+            if len(matching) != 1:
+                errors.append(
+                    "Terminal current status must match "
+                    "exactly one prompt index entry"
+                )
+            else:
+                entry = matching[0]
+                entry_status = entry.get("status")
+
+                if (
+                    entry_status
+                    not in TERMINAL_LOCAL_STATUSES
+                ):
+                    errors.append(
+                        "Terminal prompt index entry must "
+                        "have a terminal local status"
+                    )
+
+                if "active_file" in entry:
+                    errors.append(
+                        "Terminal prompt entry must not "
+                        "retain active_file"
+                    )
+
+                archived_value = entry.get(
+                    "archived_file"
+                )
+
+                if (
+                    not isinstance(archived_value, str)
+                    or not archived_value.strip()
+                ):
+                    errors.append(
+                        "Terminal prompt entry must "
+                        "contain archived_file"
+                    )
+                else:
+                    archived_file = (
+                        project_root / archived_value
+                    )
+
+                    if not archived_file.is_file():
+                        errors.append(
+                            "Archived prompt file is missing: "
+                            f"{archived_value}"
+                        )
+                    else:
+                        received_value = entry.get("file")
+
+                        if isinstance(
+                            received_value,
+                            str,
+                        ):
+                            received_file = (
+                                project_root
+                                / received_value
+                            )
+
+                            if (
+                                received_file.is_file()
+                                and archived_file.read_bytes()
+                                != received_file.read_bytes()
+                            ):
+                                errors.append(
+                                    "Archived prompt differs "
+                                    "from its received copy"
+                                )
+
+                if (
+                    entry_status
+                    == "completed_in_module"
+                ):
+                    if (
+                        entry.get(
+                            "module_execution_status"
+                        )
+                        != "completed_by_module"
+                    ):
+                        errors.append(
+                            "Completed module prompt must "
+                            "record module_execution_status "
+                            "as completed_by_module"
+                        )
+
+                    if not entry.get(
+                        "completion_report"
+                    ):
+                        errors.append(
+                            "Completed module prompt must "
+                            "contain completion_report"
+                        )
+
+                    if not entry.get(
+                        "completion_commit"
+                    ):
+                        errors.append(
+                            "Completed module prompt must "
+                            "contain completion_commit"
+                        )
+
+                if (
+                    entry.get(
+                        "blueprint_review_status"
+                    )
+                    == "accepted_by_blueprint"
+                    and prompt_intake.get(
+                        "completion_state"
+                    )
+                    != "ACCEPTED_BY_BLUEPRINT"
+                ):
+                    errors.append(
+                        "Accepted Blueprint prompt must "
+                        "record ACCEPTED_BY_BLUEPRINT "
+                        "completion_state"
+                    )
+
+        if (
+            intake_status
+            not in TERMINAL_LOCAL_STATUSES
+        ):
+            errors.append(
+                "Terminal prompt intake must have "
+                "a terminal local status"
+            )
+
+        if (
+            prompt_intake.get(
+                "blueprint_queue_status"
+            )
+            != "completed_by_module"
+        ):
+            errors.append(
+                "Terminal prompt intake must record "
+                "completed_by_module Blueprint queue status"
+            )
+
+        if (
+            prompt_intake.get(
+                "blueprint_review_status"
+            )
+            != "accepted_by_blueprint"
+        ):
+            errors.append(
+                "Terminal prompt intake must record "
+                "accepted_by_blueprint review status"
+            )
+
+        if (
+            prompt_intake.get(
+                "next_contour_activated"
+            )
+            is not False
+        ):
+            errors.append(
+                "Terminal acceptance must not activate "
+                "the next contour"
+            )
+
+        if (
+            prompt_intake.get("blueprint_access")
+            != "READ_ONLY_STRICT"
+        ):
+            errors.append(
+                "Terminal status must preserve strict "
+                "Blueprint read-only boundary"
+            )
+
+        prompt_progress = status.get(
+            "prompt_progress"
+        )
+
+        if (
+            not isinstance(prompt_progress, dict)
+            or prompt_progress.get("completion")
+            != "completed"
+        ):
+            errors.append(
+                "Terminal prompt status must record "
+                "prompt_progress.completion as completed"
+            )
+
+    # --------------------------------------------------------------
+    # GLOBAL SAFETY BOUNDARIES
+    # --------------------------------------------------------------
+
+    if (
+        status.get("production_write_enabled")
+        is not False
+    ):
+        errors.append(
+            "Production write must remain disabled"
+        )
+
+    if (
+        status.get(
+            "graphic_design_lab_runtime_initialized"
+        )
+        is not False
+    ):
+        errors.append(
+            "Graphic Design Lab runtime must remain "
+            "uninitialized"
+        )
 
     return errors
 
-
-def print_prompt_status(local_index_path: Path) -> int:
+def print_prompt_status(
+    local_index_path: Path,
+) -> int:
     data = load_mapping(local_index_path)
-    prompts = data.get("prompts", [])
+
+    prompts = [
+        prompt
+        for prompt in data.get("prompts", [])
+        if isinstance(prompt, dict)
+    ]
+
     active = [
         prompt
         for prompt in prompts
-        if isinstance(prompt, dict) and prompt.get("status") == "active"
+        if prompt.get("status") == "active"
     ]
 
-    if len(active) != 1:
-        print("Active prompt: invalid or missing")
+    if len(active) == 1:
+        prompt = active[0]
+
+        print("Active local prompt")
+        print(f"Prompt ID: {prompt['prompt_id']}")
+        print(f"Title: {prompt.get('title', '')}")
+        print(f"Phase: {prompt.get('phase', '')}")
+        print(f"Priority: {prompt.get('priority', '')}")
+        print(f"Received: {prompt.get('file', '')}")
+        print(f"Active: {prompt.get('active_file', '')}")
+        print(
+            "Blueprint module status: "
+            f"{prompt.get('module_execution_status', '')}"
+        )
+        print(
+            "Blueprint review status: "
+            f"{prompt.get('blueprint_review_status', '')}"
+        )
+        return 0
+
+    if len(active) > 1:
+        print("Local prompt state invalid: multiple active prompts")
         return 1
 
-    prompt = active[0]
-    print("Active local prompt")
-    print(f"Prompt ID: {prompt['prompt_id']}")
-    print(f"Title: {prompt.get('title', '')}")
-    print(f"Phase: {prompt.get('phase', '')}")
-    print(f"Priority: {prompt.get('priority', '')}")
-    print(f"Received: {prompt.get('file', '')}")
-    print(f"Active: {prompt.get('active_file', '')}")
-    print("Blueprint module status: " + str(prompt.get("module_execution_status", "")))
-    print("Blueprint review status: " + str(prompt.get("blueprint_review_status", "")))
-    print(STRICT_BLUEPRINT_MARKER)
-    return 0
+    if data.get("active_prompt_id") is not None:
+        print(
+            "Local prompt state invalid: dangling active_prompt_id"
+        )
+        return 1
 
+    terminal = [
+        prompt
+        for prompt in prompts
+        if prompt.get("status") in TERMINAL_LOCAL_STATUSES
+    ]
+
+    if not terminal:
+        print("Local prompt state: no active or terminal prompt")
+        return 1
+
+    prompt = sorted(
+        terminal,
+        key=lambda item: int(item.get("sequence", 0)),
+    )[-1]
+
+    print("Terminal local prompt")
+    print(f"Prompt ID: {prompt['prompt_id']}")
+    print(f"Status: {prompt.get('status', '')}")
+    print(
+        "Blueprint module status: "
+        f"{prompt.get('module_execution_status', '')}"
+    )
+    print(
+        "Blueprint review status: "
+        f"{prompt.get('blueprint_review_status', '')}"
+    )
+    print(
+        "Completion report: "
+        f"{prompt.get('completion_report', '')}"
+    )
+    print(
+        "Completion commit: "
+        f"{prompt.get('completion_commit', '')}"
+    )
+    print(
+        "Archived: "
+        f"{prompt.get('archived_file', '')}"
+    )
+
+    return 0
 
 def main() -> int:
     parser = argparse.ArgumentParser(

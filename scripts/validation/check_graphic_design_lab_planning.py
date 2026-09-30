@@ -139,7 +139,7 @@ if not errors:
         if marker not in (ROOT / rel).read_text(encoding="utf-8"):
             errors.append(f"human_readable_verified_state_missing:{rel}")
 
-    if status.get("current_focus") != "gdl_guided_design_intake_and_creator_handoff_planning":
+    if status.get("current_focus") != "gdl_guided_intake_creator_handoff_foundation_accepted":
         errors.append("gdl_current_focus_not_reconciled")
 
     if status.get("preview_renderer_candidate_state") != "EXPERIMENTALLY_VERIFIED_NOT_SELECTED":

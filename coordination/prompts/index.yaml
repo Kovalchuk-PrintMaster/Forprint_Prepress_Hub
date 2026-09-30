@@ -9,13 +9,14 @@ prompts:
   source: forprint_system_blueprint
   source_file: coordination/outgoing_prompts/forprint_prepress_hub/approved/2026-09-28__forprint_prepress_hub__gdl_guided_intake_creator_handoff_foundation_v0_1.md
   file: coordination/prompts/received/2026-09-28__forprint_prepress_hub__gdl_guided_intake_creator_handoff_foundation_v0_1.md
-  status: active
+  status: completed_in_module
   received_at: '2026-09-28'
-  module_execution_status: ready_for_module_pull
-  blueprint_review_status: not_started
+  module_execution_status: completed_by_module
+  blueprint_review_status: accepted_by_blueprint
   completion_report: coordination/reports/completion/prepress_gdl_guided_intake_creator_handoff_foundation_v0_1_completion.md
-  completion_commit: 17a21d4ff72131f508ed3d4a479531159a7203f8
+  completion_commit: 5957c3a22cd5f009e75048a61c7633bea61b64a8
   blueprint_acceptance_commit: null
-  blueprint_accepted_at: null
-  active_file: coordination/prompts/active/2026-09-28__forprint_prepress_hub__gdl_guided_intake_creator_handoff_foundation_v0_1.md
-active_prompt_id: prepress_gdl_guided_intake_creator_handoff_foundation_v0_1
+  blueprint_accepted_at: '2026-09-30'
+  archived_file: coordination/prompts/archived/2026-09-28__forprint_prepress_hub__gdl_guided_intake_creator_handoff_foundation_v0_1.md
+  blueprint_acceptance_publication_commit: c808bd2ae9f38376a1d608097198558baf171ea3
+active_prompt_id: null

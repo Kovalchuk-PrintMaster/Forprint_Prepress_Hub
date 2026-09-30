@@ -102,7 +102,7 @@ def test_status_records_preview_experiment_without_selecting_provider():
 
     assert (
         status["current_focus"]
-        == "gdl_guided_design_intake_and_creator_handoff_planning"
+        == "gdl_guided_intake_creator_handoff_foundation_accepted"
     )
     assert (
         status["preview_renderer_candidate_state"]
@@ -153,7 +153,7 @@ def test_human_readable_views_match_verified_intake_state():
 
     assert (
         status["next_expected_focus"]
-        == "blueprint_completion_review_no_next_contour_activated"
+        == "separately_authorized_next_gdl_contour"
     )
 
     latest = status["latest_gdl_intake_handoff_foundation"]

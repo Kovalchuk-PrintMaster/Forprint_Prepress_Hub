@@ -340,3 +340,159 @@ def test_sync_preserves_verified_implementation_evidence(tmp_path: Path) -> None
         intake["completion_state"]
         == "READY_FOR_BLUEPRINT_REVIEW"
     )
+
+
+
+def test_sync_closes_active_prompt_after_blueprint_acceptance(
+    tmp_path: Path,
+) -> None:
+    paths = prepare_project(tmp_path)
+
+    sync_prompt_state(
+        module_id=MODULE_ID,
+        blueprint_index_path=paths["blueprint_index"],
+        blueprint_module_dir=paths["blueprint_module"],
+        received_dir=paths["received"],
+        active_dir=paths["active"],
+        archived_dir=paths["archived"],
+        local_index_path=paths["local_index"],
+        status_yaml_path=paths["status_yaml"],
+        status_markdown_path=paths["status_md"],
+        prompt_id=PROMPT_ID,
+    )
+
+    blueprint = yaml.safe_load(
+        paths["blueprint_index"].read_text(
+            encoding="utf-8"
+        )
+    )
+
+    record = [
+        item
+        for item in blueprint["prompt_queue"]
+        if item["prompt_id"] == PROMPT_ID
+    ][0]
+
+    record["module_execution"]["status"] = (
+        "completed_by_module"
+    )
+    record["module_execution"]["completion_report"] = (
+        "coordination/reports/completion/report.md"
+    )
+    record["module_execution"]["completion_commit"] = (
+        "5957c3a"
+    )
+
+    record["blueprint_review"]["status"] = (
+        "accepted_by_blueprint"
+    )
+    record["blueprint_review"]["acceptance_commit"] = None
+    record["blueprint_review"]["accepted_at"] = (
+        "2026-09-30"
+    )
+
+    write_yaml(
+        paths["blueprint_index"],
+        blueprint,
+    )
+
+    sync_prompt_state(
+        module_id=MODULE_ID,
+        blueprint_index_path=paths["blueprint_index"],
+        blueprint_module_dir=paths["blueprint_module"],
+        received_dir=paths["received"],
+        active_dir=paths["active"],
+        archived_dir=paths["archived"],
+        local_index_path=paths["local_index"],
+        status_yaml_path=paths["status_yaml"],
+        status_markdown_path=paths["status_md"],
+    )
+
+    index = yaml.safe_load(
+        paths["local_index"].read_text(
+            encoding="utf-8"
+        )
+    )
+
+    assert index["active_prompt_id"] is None
+
+    entry = [
+        item
+        for item in index["prompts"]
+        if item["prompt_id"] == PROMPT_ID
+    ][0]
+
+    assert entry["status"] == "completed_in_module"
+    assert (
+        entry["module_execution_status"]
+        == "completed_by_module"
+    )
+    assert (
+        entry["blueprint_review_status"]
+        == "accepted_by_blueprint"
+    )
+    assert entry["completion_commit"] == "5957c3a"
+    assert (
+        entry["completion_report"]
+        == "coordination/reports/completion/report.md"
+    )
+    assert entry["blueprint_acceptance_commit"] is None
+    assert entry["blueprint_accepted_at"] == "2026-09-30"
+
+    assert "active_file" not in entry
+    assert entry["archived_file"].startswith(
+        "coordination/prompts/archived/"
+    )
+
+    assert not list(
+        paths["active"].glob("*.md")
+    )
+
+    assert list(
+        paths["archived"].glob("*.md")
+    )
+
+    status = yaml.safe_load(
+        paths["status_yaml"].read_text(
+            encoding="utf-8"
+        )
+    )
+
+    assert status["status"] == "completed_in_module"
+    assert (
+        status["current_focus"]
+        == "gdl_guided_intake_creator_handoff_foundation_accepted"
+    )
+    assert (
+        status["next_expected_focus"]
+        == "separately_authorized_next_gdl_contour"
+    )
+    assert (
+        status["prompt_progress"]["completion"]
+        == "completed"
+    )
+    assert (
+        status["prompt_intake"]["status"]
+        == "completed_in_module"
+    )
+    assert (
+        status["prompt_intake"]["completion_state"]
+        == "ACCEPTED_BY_BLUEPRINT"
+    )
+    assert (
+        status["prompt_intake"]["blueprint_review_status"]
+        == "accepted_by_blueprint"
+    )
+    assert (
+        status["prompt_intake"]["next_contour_activated"]
+        is False
+    )
+
+    errors = validate_prompt_state(
+        local_index_path=paths["local_index"],
+        status_yaml_path=paths["status_yaml"],
+        received_dir=paths["received"],
+        active_dir=paths["active"],
+    )
+
+    assert errors == []
