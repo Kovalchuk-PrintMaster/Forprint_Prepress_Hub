@@ -1,0 +1,53 @@
+schema_version: gdl_creator_output_contract_candidate_v0_1
+status: EMPIRICAL_HYPOTHESIS_NOT_CANONICAL
+
+purpose: >
+  Candidate artifact contract for FIRST_REVIEWABLE_CONCEPT.
+
+first_reviewable_concept:
+  required_preview_artifacts:
+    - role: preview_variant_a
+      preferred_format: PNG
+    - role: preview_variant_b
+      preferred_format: PNG
+      condition: when_variant_policy_is_enabled
+
+  required_editable_artifacts:
+    - role: editable_source
+      preferred_format: SVG
+
+  optional_artifacts:
+    - role: review_pdf
+      format: PDF
+    - role: background_raster
+      format: PNG
+    - role: linked_assets_manifest
+      format: YAML_or_JSON
+
+svg_structure_candidate:
+  semantic_groups:
+    - background
+    - brand_or_title
+    - category_headers
+    - item_names
+    - weights
+    - prices
+    - decorative_elements
+  guidance:
+    - use stable group ids
+    - keep text editable where practical
+    - do not flatten the whole design into one raster image
+    - background may be vector, embedded raster, or packaged external raster
+    - if external raster is used, include it in the returned package and reference it explicitly
+
+pdf_policy_candidate:
+  use_as:
+    - review_export
+    - later_print_candidate
+  do_not_assume:
+    - PDF_is_primary_editable_source
+
+important_distinctions:
+  - preview_is_not_editable_source
+  - editable_source_is_not_approved_design
+  - approved_design_is_not_production_ready

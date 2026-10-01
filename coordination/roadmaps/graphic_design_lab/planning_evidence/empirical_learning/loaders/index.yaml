@@ -1,0 +1,19 @@
+schema_version: gdl_empirical_loader_index_v0_1
+authority: LOCAL_EMPIRICAL_EVIDENCE_NOT_EXECUTION_AUTHORITY
+roles:
+  GDL Intake Analyst:
+    menu:
+      v001:
+        state: BASELINE_USED
+        superseded_for_future_experiments_by: v002
+      v002:
+        state: NEXT_EXPERIMENT_CANDIDATE
+    business_card:
+      v001:
+        state: DRAFT_NOT_YET_EMPIRICALLY_RUN
+    flyer:
+      v001:
+        state: DRAFT_NOT_YET_EMPIRICALLY_RUN
+  Creator Assistant:
+    v001:
+      state: NEXT_EXPERIMENT_CANDIDATE

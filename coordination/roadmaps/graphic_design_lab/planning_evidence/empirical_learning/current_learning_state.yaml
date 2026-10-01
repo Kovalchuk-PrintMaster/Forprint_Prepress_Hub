@@ -1,0 +1,44 @@
+schema_version: gdl_empirical_current_learning_state_v0_1
+document_type: GDL_EMPIRICAL_CURRENT_LEARNING_STATE
+module_id: forprint_prepress_hub
+capability_id: graphic_design_lab
+authority: LOCAL_EMPIRICAL_EVIDENCE_NOT_EXECUTION_AUTHORITY
+observed_date: '2026-10-01'
+roles:
+  intake: GDL Intake Analyst
+  creator: Creator Assistant
+active_chain:
+  id: GDL-CHAIN-INTAKE-CREATOR-v0_1
+  mode: MANUAL_EMPIRICAL_EXPERIMENT
+latest_completed_case:
+  experiment_id: GDL-EXP-20261001-MENU-001
+  case_id: GDL-CASE-MENU-001
+  run_id: RUN-001
+  customer_ref: vitaliy_001
+  venue_name: Рибацький стан
+  product_family: restaurant_menu
+  state: BASELINE_COMPLETED
+  rerun_same_case_required: false
+strong_hypotheses:
+- language_consistency_is_an_intake_gate
+- creator_role_must_be_executable_not_descriptive
+- first_concept_needs_artifact_contract
+- mandatory_identity_elements_need_compliance_check
+open_hypotheses:
+- two_first_review_variants_should_be_default_for_open_visual_tasks
+- SVG_should_be_primary_editable_source_for_menu_like_layouts
+next_experiment_requirements:
+- use revised intake language gate
+- use explicit Creator execution-role loader
+- require editable source artifact
+- test multi-variant first-review behavior
+- verify mandatory identity content before return
+next_action:
+  state: WAIT_FOR_NEXT_REAL_CASE_OR_BLUEPRINT_EXECUTABLE_PROMPT
+  note: Do not rerun MENU-001 RUN-001. Preserve it as baseline evidence and apply the lessons to the next
+    relevant real customer case.
+blueprint:
+  horizon_package_submitted: true
+  first_new_executable_prompt_received: false
+  current_empirical_work_is_local_planning_evidence: true
+  access_from_prepress: READ_ONLY_STRICT

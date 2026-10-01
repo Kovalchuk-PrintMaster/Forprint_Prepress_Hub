@@ -1,0 +1,29 @@
+schema_version: gdl_empirical_context_projection_delta_draft_v0_1
+status: DRAFT_NON_CANONICAL
+
+new_learning_to_project_later:
+  current_case:
+    id: GDL-CASE-MENU-001
+    run: RUN-001
+    state: BASELINE_COMPLETED
+
+  strong_hypotheses:
+    - language_consistency_is_an_intake_gate
+    - creator_role_must_be_executable_not_descriptive
+    - first_concept_needs_artifact_contract
+    - mandatory_identity_elements_need_compliance_check
+
+  open_hypotheses:
+    - two_first_review_variants_should_be_default_for_open_visual_tasks
+    - SVG_should_be_primary_editable_source_for_menu_like_layouts
+
+  next_experiment_requirements:
+    - use revised intake language gate
+    - use explicit Creator execution-role loader
+    - require editable source artifact
+    - test multi-variant first-review behavior
+    - verify mandatory identity content before return
+
+context_pack_note: >
+  These findings should remain hypotheses/empirical evidence until the Blueprint-authorized
+  empirical-learning contour defines their canonical project surface.

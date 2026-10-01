@@ -26,3 +26,39 @@ entries:
       - GDL-F06
       - GDL-F07
     blueprint_human_intent_sync_pending: true
+  - id: GDL-PE-20261001-EMPIRICAL-METHODOLOGY
+    date: '2026-10-01'
+    path: coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/README.md
+    source_class: human_owner_empirical_methodology_and_continuity
+    topics:
+      - empirical_learning
+      - gdl_intake_analyst
+      - creator_assistant
+      - experiment_lifecycle
+      - assistant_continuity
+      - loader_versioning
+      - expectation_delta
+    related_roadmap:
+      - GDL-N07
+      - GDL-F06
+      - GDL-F07
+    blueprint_human_intent_sync_pending: true
+
+  - id: GDL-PE-20261001-MENU-001-RUN-001
+    date: '2026-10-01'
+    path: coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/experiments/GDL-EXP-20261001-MENU-001/README.md
+    source_class: empirical_design_workflow_case
+    topics:
+      - empirical_learning
+      - restaurant_menu
+      - gdl_intake_analyst
+      - creator_assistant
+      - language_consistency
+      - creator_output_contract
+      - editable_artifact
+      - first_reviewable_concept
+    related_roadmap:
+      - GDL-N07
+      - GDL-F06
+      - GDL-F07
+    blueprint_human_intent_sync_pending: true

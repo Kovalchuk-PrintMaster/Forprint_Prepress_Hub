@@ -1,0 +1,53 @@
+schema_version: gdl_empirical_experiment_lifecycle_draft_v0_1
+status: DRAFT_NON_CANONICAL
+
+experiment_files:
+  - 00_case_context.yaml
+  - 01_intake_analyst_loader.md
+  - 02_expected_behavior.yaml
+  - 03_raw_analyst_response.md
+  - 04_intake_evaluation.yaml
+  - 05_creator_handoff.md
+  - 06_creator_assistant_loader.md
+  - 07_expected_creator_behavior.yaml
+  - 08_raw_creator_response.md
+  - 09_creator_evaluation.yaml
+  - 10_customer_operator_outcome.yaml
+  - 11_case_lessons.md
+
+lifecycle:
+  - create_case_context
+  - freeze_input
+  - freeze_loader_version
+  - freeze_expected_behavior
+  - run_intake_analyst
+  - preserve_raw_response
+  - evaluate_expectation_delta
+  - create_creator_handoff
+  - freeze_creator_expectation
+  - run_creator_assistant
+  - preserve_creator_raw_response
+  - evaluate_creator_result
+  - record_operator_customer_outcome
+  - record_lessons
+  - propose_loader_or_pattern_revision
+
+evaluation_states:
+  - PASS
+  - PARTIAL
+  - FAIL
+  - NOT_APPLICABLE
+
+important_metrics:
+  - question_round_count
+  - customer_questions_count
+  - unresolved_items_count
+  - hallucinated_facts_count
+  - operator_manual_rewrite_required
+  - first_attempt_accepted
+  - accepted_attempt
+  - revision_count
+  - operator_acceptance
+  - customer_acceptance
+  - customer_explicit_satisfaction
+  - manual_intervention_required

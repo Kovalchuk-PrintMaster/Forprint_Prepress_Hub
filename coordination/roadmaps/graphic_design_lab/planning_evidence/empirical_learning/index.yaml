@@ -1,0 +1,30 @@
+schema_version: gdl_empirical_learning_index_v0_1
+document_type: GDL_EMPIRICAL_LEARNING_INDEX
+module_id: forprint_prepress_hub
+capability_id: graphic_design_lab
+authority: LOCAL_PLANNING_EVIDENCE_NOT_HUMAN_INTENT_AUTHORITY
+methodology:
+  path: coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/methodology_v0_1.md
+  chain_registry: coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/chain_registry_v0_1.yaml
+  role_contracts: coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/assistant_role_contracts_v0_1.yaml
+  current_learning_state: coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/current_learning_state.yaml
+loaders:
+  menu:
+  - coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/loaders/menu/GDL-INTAKE-MENU-v001.md
+  - coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/loaders/menu/GDL-INTAKE-MENU-v002.md
+  business_card:
+  - coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/loaders/business_card/GDL-INTAKE-BUSINESS-CARD-v001.md
+  flyer:
+  - coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/loaders/flyer/GDL-INTAKE-FLYER-v001.md
+  creator:
+  - coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/loaders/creator/GDL-CREATOR-v001.md
+experiments:
+- experiment_id: GDL-EXP-20261001-MENU-001
+  run_id: RUN-001
+  state: BASELINE_COMPLETED
+  path: coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/experiments/GDL-EXP-20261001-MENU-001/README.md
+  rerun_required: false
+blueprint_sync:
+  pending: true
+  access_from_prepress: READ_ONLY_STRICT
+  next_contour_activated: false

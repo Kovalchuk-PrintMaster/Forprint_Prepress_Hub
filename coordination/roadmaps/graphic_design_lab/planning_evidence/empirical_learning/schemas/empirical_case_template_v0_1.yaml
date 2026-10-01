@@ -1,0 +1,80 @@
+schema_version: gdl_empirical_case_draft_v0_1
+status: DRAFT_NON_CANONICAL
+
+case_identity:
+  case_id: ""
+  observed_at: ""
+  customer_ref: ""
+  order_ref: ""
+  external_job_storage_ref: ""
+
+product:
+  family: ""
+  subtype: ""
+  format: ""
+  attributes: {}
+
+task:
+  category: ""
+  objective: ""
+
+initial_request:
+  raw_summary: ""
+  source_types: []
+  known_information: []
+  missing_information: []
+  explicit_customer_permissions: []
+
+intake:
+  loader_id: ""
+  question_round_count: 0
+  operator_difficulty: unknown
+  customer_confusion_observed: false
+  unresolved_items: []
+  notes: []
+
+creator_prompt:
+  prompt_id: ""
+  prompt_version: ""
+  prompt_text_ref: ""
+  notable_sections: []
+  known_risks: []
+
+creator_result:
+  result_revision: ""
+  external_artifact_ref: ""
+  output_roles: []
+  notes: []
+
+outcome:
+  operator_acceptance: unknown
+  customer_acceptance: unknown
+  customer_explicit_satisfaction: not_observed
+  first_attempt_accepted: null
+  accepted_attempt: null
+  revision_count: null
+  manual_intervention_required: null
+
+quality_observations:
+  strengths: []
+  weaknesses: []
+  failure_modes: []
+  ambiguities: []
+
+workflow_observations:
+  preprocessing_used: []
+  postprocessing_used: []
+  local_tools_used: []
+  human_interventions: []
+
+lessons:
+  reusable_prompt_patterns: []
+  prompt_antipatterns: []
+  candidate_local_automation: []
+  creator_strength_candidates: []
+  creator_weakness_candidates: []
+  follow_up_questions: []
+
+privacy:
+  contains_customer_pii: false
+  heavy_artifacts_in_repository: false

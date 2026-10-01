@@ -1,0 +1,73 @@
+schema_version: gdl_assistant_context_projection_draft_v0_1
+status: DRAFT_NON_CANONICAL
+
+purpose: >
+  Define the minimum GDL empirical-learning information a newly started assistant
+  must receive through the module assistant context pack.
+
+context_pack_should_include:
+  methodology_core:
+    required: true
+    content:
+      - strategic_purpose
+      - two_assistant_chain
+      - expectation_before_run_rule
+      - evidence_and_versioning_rules
+      - minimal_customer_contact_principle
+
+  role_contracts:
+    required: true
+    roles:
+      - GDL Intake Analyst
+      - Creator Assistant
+
+  active_chain:
+    required: true
+    fields:
+      - chain_id
+      - current_stage
+      - current_case_id
+      - current_loader_versions
+
+  current_experiment_summary:
+    required_when_active_case_exists: true
+    fields:
+      - product_family
+      - initial_request_summary
+      - current_known_state
+      - unresolved_material_points
+      - next_expected_action
+
+  current_learning_state:
+    required: true
+    include:
+      - promoted_patterns
+      - current_hypotheses
+      - known_antipatterns
+      - creator_strength_candidates
+      - creator_weakness_candidates
+      - candidate_local_tools
+
+  governance:
+    required: true
+    include:
+      - Blueprint_read_only_boundary
+      - empirical_draft_vs_canonical_distinction
+      - one_case_not_global_policy
+      - no_next_contour_self_activation
+
+context_pack_should_reference_not_embed:
+  - full_raw_chat_transcripts
+  - every_raw_assistant_response
+  - heavy_design_artifacts
+  - all_historical_case_files
+
+reason: >
+  The assistant context pack should provide enough semantic continuity to resume work,
+  while detailed evidence remains in indexed project files and is loaded only when needed.
+
+acceptance_question: >
+  Can a fresh assistant, using only the generated assistant context pack plus referenced
+  project files, explain the methodology, identify the active experiment, state the
+  current role boundaries, and continue from the correct next step without relying on
+  prior chat history?

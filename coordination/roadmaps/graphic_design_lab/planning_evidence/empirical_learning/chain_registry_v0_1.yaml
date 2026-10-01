@@ -1,0 +1,37 @@
+schema_version: gdl_empirical_chain_registry_draft_v0_1
+status: DRAFT_NON_CANONICAL
+
+chains:
+  - chain_id: GDL-CHAIN-INTAKE-CREATOR-v0_1
+    title: Customer Intake to Creator Result Empirical Chain
+    state: ACTIVE_MANUAL_EXPERIMENT
+    stages:
+      - raw_customer_request
+      - case_context_freeze
+      - loader_version_freeze
+      - expected_behavior_freeze
+      - gdl_intake_analyst_run
+      - raw_analyst_response_capture
+      - expectation_delta_evaluation
+      - creator_handoff
+      - creator_assistant_run
+      - creator_result_observation
+      - operator_customer_outcome_capture
+      - case_lessons
+      - loader_or_pattern_revision
+    roles:
+      intake_role: GDL Intake Analyst
+      creator_role: Creator Assistant
+    invariants:
+      - expectations_fixed_before_run
+      - raw_response_preserved
+      - failed_runs_preserved
+      - no_customer_fact_invention
+      - heavy_artifacts_external_by_reference
+      - one_case_does_not_auto_create_global_policy
+      - next_loader_change_requires_new_version
+
+initial_product_experiments:
+  - menu
+  - business_card
+  - flyer

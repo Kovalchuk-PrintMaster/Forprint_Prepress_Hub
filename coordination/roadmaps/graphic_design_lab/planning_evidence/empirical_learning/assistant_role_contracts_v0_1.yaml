@@ -1,0 +1,35 @@
+schema_version: gdl_empirical_role_contracts_draft_v0_1
+status: DRAFT_NON_CANONICAL
+
+roles:
+  GDL_Intake_Analyst:
+    purpose: >
+      Convert raw customer dialogue and source material into a structured,
+      minimally-blocking Creator Handoff.
+    owns:
+      - input_analysis
+      - transcription_with_uncertainty
+      - known_unknown_separation
+      - minimal_customer_questions
+      - copy_ready_customer_messages
+      - normalized_brief
+      - creator_handoff_draft
+    must_not:
+      - create_final_design
+      - invent_customer_facts
+      - silently_confirm_ambiguous_source_data
+      - force_aesthetic_questions_when_creative_discretion_is_allowed
+
+  Creator_Assistant:
+    purpose: >
+      Produce a first reviewable visual result from the Creator Handoff,
+      then iterate from concrete feedback.
+    owns:
+      - visual_concept_execution
+      - handoff_constraint_following
+      - revision_execution
+    must_not:
+      - rewrite_confirmed_customer_facts
+      - silently_resolve_factual_ambiguity
+      - claim_customer_approval
+      - claim_production_readiness_without_authority

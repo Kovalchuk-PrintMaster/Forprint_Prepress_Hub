@@ -1,0 +1,41 @@
+schema_version: gdl_cross_run_lessons_draft_v0_1
+status: DRAFT_NON_CANONICAL
+
+case_id: GDL-CASE-MENU-001
+run_id: RUN-001
+
+lessons:
+  - id: language_consistency_is_an_intake_gate
+    state: STRONG_HYPOTHESIS
+    lesson: >
+      Customer-facing printed products such as menus and informational stands should not
+      accidentally mix languages. Mixed-language source material must be detected before
+      Creator handoff.
+
+  - id: creator_role_must_be_executable_not_descriptive
+    state: STRONG_HYPOTHESIS
+    lesson: >
+      Creator Assistant loader/handoff must explicitly state that the receiving assistant
+      is the execution role and must now create the visual result, not produce another brief.
+
+  - id: first_concept_needs_artifact_contract
+    state: STRONG_HYPOTHESIS
+    lesson: >
+      FIRST_REVIEWABLE_CONCEPT must specify both preview artifacts and editable source
+      artifacts.
+
+  - id: first_concept_should_test_variant_policy
+    state: HYPOTHESIS
+    lesson: >
+      For visually open tasks, defaulting to two meaningfully distinct first-review
+      directions may produce better client feedback than a single concept.
+
+  - id: mandatory_identity_elements_need_compliance_check
+    state: STRONG_HYPOTHESIS
+    lesson: >
+      Mandatory content such as venue name must have an explicit pre-return checklist.
+
+do_not_promote_yet:
+  - exact_number_of_variants_for_all_products
+  - SVG_as_universal_final_production_format
+  - one_fixed_layer_model_for_all_design_tasks

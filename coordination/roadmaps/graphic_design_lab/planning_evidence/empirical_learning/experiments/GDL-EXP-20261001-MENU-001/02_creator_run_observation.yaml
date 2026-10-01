@@ -1,0 +1,50 @@
+schema_version: gdl_creator_run_observation_draft_v0_1
+status: DRAFT_NON_CANONICAL
+experiment_id: GDL-EXP-20261001-MENU-001
+run_id: RUN-001
+assistant_role: Creator Assistant
+
+overall:
+  result: PARTIAL_FAIL
+
+observed_failures:
+  - id: creator_role_ambiguity
+    severity: high
+    class: execution_boundary
+    description: >
+      Creator interpreted the handoff as another planning/briefing step instead of an
+      instruction to begin visual design execution.
+
+  - id: venue_name_omitted
+    severity: high
+    class: handoff_compliance
+    description: >
+      `Рибацький стан` was present in the handoff and explicitly expected in the first
+      output, but did not appear in the returned design.
+
+  - id: single_variant_only
+    severity: medium
+    class: output_contract_gap
+    description: >
+      Only one design direction was returned. The current handoff did not explicitly
+      require multiple variants.
+
+  - id: png_only
+    severity: high
+    class: output_contract_gap
+    description: >
+      Only a PNG preview was returned. The handoff asked for a reviewable concept but did
+      not define the editable source artifact that must accompany a preview.
+
+classification:
+  pure_creator_failures:
+    - venue_name_omitted
+  role_boundary_failures:
+    - creator_role_ambiguity
+  contract_or_loader_gaps:
+    - single_variant_only
+    - png_only
+
+rerun_policy:
+  rerun_same_case: false
+  preserve_run_as_baseline_evidence: true

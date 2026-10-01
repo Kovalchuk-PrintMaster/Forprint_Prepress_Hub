@@ -1,0 +1,23 @@
+schema_version: gdl_interaction_evidence_provenance_v0_1
+document_type: GDL_INTERACTION_EVIDENCE_PROVENANCE
+experiment_id: GDL-EXP-20261001-MENU-001
+run_id: RUN-001
+authority: EMPIRICAL_EVIDENCE_NOT_EXECUTION_AUTHORITY
+source:
+  original_project_path: coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/experiments/GDL-EXP-20261001-MENU-001/09_raw_assistant_interaction.txt
+  source_sha256_before_normalization: 4deb5cc865f69acdc97ec9af21a90979e876a47bb5b202a6cb6e1a13f28ce913
+  source_byte_count: 27148
+stored_evidence:
+  path: coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/experiments/GDL-EXP-20261001-MENU-001/09_assistant_interaction_evidence.txt
+  sha256: 5ac75c8d6c42c728068ca1f4ca3af8b269ea07a4b351db9adee8c686db35d850
+  byte_count: 26772
+normalization:
+  semantic_content_preserved: true
+  transformations:
+  - normalize_CRLF_and_CR_to_LF
+  - strip_trailing_horizontal_whitespace
+  - replace_customer_first_name_inflections_with_customer_ref
+  customer_ref: vitaliy_001
+  customer_name_redaction_count: 7
+reason: Preserve analyzable assistant interaction evidence in Git while satisfying repository whitespace
+  hygiene and avoiding direct customer-name storage when customer_ref is sufficient.

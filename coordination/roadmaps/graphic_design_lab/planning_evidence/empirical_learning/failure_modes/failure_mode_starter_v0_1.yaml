@@ -1,0 +1,46 @@
+schema_version: gdl_failure_mode_starter_draft_v0_1
+status: DRAFT_NON_CANONICAL
+
+categories:
+  intake:
+    - insufficient_customer_information
+    - excessive_questioning
+    - repeated_question
+    - customer_confused_by_technical_language
+    - missing_explicit_creative_discretion
+
+  prompt:
+    - vague_goal
+    - conflicting_constraints
+    - weak_visual_hierarchy_instruction
+    - excessive_aesthetic_prose
+    - missing_asset_roles
+    - missing_geometry
+    - unclear_output_expectation
+    - overconstrained_output_structure
+
+  creator_result:
+    - poor_composition
+    - generic_visual_solution
+    - incorrect_hierarchy
+    - missing_required_content
+    - asset_misuse
+    - text_error
+    - weak_brand_alignment
+    - poor_editability
+    - poor_vectorization
+    - poor_background_extension
+    - poor_upscaling
+    - output_format_unusable
+
+  workflow:
+    - too_many_revisions
+    - excessive_manual_cleanup
+    - wrong_tool_for_task
+    - local_preprocessing_needed
+    - local_postprocessing_needed
+    - human_confirmation_missing
+
+rule: >
+  Starter vocabulary only. Real cases may add/refine categories.
+  One case must not become global policy automatically.

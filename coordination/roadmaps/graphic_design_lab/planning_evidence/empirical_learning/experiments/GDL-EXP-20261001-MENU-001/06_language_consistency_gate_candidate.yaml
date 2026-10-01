@@ -1,0 +1,38 @@
+schema_version: gdl_language_consistency_gate_candidate_v0_1
+status: EMPIRICAL_HYPOTHESIS_NOT_CANONICAL
+
+applies_to:
+  - menus
+  - informational_stands
+  - customer_facing_signage
+  - flyers
+  - business_cards
+  - other_customer_facing_print_products
+
+rule:
+  detect_unintended_language_mixing: true
+  allow_intentional_multilingual_content: true
+
+decision:
+  if_target_language_known:
+    action:
+      - normalize_customer_facing_text_to_target_language
+      - preserve_meaning
+      - preserve_confirmed_numbers_weights_prices
+      - keep_unreadable_source_UNRESOLVED
+
+  if_target_language_unknown_and_mixed_language_detected:
+    action:
+      - do_not_silently_mix_languages
+      - ask_one_concise_material_clarification_or_use_operator_defined_policy
+
+intentional_exception:
+  description: >
+    A second language may appear when it is an intentional parallel translation,
+    quote, brand name, proper name, legally required insertion, or other contextually
+    justified element.
+
+review_gate:
+  - no_unintended_mixed_language_in_customer_facing_text
+  - mandatory_target_language_recorded
+  - no_fact_changed_during_language_normalization

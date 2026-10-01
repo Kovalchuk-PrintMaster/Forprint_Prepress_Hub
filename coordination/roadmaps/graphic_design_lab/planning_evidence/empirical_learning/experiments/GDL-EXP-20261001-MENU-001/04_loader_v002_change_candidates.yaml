@@ -1,0 +1,36 @@
+schema_version: gdl_loader_change_candidates_draft_v0_1
+status: DRAFT_NON_CANONICAL
+
+target_roles:
+  GDL_Intake_Analyst:
+    next_candidate_version: v002
+    changes:
+      - id: language_consistency_gate
+        requirement: >
+          Inspect customer-facing source content for unintended language mixing.
+      - id: language_normalization_boundary
+        requirement: >
+          Permit linguistic normalization only when meaning is clear; never use translation
+          to reconstruct unreadable factual content.
+      - id: mandatory_identity_fields
+        requirement: >
+          Explicitly mark venue/company/product name and other identity elements that must
+          appear in the first design.
+
+  Creator_Assistant:
+    next_candidate_version: v001
+    changes:
+      - id: executable_role_declaration
+        requirement: >
+          State at the top: "You are the Creator Assistant. Do not create another brief.
+          Begin visual design execution from this handoff."
+      - id: mandatory_content_check
+        requirement: >
+          Before returning output, verify every mandatory identity/content field appears.
+      - id: output_artifact_contract
+        requirement: >
+          Return review preview plus editable source package.
+      - id: variant_policy_candidate
+        requirement: >
+          Unless explicitly constrained to one solution, return two meaningfully distinct
+          first-review variants for open visual tasks.

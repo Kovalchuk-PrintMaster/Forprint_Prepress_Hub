@@ -1,0 +1,51 @@
+schema_version: gdl_intake_run_evaluation_draft_v0_1
+status: DRAFT_NON_CANONICAL
+experiment_id: GDL-EXP-20261001-MENU-001
+run_id: RUN-001
+assistant_role: GDL Intake Analyst
+
+overall:
+  result: PARTIAL
+  rationale: >
+    Intake correctly chose READY_FOR_CREATOR, minimized customer contact, extracted a
+    large amount of usable structure, preserved unresolved source text, and produced a
+    substantial Creator Handoff. However, it failed to detect and normalize mixed
+    Ukrainian/Russian customer-facing menu language before handoff.
+
+checks:
+  analyze_existing_material_first:
+    result: PASS
+  avoid_unnecessary_customer_contact:
+    result: PASS
+  preserve_unresolved_handwriting:
+    result: PASS
+  avoid_inventing_unreadable_content:
+    result: PASS
+  creator_handoff_generated:
+    result: PASS
+  venue_name_preserved_in_handoff:
+    result: PASS
+  mixed_language_detection:
+    result: FAIL
+  customer_facing_language_target_explicit:
+    result: FAIL
+  language_normalization_preserves_fact_meaning:
+    result: PARTIAL
+
+important_strengths:
+  - READY_FOR_CREATOR decision was appropriate
+  - no long customer questionnaire
+  - unresolved lines were preserved
+  - crossed-out content was treated cautiously
+  - venue name was present in the handoff
+  - first reviewable concept framing was present
+
+important_weaknesses:
+  - mixed-language inconsistency was not caught before Creator handoff
+  - target customer-facing language was not an explicit required field/gate
+
+candidate_next_loader_changes:
+  - add customer_facing_language_analysis
+  - detect mixed-language customer-facing content
+  - require target_language or explicit unresolved language policy
+  - run language consistency check before Creator handoff

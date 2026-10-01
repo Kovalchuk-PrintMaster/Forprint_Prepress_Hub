@@ -1,0 +1,34 @@
+schema_version: gdl_empirical_case_run_state_draft_v0_1
+status: DRAFT_NON_CANONICAL
+
+experiment_id: GDL-EXP-20261001-MENU-001
+case_id: GDL-CASE-MENU-001
+run_id: RUN-001
+
+customer_ref: vitaliy_001
+venue_name: "Рибацький стан"
+
+product:
+  family: restaurant_menu
+  subtype: simple_text_menu
+
+roles:
+  intake: GDL Intake Analyst
+  creator: Creator Assistant
+
+observed_chain:
+  - raw_customer_request
+  - intake_analysis
+  - creator_handoff
+  - language_amendment
+  - creator_role_clarification
+  - creator_output
+
+current_state:
+  run_complete_enough_for_learning: true
+  rerun_same_case_required: false
+  preserve_as_baseline: true
+
+human_owner_decision:
+  do_not_repeat_run_001: true
+  apply_lessons_to_next_cases: true
