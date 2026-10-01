@@ -393,7 +393,7 @@ def render_prompt_status_section(
 - Received copy: `{relative_path(received_file, project_root)}`
 - Active copy: `{relative_path(active_file, project_root)}`
 
-Formal module prompt intake is synchronized. Verified module-side implementation state is tracked in the current status surfaces and is not reset by prompt synchronization.
+Formal module prompt intake is synchronized. Verified prompt-local implementation evidence is preserved when the same prompt is re-synchronized; activating a different prompt starts a fresh prompt-local implementation lifecycle.
 
 `SYSTEM_BLUEPRINT_ACCESS_FROM_PREPRESS=READ_ONLY_STRICT`
 
@@ -421,24 +421,36 @@ def update_status_surfaces(
     if status.get("graphic_design_lab_runtime_initialized") is not False:
         raise ValueError("Graphic Design Lab runtime must remain uninitialized")
 
-    status["source_prompt_id"] = str(record["prompt_id"])
+    prompt_id = str(record["prompt_id"])
+    previous_source_prompt_id = status.get("source_prompt_id")
+    same_prompt = (
+        isinstance(previous_source_prompt_id, str)
+        and previous_source_prompt_id == prompt_id
+    )
+    switching_prompt = (
+        isinstance(previous_source_prompt_id, str)
+        and bool(previous_source_prompt_id.strip())
+        and previous_source_prompt_id != prompt_id
+    )
     existing_intake = status.get("prompt_intake")
+
+    status["source_prompt_id"] = prompt_id
     status["prompt_intake"] = {
         "status": "active",
         "source": "forprint_system_blueprint",
-        "active_prompt_id": str(record["prompt_id"]),
+        "active_prompt_id": prompt_id,
         "blueprint_queue_status": execution_status(record),
         "received_file": relative_path(received_file, project_root),
         "active_file": relative_path(active_file, project_root),
         "implementation_started": (
             existing_intake.get("implementation_started", False)
-            if isinstance(existing_intake, dict)
+            if same_prompt and isinstance(existing_intake, dict)
             else False
         ),
         "blueprint_access": "READ_ONLY_STRICT",
     }
 
-    if isinstance(existing_intake, dict):
+    if same_prompt and isinstance(existing_intake, dict):
         for key in (
             "implementation_status",
             "implementation_commits",
@@ -449,6 +461,25 @@ def update_status_surfaces(
         ):
             if key in existing_intake:
                 status["prompt_intake"][key] = existing_intake[key]
+    elif switching_prompt:
+        status["status"] = "active"
+        status["current_focus"] = str(
+            record.get("phase") or prompt_id
+        )
+        status["next_expected_focus"] = (
+            "complete_active_blueprint_prompt"
+        )
+        status["prompt_progress"] = {
+            "intake": "completed",
+            "implementation": "not_started",
+            "tests": "not_started",
+            "completion": "not_started",
+        }
+        status["current_step"] = {
+            "id": prompt_id,
+            "status": "active",
+            "next_action": "implement_active_blueprint_prompt",
+        }
 
     write_yaml_if_changed(status_yaml_path, status)
 

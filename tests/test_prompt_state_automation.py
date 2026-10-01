@@ -343,6 +343,178 @@ def test_sync_preserves_verified_implementation_evidence(tmp_path: Path) -> None
 
 
 
+
+def test_sync_new_prompt_does_not_inherit_previous_completion_state(
+    tmp_path: Path,
+) -> None:
+    paths = prepare_project(tmp_path)
+
+    sync_prompt_state(
+        module_id=MODULE_ID,
+        blueprint_index_path=paths["blueprint_index"],
+        blueprint_module_dir=paths["blueprint_module"],
+        received_dir=paths["received"],
+        active_dir=paths["active"],
+        archived_dir=paths["archived"],
+        local_index_path=paths["local_index"],
+        status_yaml_path=paths["status_yaml"],
+        status_markdown_path=paths["status_md"],
+        prompt_id=PROMPT_ID,
+    )
+
+    blueprint = yaml.safe_load(
+        paths["blueprint_index"].read_text(encoding="utf-8")
+    )
+    first = blueprint["prompt_queue"][0]
+    first["module_execution"]["status"] = "completed_by_module"
+    first["module_execution"]["completion_report"] = (
+        "coordination/reports/completion/report.md"
+    )
+    first["module_execution"]["completion_commit"] = "5957c3a"
+    first["blueprint_review"]["status"] = "accepted_by_blueprint"
+    first["blueprint_review"]["accepted_at"] = "2026-09-30"
+    write_yaml(paths["blueprint_index"], blueprint)
+
+    sync_prompt_state(
+        module_id=MODULE_ID,
+        blueprint_index_path=paths["blueprint_index"],
+        blueprint_module_dir=paths["blueprint_module"],
+        received_dir=paths["received"],
+        active_dir=paths["active"],
+        archived_dir=paths["archived"],
+        local_index_path=paths["local_index"],
+        status_yaml_path=paths["status_yaml"],
+        status_markdown_path=paths["status_md"],
+    )
+
+    second_prompt_id = (
+        "prepress_gdl_creator_empirical_learning_foundation_v0_1"
+    )
+    second_name = (
+        "2026-10-01__forprint_prepress_hub__"
+        "gdl_creator_empirical_learning_foundation_v0_1.md"
+    )
+    second_path = paths["blueprint_module"] / "approved" / second_name
+    second_path.write_text(
+        "# Published empirical learning prompt\n",
+        encoding="utf-8",
+    )
+
+    blueprint = yaml.safe_load(
+        paths["blueprint_index"].read_text(encoding="utf-8")
+    )
+    blueprint["prompt_queue"].append(
+        {
+            "prompt_id": second_prompt_id,
+            "sequence": 2,
+            "title": (
+                "Prepress GDL Creator Empirical Learning Foundation v0.1"
+            ),
+            "file": f"approved/{second_name}",
+            "target_module": MODULE_ID,
+            "phase": "gdl_creator_empirical_learning_foundation_v0_1",
+            "priority": "high",
+            "module_execution": {
+                "status": "ready_for_module_pull",
+                "completion_commit": None,
+                "completion_report": None,
+            },
+            "blueprint_review": {
+                "status": "not_started",
+                "acceptance_commit": None,
+                "accepted_at": None,
+            },
+        }
+    )
+    write_yaml(paths["blueprint_index"], blueprint)
+
+    result = sync_prompt_state(
+        module_id=MODULE_ID,
+        blueprint_index_path=paths["blueprint_index"],
+        blueprint_module_dir=paths["blueprint_module"],
+        received_dir=paths["received"],
+        active_dir=paths["active"],
+        archived_dir=paths["archived"],
+        local_index_path=paths["local_index"],
+        status_yaml_path=paths["status_yaml"],
+        status_markdown_path=paths["status_md"],
+        prompt_id=second_prompt_id,
+    )
+
+    assert result.active_prompt_id == second_prompt_id
+
+    status = yaml.safe_load(
+        paths["status_yaml"].read_text(encoding="utf-8")
+    )
+    intake = status["prompt_intake"]
+
+    assert status["source_prompt_id"] == second_prompt_id
+    assert status["status"] == "active"
+    assert (
+        status["current_focus"]
+        == "gdl_creator_empirical_learning_foundation_v0_1"
+    )
+    assert (
+        status["next_expected_focus"]
+        == "complete_active_blueprint_prompt"
+    )
+    assert status["prompt_progress"] == {
+        "intake": "completed",
+        "implementation": "not_started",
+        "tests": "not_started",
+        "completion": "not_started",
+    }
+    assert status["current_step"] == {
+        "id": second_prompt_id,
+        "status": "active",
+        "next_action": "implement_active_blueprint_prompt",
+    }
+
+    assert intake["implementation_started"] is False
+    for stale_key in (
+        "implementation_status",
+        "implementation_commits",
+        "next_contour_activated",
+        "completion_report",
+        "completion_commit",
+        "completion_state",
+        "blueprint_review_status",
+        "archived_file",
+        "blueprint_acceptance_commit",
+        "blueprint_accepted_at",
+        "blueprint_acceptance_publication_commit",
+    ):
+        assert stale_key not in intake
+
+    index = yaml.safe_load(
+        paths["local_index"].read_text(encoding="utf-8")
+    )
+    first_local = [
+        item
+        for item in index["prompts"]
+        if item["prompt_id"] == PROMPT_ID
+    ][0]
+    second_local = [
+        item
+        for item in index["prompts"]
+        if item["prompt_id"] == second_prompt_id
+    ][0]
+
+    assert first_local["status"] == "completed_in_module"
+    assert second_local["status"] == "active"
+    assert index["active_prompt_id"] == second_prompt_id
+
+    assert (
+        validate_prompt_state(
+            local_index_path=paths["local_index"],
+            status_yaml_path=paths["status_yaml"],
+            received_dir=paths["received"],
+            active_dir=paths["active"],
+        )
+        == []
+    )
+
+
 def test_sync_closes_active_prompt_after_blueprint_acceptance(
     tmp_path: Path,
 ) -> None:
