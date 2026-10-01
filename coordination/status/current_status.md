@@ -53,13 +53,13 @@ Graphic Design Lab production/runtime remains uninitialized.
 <!-- BEGIN ACTIVE_BLUEPRINT_PROMPT -->
 ## Active Blueprint prompt
 
-- Prompt ID: `prepress_gdl_creator_empirical_learning_foundation_v0_1`
-- Title: Prepress GDL Creator Empirical Learning Foundation v0.1
-- Phase: `gdl_creator_empirical_learning_foundation_v0_1`
+- Prompt ID: `prepress_gdl_creator_result_package_foundation_v0_1`
+- Title: Prepress GDL Creator Result Package Foundation v0.1
+- Phase: `gdl_creator_result_package_foundation_v0_1`
 - Priority: `high`
 - Blueprint queue status: `ready_for_module_pull`
-- Received copy: `coordination/prompts/received/2026-10-01__forprint_prepress_hub__gdl_creator_empirical_learning_foundation_v0_1.md`
-- Active copy: `coordination/prompts/active/2026-10-01__forprint_prepress_hub__gdl_creator_empirical_learning_foundation_v0_1.md`
+- Received copy: `coordination/prompts/received/2026-10-01__forprint_prepress_hub__gdl_creator_result_package_foundation_v0_1.md`
+- Active copy: `coordination/prompts/active/2026-10-01__forprint_prepress_hub__gdl_creator_result_package_foundation_v0_1.md`
 
 Formal module prompt intake is synchronized. Verified prompt-local implementation evidence is preserved when the same prompt is re-synchronized; activating a different prompt starts a fresh prompt-local implementation lifecycle.
 
