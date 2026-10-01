@@ -19,4 +19,21 @@ prompts:
   blueprint_accepted_at: '2026-09-30'
   archived_file: coordination/prompts/archived/2026-09-28__forprint_prepress_hub__gdl_guided_intake_creator_handoff_foundation_v0_1.md
   blueprint_acceptance_publication_commit: c808bd2ae9f38376a1d608097198558baf171ea3
-active_prompt_id: null
+- prompt_id: prepress_gdl_creator_empirical_learning_foundation_v0_1
+  sequence: 2
+  title: Prepress GDL Creator Empirical Learning Foundation v0.1
+  phase: gdl_creator_empirical_learning_foundation_v0_1
+  priority: high
+  source: forprint_system_blueprint
+  source_file: coordination/outgoing_prompts/forprint_prepress_hub/approved/2026-10-01__forprint_prepress_hub__gdl_creator_empirical_learning_foundation_v0_1.md
+  file: coordination/prompts/received/2026-10-01__forprint_prepress_hub__gdl_creator_empirical_learning_foundation_v0_1.md
+  status: active
+  received_at: '2026-10-01'
+  module_execution_status: ready_for_module_pull
+  blueprint_review_status: not_started
+  completion_report: null
+  completion_commit: null
+  blueprint_acceptance_commit: null
+  blueprint_accepted_at: null
+  active_file: coordination/prompts/active/2026-10-01__forprint_prepress_hub__gdl_creator_empirical_learning_foundation_v0_1.md
+active_prompt_id: prepress_gdl_creator_empirical_learning_foundation_v0_1

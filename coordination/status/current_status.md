@@ -51,24 +51,23 @@ Graphic Design Lab production/runtime remains uninitialized.
 - System Blueprint mutated from Prepress: `false`
 
 <!-- BEGIN ACTIVE_BLUEPRINT_PROMPT -->
-## Completed Blueprint prompt
+## Active Blueprint prompt
 
-- Prompt ID: `prepress_gdl_guided_intake_creator_handoff_foundation_v0_1`
-- Module execution: `completed_by_module`
-- Blueprint review: `accepted_by_blueprint`
-- Blueprint accepted at: `2026-09-30`
-- Blueprint acceptance publication commit: `c808bd2ae9f38376a1d608097198558baf171ea3`
-- Protocol acceptance commit: `None`
-- Local prompt state: `completed_in_module`
-- Archived copy: `coordination/prompts/archived/2026-09-28__forprint_prepress_hub__gdl_guided_intake_creator_handoff_foundation_v0_1.md`
-- Next contour activated: `false`
+- Prompt ID: `prepress_gdl_creator_empirical_learning_foundation_v0_1`
+- Title: Prepress GDL Creator Empirical Learning Foundation v0.1
+- Phase: `gdl_creator_empirical_learning_foundation_v0_1`
+- Priority: `high`
+- Blueprint queue status: `ready_for_module_pull`
+- Received copy: `coordination/prompts/received/2026-10-01__forprint_prepress_hub__gdl_creator_empirical_learning_foundation_v0_1.md`
+- Active copy: `coordination/prompts/active/2026-10-01__forprint_prepress_hub__gdl_creator_empirical_learning_foundation_v0_1.md`
 
-The bounded GDL Guided Intake / Creator Handoff foundation
-is canonically accepted by System Blueprint.
-
-This acceptance does not activate a subsequent GDL contour.
+Formal module prompt intake is synchronized. Verified prompt-local implementation evidence is preserved when the same prompt is re-synchronized; activating a different prompt starts a fresh prompt-local implementation lifecycle.
 
 `SYSTEM_BLUEPRINT_ACCESS_FROM_PREPRESS=READ_ONLY_STRICT`
+
+System Blueprint remains strictly read-only from Prepress Hub. Any Blueprint-owned
+change must be requested through module-owned evidence/handoff and executed from
+the Blueprint context.
 <!-- END ACTIVE_BLUEPRINT_PROMPT -->
 
 
