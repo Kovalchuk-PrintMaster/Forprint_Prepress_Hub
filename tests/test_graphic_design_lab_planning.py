@@ -102,8 +102,14 @@ def test_status_records_preview_experiment_without_selecting_provider():
 
     assert (
         status["current_focus"]
-        == "gdl_guided_intake_creator_handoff_foundation_accepted"
+        == "gdl_creator_empirical_learning_foundation_v0_1"
     )
+    assert (
+        status["source_prompt_id"]
+        == "prepress_gdl_creator_empirical_learning_foundation_v0_1"
+    )
+    assert status["prompt_intake"]["status"] == "active"
+    assert status["prompt_intake"]["blueprint_access"] == "READ_ONLY_STRICT"
     assert (
         status["preview_renderer_candidate_state"]
         == "EXPERIMENTALLY_VERIFIED_NOT_SELECTED"
@@ -153,7 +159,7 @@ def test_human_readable_views_match_verified_intake_state():
 
     assert (
         status["next_expected_focus"]
-        == "separately_authorized_next_gdl_contour"
+        == "complete_active_blueprint_prompt"
     )
 
     latest = status["latest_gdl_intake_handoff_foundation"]

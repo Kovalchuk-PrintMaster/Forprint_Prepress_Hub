@@ -139,7 +139,38 @@ if not errors:
         if marker not in (ROOT / rel).read_text(encoding="utf-8"):
             errors.append(f"human_readable_verified_state_missing:{rel}")
 
-    if status.get("current_focus") != "gdl_guided_intake_creator_handoff_foundation_accepted":
+    prompt_intake = status.get("prompt_intake")
+    prompt_intake = prompt_intake if isinstance(prompt_intake, dict) else {}
+
+    previous_terminal_focus = (
+        status.get("source_prompt_id")
+        == "prepress_gdl_guided_intake_creator_handoff_foundation_v0_1"
+        and status.get("current_focus")
+        == "gdl_guided_intake_creator_handoff_foundation_accepted"
+        and status.get("next_expected_focus")
+        == "separately_authorized_next_gdl_contour"
+        and status.get("status") == "completed_in_module"
+        and prompt_intake.get("status") == "completed_in_module"
+        and prompt_intake.get("implementation_started") is True
+        and prompt_intake.get("completion_state") == "ACCEPTED_BY_BLUEPRINT"
+        and prompt_intake.get("blueprint_review_status") == "accepted_by_blueprint"
+    )
+    active_empirical_focus = (
+        status.get("source_prompt_id")
+        == "prepress_gdl_creator_empirical_learning_foundation_v0_1"
+        and status.get("current_focus")
+        == "gdl_creator_empirical_learning_foundation_v0_1"
+        and status.get("next_expected_focus")
+        == "complete_active_blueprint_prompt"
+        and status.get("status") == "active"
+        and prompt_intake.get("status") == "active"
+        and prompt_intake.get("active_prompt_id")
+        == "prepress_gdl_creator_empirical_learning_foundation_v0_1"
+        and prompt_intake.get("blueprint_access") == "READ_ONLY_STRICT"
+        and isinstance(prompt_intake.get("implementation_started"), bool)
+    )
+
+    if not (previous_terminal_focus or active_empirical_focus):
         errors.append("gdl_current_focus_not_reconciled")
 
     if status.get("preview_renderer_candidate_state") != "EXPERIMENTALLY_VERIFIED_NOT_SELECTED":
