@@ -1,4 +1,4 @@
-.PHONY: help env test bootstrap-check governance-check status graphic-design-lab-planning-check graphic-design-lab-contracts-check graphic-design-lab-svg-check gdl-intake-handoff-check gdl-empirical-check gdl-empirical-index gdl-empirical-summary
+.PHONY: help env test bootstrap-check governance-check status graphic-design-lab-planning-check graphic-design-lab-contracts-check graphic-design-lab-svg-check gdl-intake-handoff-check gdl-empirical-check gdl-empirical-index gdl-empirical-summary gdl-result-package-check
 
 PYTHON ?= .venv_prepress_hub/bin/python
 
@@ -13,6 +13,7 @@ help:
 	@echo "  make graphic-design-lab-contracts-check - validate GDL Design Spec/profile contract foundation"
 	@echo "  make graphic-design-lab-svg-check - compile and structurally validate deterministic editable SVG"
 	@echo "  make gdl-intake-handoff-check - validate Product Playbook, Guided Intake and Creator Handoff"
+	@echo "  make gdl-result-package-check - validate deterministic GDL Creator Result Package foundation"
 	@echo "  make gdl-empirical-check - validate GDL empirical case semantics and privacy boundaries"
 	@echo "  make gdl-empirical-index - print deterministic GDL empirical evidence discovery index"
 	@echo "  make gdl-empirical-summary - print human-readable GDL empirical evidence summary"
@@ -45,7 +46,10 @@ graphic-design-lab-svg-check:
 gdl-intake-handoff-check:
 	$(PYTHON) scripts/validation/check_graphic_design_lab_intake_handoff.py
 
-governance-check: bootstrap-check graphic-design-lab-planning-check graphic-design-lab-contracts-check graphic-design-lab-svg-check gdl-intake-handoff-check gdl-empirical-check test
+gdl-result-package-check:
+	$(PYTHON) scripts/validation/check_graphic_design_lab_creator_result_package.py
+
+governance-check: bootstrap-check graphic-design-lab-planning-check graphic-design-lab-contracts-check graphic-design-lab-svg-check gdl-intake-handoff-check gdl-result-package-check gdl-empirical-check test
 	@git diff --check
 	@echo "PREPRESS_HUB_GOVERNANCE_CHECK=PASS"
 

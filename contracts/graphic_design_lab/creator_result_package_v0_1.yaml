@@ -1,0 +1,106 @@
+schema_version: forprint_creator_result_package_contract_v0_1
+document_type: GDL_CREATOR_RESULT_PACKAGE_CONTRACT
+package_schema_version: forprint_creator_result_package_v0_1
+authority:
+  provider_execution_authorized: false
+  runtime_initialization_authorized: false
+  production_write_authorized: false
+  automatic_customer_messaging_authorized: false
+  automatic_design_approval_authorized: false
+required_top_level_fields:
+- schema_version
+- package_id
+- result_id
+- revision
+- source
+- expected_result
+- observed_result
+- artifacts
+- content_fidelity
+- readiness
+- outcomes
+- privacy
+- authority
+- provenance
+enums:
+  result_state:
+  - COMPLETE
+  - PARTIAL
+  - STYLE_ONLY
+  - BLOCKED
+  requirements_coverage:
+  - COMPLETE
+  - PARTIAL
+  - UNKNOWN
+  content_fidelity:
+  - PASS
+  - FAIL
+  - NOT_EVALUATED
+  technical_validity:
+  - VALID
+  - INVALID
+  - UNKNOWN
+  internal_review:
+  - REVIEWABLE
+  - NOT_REVIEWABLE
+  customer_forwarding:
+  - READY
+  - BLOCKED
+  design_approval:
+  - NOT_RECORDED
+  - PENDING
+  - APPROVED
+  - REJECTED
+  production_readiness:
+  - READY
+  - NOT_READY
+  acceptance:
+  - NOT_RECORDED
+  - ACCEPTED
+  - REJECTED
+  explicit_satisfaction:
+  - NOT_OBSERVED
+  - POSITIVE
+  - NEUTRAL
+  - NEGATIVE
+  artifact_availability:
+  - AVAILABLE
+  - MISSING
+  - UNKNOWN
+  artifact_suitability:
+  - INTERNAL_REVIEW
+  - CUSTOMER_REVIEW
+  - EDITABLE_SOURCE
+  - REFERENCE_ONLY
+  - NOT_EVALUATED
+semantic_distinctions:
+- technically_valid_is_not_reviewable
+- reviewable_is_not_customer_forwardable
+- customer_forwardable_is_not_design_approved
+- design_approved_is_not_production_ready
+- operator_accepted_is_not_customer_accepted
+- customer_accepted_is_not_customer_explicitly_satisfied
+- complete_result_is_not_partial_or_style_only_result
+- artifact_exists_is_not_artifact_suitable
+customer_forwarding_gate:
+  requires_result_state: COMPLETE
+  requires_technical_validity: VALID
+  requires_internal_review: REVIEWABLE
+  requires_content_fidelity: PASS
+  requires_requirements_coverage: COMPLETE
+  requires_no_known_deviations: true
+  requires_no_missing_confirmations: true
+  requires_available_artifact_suitable_for: CUSTOMER_REVIEW
+  does_not_require_design_approval: true
+  does_not_imply_production_readiness: true
+artifact_boundary:
+  heavy_artifacts_in_git: false
+  external_artifact_reference_required: true
+  pii_required_in_git: false
+provenance:
+  algorithm: sha256_canonical_json_v0_1
+  covers:
+  - package_identity
+  - source_handoff_and_prompt
+  - expected_result
+  - artifact_references

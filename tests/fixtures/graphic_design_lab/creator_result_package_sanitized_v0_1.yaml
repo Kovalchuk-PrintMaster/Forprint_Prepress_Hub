@@ -1,0 +1,83 @@
+schema_version: forprint_creator_result_package_v0_1
+package_id: gdl-result-package-sanitized-menu-001
+result_id: creator-result-sanitized-menu-001
+revision: 1
+source:
+  creator_handoff:
+    handoff_id: creator-handoff-sanitized-menu-001
+    schema_version: forprint_creator_handoff_v0_1
+    revision: 1
+  creator_prompt:
+    prompt_id: gdl-creator-sanitized-menu-v002
+    prompt_version: v002
+    prompt_sha256: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+expected_result:
+  target: FIRST_REVIEWABLE_CONCEPT
+  required_artifact_roles:
+  - review_preview
+  - editable_source
+  required_identity_fields:
+  - venue_name
+  expected_content_mode: AUTHORIZED_SOURCE_ONLY
+observed_result:
+  result_state: COMPLETE
+  requirements_coverage: COMPLETE
+  source_content_used: CUSTOMER_AUTHORIZED
+  known_deviations: []
+  unresolved_items: []
+  missing_confirmations: []
+artifacts:
+- artifact_ref: result-preview-r001
+  role: review_preview
+  external_ref:
+    storage_role: sanitized_fixture_external_store
+    artifact_ref: result-preview-r001
+  media_type: image/png
+  availability: AVAILABLE
+  suitability:
+  - INTERNAL_REVIEW
+  - CUSTOMER_REVIEW
+  repository_contains_heavy_artifact: false
+- artifact_ref: editable-source-r001
+  role: editable_source
+  external_ref:
+    storage_role: sanitized_fixture_external_store
+    artifact_ref: editable-source-r001
+  media_type: image/svg+xml
+  availability: AVAILABLE
+  suitability:
+  - EDITABLE_SOURCE
+  - INTERNAL_REVIEW
+  repository_contains_heavy_artifact: false
+content_fidelity:
+  status: PASS
+  source_authority: creator_handoff
+  factual_check_required: true
+  checked_against_authorized_source: true
+  invented_facts_detected: false
+  required_content_present: true
+  known_deviations: []
+readiness:
+  technical_validity: VALID
+  internal_review: REVIEWABLE
+  customer_forwarding: READY
+  design_approval: NOT_RECORDED
+  production_readiness: NOT_READY
+outcomes:
+  operator_acceptance: NOT_RECORDED
+  customer_acceptance: NOT_RECORDED
+  customer_explicit_satisfaction: NOT_OBSERVED
+privacy:
+  pii_allowed_in_git: false
+  pii_present_in_package: false
+  heavy_artifacts_in_git: false
+authority:
+  provider_execution_required: false
+  provider_execution_performed: false
+  gdl_runtime_initialized: false
+  production_write_enabled: false
+  automatic_customer_messaging: false
+  automatic_design_approval: false
+provenance:
+  algorithm: sha256_canonical_json_v0_1
+  sha256: 422df522f20232e067145f9a5d310ec027a11dc2bc7a951ad2004c0d8afb41f5
