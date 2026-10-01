@@ -102,13 +102,17 @@ def test_status_records_preview_experiment_without_selecting_provider():
 
     assert (
         status["current_focus"]
-        == "gdl_creator_empirical_learning_foundation_v0_1"
+        == "gdl_creator_result_package_foundation_v0_1"
     )
     assert (
         status["source_prompt_id"]
-        == "prepress_gdl_creator_empirical_learning_foundation_v0_1"
+        == "prepress_gdl_creator_result_package_foundation_v0_1"
     )
     assert status["prompt_intake"]["status"] == "active"
+    assert (
+        status["prompt_intake"]["active_prompt_id"]
+        == "prepress_gdl_creator_result_package_foundation_v0_1"
+    )
     assert status["prompt_intake"]["blueprint_access"] == "READ_ONLY_STRICT"
     assert (
         status["preview_renderer_candidate_state"]

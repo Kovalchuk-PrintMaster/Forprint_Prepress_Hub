@@ -170,7 +170,26 @@ if not errors:
         and isinstance(prompt_intake.get("implementation_started"), bool)
     )
 
-    if not (previous_terminal_focus or active_empirical_focus):
+    active_result_package_focus = (
+        status.get("source_prompt_id")
+        == "prepress_gdl_creator_result_package_foundation_v0_1"
+        and status.get("current_focus")
+        == "gdl_creator_result_package_foundation_v0_1"
+        and status.get("next_expected_focus")
+        == "complete_active_blueprint_prompt"
+        and status.get("status") == "active"
+        and prompt_intake.get("status") == "active"
+        and prompt_intake.get("active_prompt_id")
+        == "prepress_gdl_creator_result_package_foundation_v0_1"
+        and prompt_intake.get("blueprint_access") == "READ_ONLY_STRICT"
+        and isinstance(prompt_intake.get("implementation_started"), bool)
+    )
+
+    if not (
+        previous_terminal_focus
+        or active_empirical_focus
+        or active_result_package_focus
+    ):
         errors.append("gdl_current_focus_not_reconciled")
 
     if status.get("preview_renderer_candidate_state") != "EXPERIMENTALLY_VERIFIED_NOT_SELECTED":
