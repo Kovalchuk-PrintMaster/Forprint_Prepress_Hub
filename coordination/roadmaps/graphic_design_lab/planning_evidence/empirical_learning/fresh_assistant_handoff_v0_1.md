@@ -53,3 +53,18 @@ Before acting, read:
 
 System Blueprint remains strictly read-only from Prepress:
 `SYSTEM_BLUEPRINT_ACCESS_FROM_PREPRESS=READ_ONLY_STRICT`.
+
+## New review-readiness lesson from MENU-001
+
+The first menu case exposed a critical distinction:
+
+- the customer may approve the visual direction;
+- the same output may still fail content fidelity;
+- a visually plausible output is not automatically customer-review-ready.
+
+Every Creator result must therefore declare an explicit output classification and
+`customer_forwarding_allowed`. A style-only visual using placeholder/non-customer content
+must be marked `STYLE_ONLY_REFERENCE`, visibly labeled as not being the customer's menu,
+and blocked from customer forwarding.
+
+Next Creator loader candidate: `GDL-CREATOR-v002`.

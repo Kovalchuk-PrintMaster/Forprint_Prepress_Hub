@@ -1,0 +1,35 @@
+schema_version: gdl_customer_feedback_creator_nonconformance_v0_1
+document_type: GDL_CUSTOMER_FEEDBACK_AND_CREATOR_NONCONFORMANCE
+experiment_id: GDL-EXP-20261001-MENU-001
+case_id: GDL-CASE-MENU-001
+run_id: RUN-001
+observed_date: '2026-10-01'
+authority: EMPIRICAL_EVIDENCE_NOT_EXECUTION_AUTHORITY
+customer_feedback:
+  visual_direction: APPROVED
+  content_fidelity: REJECTED
+  reported_problem: returned_menu_content_does_not_match_customer_menu
+  customer_confusion_observed: true
+source_handoff_facts:
+  customer_menu_positions_were_provided_to_creator: true
+  confirmed_names_weights_prices_were_available: true
+  inventing_names_weights_prices_was_forbidden: true
+  venue_name_was_mandatory_in_first_output: true
+creator_nonconformance:
+  status: CONFIRMED
+  classes:
+  - customer_content_substituted_with_unrelated_or_placeholder_content
+  - invented_menu_items_or_values_present
+  - output_was_not_labeled_as_nonconforming_style_reference
+  - customer_forwarding_readiness_was_not_declared
+root_cause_split:
+  intake_transmission_failure: false
+  creator_content_fidelity_failure: true
+  review_readiness_contract_gap: true
+  operator_forwarding_safety_gap: true
+lesson: A visually plausible Creator result must never be assumed customer-review-ready. Every result needs explicit
+  conformity/readiness metadata. If real customer content is absent, partial, substituted, or intentionally replaced
+  for style exploration, the result must be marked INTERNAL_ONLY or STYLE_ONLY_REFERENCE and must not be forwarded
+  as a customer menu.
+same_case_rerun_required: false
+next_action: apply_gate_to_future_creator_runs_and_use_content_only_correction_if_needed

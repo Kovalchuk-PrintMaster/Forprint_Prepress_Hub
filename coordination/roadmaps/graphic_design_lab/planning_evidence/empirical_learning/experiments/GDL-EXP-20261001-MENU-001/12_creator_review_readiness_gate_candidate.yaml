@@ -1,0 +1,57 @@
+schema_version: gdl_creator_review_readiness_gate_candidate_v0_1
+document_type: GDL_CREATOR_REVIEW_READINESS_GATE_CANDIDATE
+status: EMPIRICAL_HYPOTHESIS_NOT_CANONICAL
+purpose: Prevent visually plausible but factually nonconforming Creator outputs from being mistaken for customer-review-ready
+  work.
+required_output_classification:
+  allowed_states:
+  - CUSTOMER_REVIEW_READY
+  - STYLE_ONLY_REFERENCE
+  - CONTENT_PARTIAL
+  - INTERNAL_ONLY
+  - BLOCKED
+  must_be_explicit: true
+customer_forwarding_rule:
+  CUSTOMER_REVIEW_READY: true
+  STYLE_ONLY_REFERENCE: false
+  CONTENT_PARTIAL: false
+  INTERNAL_ONLY: false
+  BLOCKED: false
+mandatory_creator_sidecar:
+  fields:
+  - output_classification
+  - customer_forwarding_allowed
+  - source_content_used
+  - requirements_coverage
+  - known_deviations
+  - unresolved_items
+  - missing_confirmations
+  - artifact_roles
+content_fidelity_gate:
+  for_customer_review_ready:
+  - use_only_authorized_customer_factual_content
+  - no_placeholder_dishes
+  - no_invented_prices
+  - no_invented_weights
+  - no_invented_descriptions
+  - mandatory_identity_elements_present
+  - target_language_respected
+style_probe_rule:
+  when_placeholder_or_non_customer_content_is_used:
+    classification: STYLE_ONLY_REFERENCE
+    customer_forwarding_allowed: false
+    visible_mark_required: true
+    visible_mark_text_candidate: СТИЛЬОВИЙ ЗРАЗОК — НЕ МЕНЮ ЗАМОВНИКА
+    sidecar_note_required: This image demonstrates visual direction only and does not represent the customer's approved
+      factual content.
+operator_gate:
+  before_forwarding_to_customer:
+  - classification_must_equal_CUSTOMER_REVIEW_READY
+  - customer_forwarding_allowed_must_equal_true
+  - mandatory_content_check_passed
+  - known_deviations_must_be_empty_or_explicitly_accepted
+approval_state_separation:
+- visual_direction_approved
+- content_fidelity_approved
+- customer_review_ready
+- production_ready

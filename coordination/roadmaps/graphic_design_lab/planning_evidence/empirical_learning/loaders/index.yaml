@@ -16,4 +16,12 @@ roles:
         state: DRAFT_NOT_YET_EMPIRICALLY_RUN
   Creator Assistant:
     v001:
+      state: SUPERSEDED_BEFORE_EMPIRICAL_RUN
+      superseded_by: v002
+    v002:
       state: NEXT_EXPERIMENT_CANDIDATE
+      adds:
+      - explicit_output_readiness_classification
+      - customer_forwarding_gate
+      - style_only_visible_marking
+      - content_fidelity_pre_return_validation

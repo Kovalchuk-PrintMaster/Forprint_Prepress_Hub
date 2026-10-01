@@ -20,3 +20,20 @@ This package captures:
 This is learning evidence, not yet canonical GDL policy.
 
 `SYSTEM_BLUEPRINT_ACCESS_FROM_PREPRESS=READ_ONLY_STRICT`
+
+## Customer feedback delta — review-readiness failure
+
+After the first visual result, the customer accepted the **visual direction** but rejected
+the **content fidelity** because the returned menu did not contain the customer's real menu data.
+
+This creates a separate empirical failure class:
+
+```text
+visually plausible
+!= factually compliant
+!= customer-review-ready
+```
+
+Future Creator outputs must explicitly declare review-readiness and whether they may be
+forwarded to the customer. Style-only or placeholder-based visuals must be visibly marked
+as non-customer content and must not be forwarded as a customer menu.
