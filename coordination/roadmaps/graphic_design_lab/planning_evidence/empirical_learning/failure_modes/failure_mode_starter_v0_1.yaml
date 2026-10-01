@@ -1,5 +1,5 @@
-schema_version: gdl_failure_mode_starter_draft_v0_1
-status: DRAFT_NON_CANONICAL
+schema_version: gdl_failure_mode_starter_v0_1
+status: BOUNDED_EMPIRICAL_TAXONOMY_STARTER
 
 categories:
   intake:
@@ -41,6 +41,26 @@ categories:
     - local_postprocessing_needed
     - human_confirmation_missing
 
+  execution_boundary:
+    - creator_role_ambiguity
+
+  handoff_compliance:
+    - missing_required_identity
+    - venue_name_omitted
+
+  output_contract_gap:
+    - editable_artifact_missing
+    - output_readiness_undeclared
+    - single_variant_only
+
+  review_readiness:
+    - artifact_debris
+    - content_fidelity_failure
+    - customer_forwarding_gate_failure
+    - misleading_pagination
+    - scope_incomplete
+
 rule: >
-  Starter vocabulary only. Real cases may add/refine categories.
-  One case must not become global policy automatically.
+  Starter vocabulary only. Real cases may add or refine categories.
+  Observed categories remain empirical evidence until reproduced or explicitly
+  promoted by governed Human Owner / Blueprint review.

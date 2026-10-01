@@ -1,0 +1,114 @@
+schema_version: gdl_empirical_case_v0_1
+status: SANITIZED_TEST_FIXTURE
+case_identity:
+  case_id: GDL-CASE-SANITIZED-MENU-001
+  observed_at: '2026-10-01'
+  customer_ref: customer_demo_001
+  order_ref: order_demo_001
+  external_job_storage_ref: job_demo_001
+product:
+  family: restaurant_menu
+  subtype: simple_text_menu
+  format: two_page
+  attributes:
+    language: uk-UA
+task:
+  category: design_correction
+  objective: produce_customer_review_candidate
+  stage: creator_revision
+  complexity_notes:
+  - sanitized_fixture
+input_context:
+  raw_summary: Sanitized menu correction case for deterministic validation.
+  source_types:
+  - sanitized_text
+  reference_count: 1
+  initial_quality_observations:
+  - mixed_verified_and_placeholder_content_observed
+  customer_constraints:
+  - preserve_verified_rows
+  explicit_customer_permissions:
+  - creative_layout_discretion
+  unresolved_input_questions: []
+  known_information:
+  - verified_menu_rows_available
+  missing_information: []
+intake:
+  method: manual
+  loader_or_playbook_id: GDL-INTAKE-MENU-v002
+  dialogue_revision: sanitized_fixture_v001
+  question_round_count: 0
+  operator_difficulty: low
+  customer_confusion_observed: false
+  unresolved_items: []
+  notable_intake_observations:
+  - no_material_customer_question_required
+creator_prompt:
+  prompt_id: CREATOR_EXECUTION_PATCH_SANITIZED
+  prompt_version: v0_1
+  prompt_text_ref: sanitized_fixture_prompt_ref
+  derived_from_patterns:
+  - explicit_execution_mode
+  - locked_vs_mutable_surfaces
+  explicit_constraints:
+  - preserve_verified_content
+  - do_not_invent_customer_facts
+  expected_output_structure:
+  - customer_review_candidate
+  notable_sections:
+  - DATA_AUTHORITY
+  - FINAL_GATE
+  known_risks: []
+creator_context:
+  creator_class: Creator Assistant
+  provider: null
+  model: null
+  provider_specific_details_required: false
+result:
+  result_revision: r003
+  external_artifact_ref: customer_job_storage://customer_demo_001/order_demo_001/result_r003
+  output_roles:
+  - review_preview
+  output_format_observations:
+  - external_reference_only
+  creator_notes: []
+outcome:
+  operator_acceptance: accepted
+  customer_acceptance: unknown
+  customer_explicit_satisfaction: not_observed
+  first_attempt_accepted: false
+  accepted_attempt: 3
+  revision_count: 2
+  manual_intervention_required: true
+quality_observations:
+  strengths:
+  - factual_compliance_improved
+  weaknesses: []
+  failure_modes:
+  - prior_missing_required_content
+  ambiguities: []
+workflow_observations:
+  preprocessing_used: []
+  postprocessing_used: []
+  local_tools_used: []
+  human_interventions:
+  - operator_review
+lessons:
+  reusable_prompt_patterns:
+  - machine_readable_final_gate
+  prompt_antipatterns:
+  - broad_unbounded_correction_prose
+  candidate_local_automation:
+  - factual_content_pre_return_check
+  creator_strength_candidates: []
+  creator_weakness_candidates: []
+  future_questions:
+  - reproduce_on_additional_product_families
+artifact_policy:
+  repository_contains_heavy_artifact: false
+  external_reference_preferred: true
+  pii_allowed_in_git: false
+authority:
+  case_is_evidence_not_policy: true
+  one_case_must_not_auto_create_global_rule: true
+  empirical_pattern_requires_multiple_cases_or_explicit_human_owner_judgment: true

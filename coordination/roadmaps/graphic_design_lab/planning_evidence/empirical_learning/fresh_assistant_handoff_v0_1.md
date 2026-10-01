@@ -1,4 +1,4 @@
-# Fresh assistant handoff â€” GDL empirical lane
+# Fresh assistant handoff — GDL empirical lane
 
 A fresh assistant must be able to resume this work without prior chat history.
 
@@ -8,18 +8,18 @@ The active manual empirical chain is:
 
 ```text
 real customer case
-â†’ fixed case context
-â†’ versioned loader
-â†’ expectations frozen BEFORE run
-â†’ GDL Intake Analyst
-â†’ raw response preserved
-â†’ expectation-vs-actual evaluation
-â†’ Creator Handoff
-â†’ Creator Assistant
-â†’ raw creator result preserved
-â†’ operator/customer outcome
-â†’ case lessons
-â†’ next loader/pattern version
+→ fixed case context
+→ versioned loader
+→ expectations frozen BEFORE run
+→ GDL Intake Analyst
+→ raw response preserved
+→ expectation-vs-actual evaluation
+→ Creator Handoff
+→ Creator Assistant
+→ raw creator result preserved
+→ operator/customer outcome
+→ case lessons
+→ next loader/pattern version
 ```
 
 Roles:
@@ -30,7 +30,7 @@ Roles:
 
 ## Latest baseline
 
-`GDL-EXP-20261001-MENU-001 / RUN-001`, venue `Ð Ð¸Ð±Ð°Ñ†ÑŒÐºÐ¸Ð¹ ÑÑ‚Ð°Ð½`.
+`GDL-EXP-20261001-MENU-001 / RUN-001`, venue `Рибацький стан`.
 
 The same run is not repeated. It is preserved as baseline evidence.
 
@@ -69,7 +69,7 @@ and blocked from customer forwarding.
 
 Next Creator loader candidate: `GDL-CREATOR-v002`.
 
-## MENU-001 current stage â€” awaiting Creator iteration 003
+## MENU-001 current stage — awaiting Creator iteration 003
 
 Creator iteration 002 improved factual content but is still `CONTENT_PARTIAL` and must not
 be treated as customer-review-ready.
@@ -88,7 +88,7 @@ Do not restart Intake. Wait for Creator iteration 003 and evaluate it against:
 content fidelity, scope completeness, artifact cleanliness, language, visual-direction
 continuity, and explicit `customer_forwarding_allowed`.
 
-## Primary empirical finding â€” prompt representation
+## Primary empirical finding — prompt representation
 
 The strongest current learning from MENU-001 is that structured, machine-readable Creator
 execution patches produced markedly better convergence than descriptive human-style correction
@@ -104,3 +104,13 @@ For the next relevant real cases:
 
 Evidence:
 `experiments/GDL-EXP-20261001-MENU-001/17_prompt_format_effect_observation.yaml`
+
+## Active bounded empirical prompt
+
+- Prompt: `prepress_gdl_creator_empirical_learning_foundation_v0_1`
+- State: active module-owned empirical evidence contour.
+- Operator validation: `make gdl-empirical-check`.
+- Discovery: `make gdl-empirical-index`.
+- Human-readable summary: `make gdl-empirical-summary`.
+- System Blueprint remains `READ_ONLY_STRICT` from Prepress.
+- Provider execution, runtime initialization, production write and next-contour activation remain false.

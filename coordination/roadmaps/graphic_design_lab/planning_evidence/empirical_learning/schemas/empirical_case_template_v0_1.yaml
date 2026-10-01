@@ -1,5 +1,5 @@
-schema_version: gdl_empirical_case_draft_v0_1
-status: DRAFT_NON_CANONICAL
+schema_version: gdl_empirical_case_v0_1
+status: BOUNDED_EMPIRICAL_EVIDENCE_SCHEMA
 
 case_identity:
   case_id: ""
@@ -17,21 +17,30 @@ product:
 task:
   category: ""
   objective: ""
+  stage: ""
+  complexity_notes: []
 
-initial_request:
+input_context:
   raw_summary: ""
   source_types: []
+  reference_count: null
+  initial_quality_observations: []
+  customer_constraints: []
+  explicit_customer_permissions: []
+  unresolved_input_questions: []
   known_information: []
   missing_information: []
-  explicit_customer_permissions: []
 
 intake:
-  loader_id: ""
+  method: manual_or_future_automated
+  loader_or_playbook_id: ""
+  dialogue_revision: ""
   question_round_count: 0
   operator_difficulty: unknown
   customer_confusion_observed: false
   unresolved_items: []
   notes: []
+  notable_intake_observations: []
 
 creator_prompt:
   prompt_id: ""
@@ -39,12 +48,22 @@ creator_prompt:
   prompt_text_ref: ""
   notable_sections: []
   known_risks: []
+  derived_from_patterns: []
+  explicit_constraints: []
+  expected_output_structure: []
 
-creator_result:
+creator_context:
+  creator_class: ""
+  provider: null
+  model: null
+  provider_specific_details_required: false
+
+result:
   result_revision: ""
   external_artifact_ref: ""
   output_roles: []
-  notes: []
+  output_format_observations: []
+  creator_notes: []
 
 outcome:
   operator_acceptance: unknown
@@ -75,6 +94,12 @@ lessons:
   creator_weakness_candidates: []
   follow_up_questions: []
 
-privacy:
-  contains_customer_pii: false
-  heavy_artifacts_in_repository: false
+artifact_policy:
+  repository_contains_heavy_artifact: false
+  external_reference_preferred: true
+  pii_allowed_in_git: false
+
+authority:
+  case_is_evidence_not_policy: true
+  one_case_must_not_auto_create_global_rule: true
+  empirical_pattern_requires_multiple_cases_or_explicit_human_owner_judgment: true

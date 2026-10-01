@@ -16,3 +16,7 @@ For each real case:
 12. Note reusable prompt fragments.
 13. Do not turn one observation into global policy.
 14. Reconcile these drafts after Blueprint returns the authorized contour.
+
+15. Run `make gdl-empirical-check` before treating a case record as validated evidence.
+16. Use `make gdl-empirical-index` to confirm the case/evidence is discoverable.
+17. Use `make gdl-empirical-summary` for the Human Owner review surface.

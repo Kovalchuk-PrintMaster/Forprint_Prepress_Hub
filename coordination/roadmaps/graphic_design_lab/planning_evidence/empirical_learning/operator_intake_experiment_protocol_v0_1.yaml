@@ -1,0 +1,66 @@
+schema_version: gdl_operator_intake_experiment_protocol_v0_1
+document_type: GDL_OPERATOR_INTAKE_EXPERIMENT_PROTOCOL
+status: BOUNDED_EMPIRICAL_EVIDENCE_PROTOCOL
+mode: MANUAL_EXPERIMENTAL
+goal: >
+  Let a normal manager/operator run a fresh-chat intake experiment using current
+  product loaders, preserve uncertainty and customer authorization, and attach
+  Creator result/outcome observations to the empirical case.
+fresh_chat:
+  operator_requires_design_skill: false
+  operator_requires_programming_skill: false
+  operator_requires_prompt_engineering_skill: false
+  operator_requires_gdl_architecture_knowledge: false
+  starting_rule: use_all_information_already_known_before_asking_questions
+flow:
+- load_relevant_product_instruction
+- provide_all_current_customer_information_and_sanitized_asset_summary
+- normalize_known_information
+- preserve_unknown_ambiguous_and_unresolved_information
+- ask_only_material_missing_questions
+- produce_copy_ready_customer_message_when_customer_contact_is_required
+- update_known_unknown_and_authorized_discretion_state
+- stop_reasking_aesthetic_questions_after_explicit_creative_discretion
+- build_creator_prompt_when_minimum_information_is_sufficient
+- observe_creator_result
+- record_operator_and_customer_outcomes_separately
+- attach_result_and_lessons_to_empirical_case
+uncertainty_policy:
+  never_invent_missing_customer_facts: true
+  preserve_unresolved_information: true
+  allow_explicit_creative_discretion: true
+  record_customer_authorization_for_discretion: true
+  distinguish:
+  - unknown
+  - optional
+  - customer_declined_to_specify
+  - customer_authorized_creator_discretion
+customer_message_policy:
+  short: true
+  plain_language: true
+  copy_ready: true
+  nontechnical: true
+  only_material_questions: true
+  never_repeat_already_answered_questions: true
+initial_products:
+- menu
+- business_card
+- flyer
+observations:
+- question_round_count
+- customer_confusion_observed
+- creator_prompt_completeness
+- first_attempt_accepted
+- accepted_attempt
+- revision_count
+- operator_acceptance
+- customer_acceptance
+- customer_explicit_satisfaction
+- operator_manual_rewrite_required
+authority:
+  activates_runtime: false
+  allows_provider_execution: false
+  allows_production_write: false
+  allows_automatic_customer_messaging: false
+  mutates_blueprint: false
+  activates_next_contour: false

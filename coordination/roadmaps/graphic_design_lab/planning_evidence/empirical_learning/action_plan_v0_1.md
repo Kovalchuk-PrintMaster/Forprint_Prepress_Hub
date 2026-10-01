@@ -1,6 +1,6 @@
 # Immediate action plan
 
-## Phase 0 — while Blueprint is reviewing
+## Phase 0 — historical pre-Blueprint preparation
 
 1. Keep all empirical materials explicitly non-canonical.
 2. Use one case record for every real design experiment.
@@ -32,3 +32,13 @@
 - Which prompt sections improve first-pass quality?
 - Which requirements make Creator less reliable?
 - Which work belongs to Creator, local tools, or human confirmation?
+
+## Phase 1 — active bounded empirical foundation
+
+1. Reuse the existing empirical case, loader and MENU-001 evidence owners.
+2. Record sanitized case metadata using external artifact references only.
+3. Validate case semantics and privacy boundaries with `make gdl-empirical-check`.
+4. Use `make gdl-empirical-index` and `make gdl-empirical-summary` for operator discovery.
+5. Preserve successful and failed attempts as append-only evidence.
+6. Keep provider execution, GDL runtime initialization and production write disabled.
+7. Return completion evidence to Blueprint review without activating the next contour.

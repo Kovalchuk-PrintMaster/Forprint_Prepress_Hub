@@ -57,8 +57,11 @@ next_action:
     readiness.
 blueprint:
   horizon_package_submitted: true
-  first_new_executable_prompt_received: false
-  current_empirical_work_is_local_planning_evidence: true
+  first_new_executable_prompt_received: true
+  current_empirical_work_is_local_planning_evidence: false
+  current_empirical_work_is_bounded_authorized_evidence: true
+  active_prompt_id: prepress_gdl_creator_empirical_learning_foundation_v0_1
+  active_prompt_state: active
   access_from_prepress: READ_ONLY_STRICT
 latest_customer_feedback:
   case_id: GDL-CASE-MENU-001
@@ -86,3 +89,11 @@ primary_empirical_finding:
   evidence_path: coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/experiments/GDL-EXP-20261001-MENU-001/17_prompt_format_effect_observation.yaml
   pattern_candidate: coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/patterns/machine_readable_execution_patch_v0_1.yaml
   promotion_pending: true
+
+deterministic_operator_surface:
+  tool: scripts/coordination/gdl_empirical_learning.py
+  validate: make gdl-empirical-check
+  index: make gdl-empirical-index
+  summary: make gdl-empirical-summary
+  runtime_initialized: false
+  production_write_enabled: false

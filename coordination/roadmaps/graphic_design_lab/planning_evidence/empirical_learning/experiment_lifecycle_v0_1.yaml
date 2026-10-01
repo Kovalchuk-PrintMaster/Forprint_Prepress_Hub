@@ -1,5 +1,5 @@
-schema_version: gdl_empirical_experiment_lifecycle_draft_v0_1
-status: DRAFT_NON_CANONICAL
+schema_version: gdl_empirical_experiment_lifecycle_v0_1
+status: BOUNDED_EMPIRICAL_EVIDENCE_LIFECYCLE
 
 experiment_files:
   - 00_case_context.yaml
@@ -51,3 +51,31 @@ important_metrics:
   - customer_acceptance
   - customer_explicit_satisfaction
   - manual_intervention_required
+
+evidence_model: APPEND_ONLY_EVOLVING_CASE
+baseline_experiment_file_layout_required_for_later_iterations: false
+
+history_policy:
+  preserve_prior_observations: true
+  preserve_failed_attempts: true
+  do_not_renumber_historical_evidence: true
+  new_iterations_append_evidence: true
+  one_case_does_not_auto_promote_global_policy: true
+
+minimum_case_surface:
+  - case_identity
+  - input_and_intake_observation
+  - creator_prompt_reference
+  - creator_result_reference
+  - operator_outcome
+  - customer_outcome
+  - lessons
+
+iteration_evidence:
+  allowed: true
+  examples:
+    - creator_iteration_observation
+    - visual_review
+    - correction_instruction
+    - artifact_manifest
+    - prompt_format_effect_observation

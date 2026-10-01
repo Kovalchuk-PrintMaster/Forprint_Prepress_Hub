@@ -8,6 +8,10 @@ methodology:
   chain_registry: coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/chain_registry_v0_1.yaml
   role_contracts: coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/assistant_role_contracts_v0_1.yaml
   current_learning_state: coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/current_learning_state.yaml
+  operator_protocol: coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/operator_intake_experiment_protocol_v0_1.yaml
+  case_schema: coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/schemas/empirical_case_template_v0_1.yaml
+  deterministic_tool: scripts/coordination/gdl_empirical_learning.py
+  sanitized_fixture: tests/fixtures/graphic_design_lab/gdl_empirical_case_menu_sanitized_v0_1.yaml
 loaders:
   menu:
   - coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/loaders/menu/GDL-INTAKE-MENU-v001.md
@@ -18,13 +22,24 @@ loaders:
   - coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/loaders/flyer/GDL-INTAKE-FLYER-v001.md
   creator:
   - coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/loaders/creator/GDL-CREATOR-v001.md
+  - coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/loaders/creator/GDL-CREATOR-v002.md
 experiments:
 - experiment_id: GDL-EXP-20261001-MENU-001
   run_id: RUN-001
   state: BASELINE_COMPLETED
   path: coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/experiments/GDL-EXP-20261001-MENU-001/README.md
   rerun_required: false
+  baseline_run_preserved: true
+  latest_registered_evidence: coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/experiments/GDL-EXP-20261001-MENU-001/19_prompt_evolution_source_manifest.yaml
+  numbered_evidence_file_count_at_reconciliation: 20
+  directory_file_count_at_reconciliation: 21
 blueprint_sync:
   pending: true
   access_from_prepress: READ_ONLY_STRICT
   next_contour_activated: false
+
+deterministic_operator_surface:
+  validate: make gdl-empirical-check
+  index: make gdl-empirical-index
+  summary: make gdl-empirical-summary
+  mutates_evidence: false

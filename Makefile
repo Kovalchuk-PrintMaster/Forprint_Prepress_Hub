@@ -1,4 +1,4 @@
-.PHONY: help env test bootstrap-check governance-check status graphic-design-lab-planning-check graphic-design-lab-contracts-check graphic-design-lab-svg-check gdl-intake-handoff-check
+.PHONY: help env test bootstrap-check governance-check status graphic-design-lab-planning-check graphic-design-lab-contracts-check graphic-design-lab-svg-check gdl-intake-handoff-check gdl-empirical-check gdl-empirical-index gdl-empirical-summary
 
 PYTHON ?= .venv_prepress_hub/bin/python
 
@@ -13,6 +13,9 @@ help:
 	@echo "  make graphic-design-lab-contracts-check - validate GDL Design Spec/profile contract foundation"
 	@echo "  make graphic-design-lab-svg-check - compile and structurally validate deterministic editable SVG"
 	@echo "  make gdl-intake-handoff-check - validate Product Playbook, Guided Intake and Creator Handoff"
+	@echo "  make gdl-empirical-check - validate GDL empirical case semantics and privacy boundaries"
+	@echo "  make gdl-empirical-index - print deterministic GDL empirical evidence discovery index"
+	@echo "  make gdl-empirical-summary - print human-readable GDL empirical evidence summary"
 	@echo "  make blueprint-prompts-check - verify Prepress Blueprint prompt queue is readable"
 	@echo "  make blueprint-prompts-sync  - synchronize Blueprint prompt into local received/active/terminal state"
 	@echo "  make blueprint-prompt-check  - validate local prompt lifecycle state"
@@ -42,7 +45,7 @@ graphic-design-lab-svg-check:
 gdl-intake-handoff-check:
 	$(PYTHON) scripts/validation/check_graphic_design_lab_intake_handoff.py
 
-governance-check: bootstrap-check graphic-design-lab-planning-check graphic-design-lab-contracts-check graphic-design-lab-svg-check gdl-intake-handoff-check test
+governance-check: bootstrap-check graphic-design-lab-planning-check graphic-design-lab-contracts-check graphic-design-lab-svg-check gdl-intake-handoff-check gdl-empirical-check test
 	@git diff --check
 	@echo "PREPRESS_HUB_GOVERNANCE_CHECK=PASS"
 
@@ -135,3 +138,15 @@ blueprint-prompt-status:
 	$(PYTHON) $(PROMPT_STATE_SYNC) \
 		--local-index "$(LOCAL_PROMPT_INDEX)" \
 		--status-only
+
+GDL_EMPIRICAL_TOOL ?= scripts/coordination/gdl_empirical_learning.py
+GDL_EMPIRICAL_FIXTURE ?= tests/fixtures/graphic_design_lab/gdl_empirical_case_menu_sanitized_v0_1.yaml
+
+gdl-empirical-check:
+	$(PYTHON) $(GDL_EMPIRICAL_TOOL) validate --case "$(GDL_EMPIRICAL_FIXTURE)"
+
+gdl-empirical-index:
+	$(PYTHON) $(GDL_EMPIRICAL_TOOL) index
+
+gdl-empirical-summary:
+	$(PYTHON) $(GDL_EMPIRICAL_TOOL) summary
