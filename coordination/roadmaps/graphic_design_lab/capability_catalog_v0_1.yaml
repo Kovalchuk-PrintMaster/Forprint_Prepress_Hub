@@ -9,111 +9,169 @@ authority:
   grants_runtime_initialization: false
   grants_production_write: false
 rules:
-  - catalog_presence_does_not_activate_roadmap_or_execution
-  - roadmap_and_catalog_are_cross_linked_but_not_interchangeable
-  - experimentally_verified_does_not_mean_canonical_provider_selected
-  - production_and_review_artifacts_have_distinct_roles
+- catalog_presence_does_not_activate_roadmap_or_execution
+- roadmap_and_catalog_are_cross_linked_but_not_interchangeable
+- experimentally_verified_does_not_mean_canonical_provider_selected
+- production_and_review_artifacts_have_distinct_roles
 maturity_states:
-  - IMPLEMENTED_VERIFIED
-  - PARTIAL_IMPLEMENTED_VERIFIED
-  - EXPERIMENTALLY_VERIFIED
-  - PLANNED_NEAR_TERM
-  - PLANNED
-  - STRATEGIC_EVALUATE
+- IMPLEMENTED_VERIFIED
+- PARTIAL_IMPLEMENTED_VERIFIED
+- EXPERIMENTALLY_VERIFIED
+- PLANNED_NEAR_TERM
+- PLANNED
+- STRATEGIC_EVALUATE
 entries:
-  - id: structured_design_specification
-    title: Structured Design Specification
-    state: IMPLEMENTED_VERIFIED
-    purpose: canonical_machine_readable_design_semantics
-    related_roadmap: [GDL-N02]
-  - id: deterministic_editable_svg_compilation
-    title: Deterministic editable SVG compilation
-    state: IMPLEMENTED_VERIFIED
-    purpose: reproducible_editable_vector_layout
-    related_roadmap: [GDL-N04]
-  - id: svg_to_png_review_preview
-    title: SVG to PNG review preview
+- id: structured_design_specification
+  title: Structured Design Specification
+  state: IMPLEMENTED_VERIFIED
+  purpose: canonical_machine_readable_design_semantics
+  related_roadmap:
+  - GDL-N02
+- id: deterministic_editable_svg_compilation
+  title: Deterministic editable SVG compilation
+  state: IMPLEMENTED_VERIFIED
+  purpose: reproducible_editable_vector_layout
+  related_roadmap:
+  - GDL-N04
+- id: svg_to_png_review_preview
+  title: SVG to PNG review preview
+  state: EXPERIMENTALLY_VERIFIED
+  purpose: fast_client_or_human_visual_review
+  inputs:
+  - editable_svg
+  outputs:
+  - png_preview
+  candidates:
+  - id: librsvg_rsvg_convert
     state: EXPERIMENTALLY_VERIFIED
-    purpose: fast_client_or_human_visual_review
-    inputs: [editable_svg]
-    outputs: [png_preview]
-    candidates:
-      - id: librsvg_rsvg_convert
-        state: EXPERIMENTALLY_VERIFIED
-      - id: inkscape_cli
-        state: PLANNED
-      - id: cairosvg
-        state: PLANNED
-    print_output: false
-    canonical_provider_selected: false
-    related_roadmap: [GDL-N05]
-  - id: product_profile_semantics
-    title: Reusable product-profile semantics
-    state: PARTIAL_IMPLEMENTED_VERIFIED
-    purpose: encode_repeatable_product_rules
-    related_roadmap: [GDL-N07]
-  - id: product_playbook
-    title: Product Playbook
-    state: PARTIAL_IMPLEMENTED_VERIFIED
-    purpose: combine_product_rules_guided_questions_asset_expectations_and_creator_instructions
-    verified_scope:
-      - product_playbook_contract_v0_1
-      - recurring_greeting_card_playbook_v0_1
-    verification_commit: 730134323b814929380d8d6287dbbcb088504116
-    related_roadmap: [GDL-N07, GDL-F07]
-  - id: guided_design_intake
-    title: Guided Design Intake / Design Brief Builder
-    state: PARTIAL_IMPLEMENTED_VERIFIED
-    purpose: turn_raw_customer_inputs_into_normalized_design_request
-    inputs: [customer_files, customer_notes, references, product_playbook]
-    outputs: [normalized_design_request, asset_mapping, unresolved_questions]
-    ambiguity_rule: require_human_confirmation
-    verified_scope:
-      - deterministic_intake_normalization
-      - answer_type_and_choice_validation
-      - mapping_states_confirmed_proposed_unresolved
-      - ambiguous_mapping_requires_human_confirmation
-    verification_commit: 730134323b814929380d8d6287dbbcb088504116
-    related_roadmap: [GDL-F07]
-  - id: creator_handoff_package
-    title: Creator Handoff Package
-    state: PARTIAL_IMPLEMENTED_VERIFIED
-    purpose: package_normalized_brief_assets_and_mapping_for_specialized_creator
-    outputs: [creator_brief, design_request, asset_manifest, source_assets, references]
-    verified_scope:
-      - creator_handoff_contract_v0_1
-      - deterministic_creator_handoff_builder
-      - machine_readable_design_request
-      - asset_manifest_and_mapping
-    verification_commit: 730134323b814929380d8d6287dbbcb088504116
-    related_roadmap: [GDL-F06, GDL-F07]
-  - id: creator_result_package
-    title: Creator Result Package
-    state: PLANNED_NEAR_TERM
-    purpose: return_editable_artifact_preview_and_machine_readable_design_manifest
-    outputs: [editable_artifact, preview, creator_manifest, notes]
-    related_roadmap: [GDL-F06]
-  - id: mixed_raster_vector_composition
-    title: Mixed raster/vector composition
+  - id: inkscape_cli
     state: PLANNED
-    related_roadmap: [GDL-F02]
-  - id: classical_vector_trace
-    title: Classical raster/vector trace
+  - id: cairosvg
     state: PLANNED
-    related_roadmap: [GDL-F03]
-  - id: semantic_raster_to_vector_reconstruction
-    title: Semantic raster to editable-vector reconstruction
-    state: STRATEGIC_EVALUATE
-    candidate_routes:
-      - classical_trace
-      - ai_semantic_reconstruction
-      - hybrid_raster_vector_rebuild
-    related_roadmap: [GDL-F02, GDL-F03, GDL-F04]
-  - id: bounded_revision_patch
-    title: Stable-object bounded revision patches
-    state: PARTIAL_IMPLEMENTED_VERIFIED
-    related_roadmap: [GDL-N03]
-  - id: review_and_print_pdf
-    title: Review and print PDF
-    state: PLANNED
-    related_roadmap: [GDL-F05]
+  print_output: false
+  canonical_provider_selected: false
+  related_roadmap:
+  - GDL-N05
+- id: product_profile_semantics
+  title: Reusable product-profile semantics
+  state: PARTIAL_IMPLEMENTED_VERIFIED
+  purpose: encode_repeatable_product_rules
+  related_roadmap:
+  - GDL-N07
+- id: product_playbook
+  title: Product Playbook
+  state: PARTIAL_IMPLEMENTED_VERIFIED
+  purpose: combine_product_rules_guided_questions_asset_expectations_and_creator_instructions
+  verified_scope:
+  - product_playbook_contract_v0_1
+  - recurring_greeting_card_playbook_v0_1
+  verification_commit: 730134323b814929380d8d6287dbbcb088504116
+  related_roadmap:
+  - GDL-N07
+  - GDL-F07
+- id: guided_design_intake
+  title: Guided Design Intake / Design Brief Builder
+  state: PARTIAL_IMPLEMENTED_VERIFIED
+  purpose: turn_raw_customer_inputs_into_normalized_design_request
+  inputs:
+  - customer_files
+  - customer_notes
+  - references
+  - product_playbook
+  outputs:
+  - normalized_design_request
+  - asset_mapping
+  - unresolved_questions
+  ambiguity_rule: require_human_confirmation
+  verified_scope:
+  - deterministic_intake_normalization
+  - answer_type_and_choice_validation
+  - mapping_states_confirmed_proposed_unresolved
+  - ambiguous_mapping_requires_human_confirmation
+  verification_commit: 730134323b814929380d8d6287dbbcb088504116
+  related_roadmap:
+  - GDL-F07
+- id: creator_handoff_package
+  title: Creator Handoff Package
+  state: PARTIAL_IMPLEMENTED_VERIFIED
+  purpose: package_normalized_brief_assets_and_mapping_for_specialized_creator
+  outputs:
+  - creator_brief
+  - design_request
+  - asset_manifest
+  - source_assets
+  - references
+  verified_scope:
+  - creator_handoff_contract_v0_1
+  - deterministic_creator_handoff_builder
+  - machine_readable_design_request
+  - asset_manifest_and_mapping
+  verification_commit: 730134323b814929380d8d6287dbbcb088504116
+  related_roadmap:
+  - GDL-F06
+  - GDL-F07
+- id: creator_result_package
+  title: Creator Result Package
+  state: IMPLEMENTED_VERIFIED
+  purpose: return_editable_artifact_preview_and_machine_readable_design_manifest
+  outputs:
+  - editable_artifact
+  - preview
+  - creator_manifest
+  - notes
+  related_roadmap:
+  - GDL-F06
+  verified_scope:
+  - creator_result_package_contract_v0_1
+  - stable_package_and_result_identity
+  - revision_semantics
+  - creator_handoff_and_prompt_provenance
+  - deterministic_provenance_sha256
+  - expected_vs_observed_result_metadata
+  - content_fidelity_gate_metadata
+  - complete_partial_style_only_blocked_states
+  - internal_review_readiness
+  - customer_forwarding_readiness
+  - artifact_suitability
+  - external_artifact_reference_boundary
+  - sanitized_fixture
+  - deterministic_validator
+  - human_readable_summary
+  verification_commit: 323a542355cbe9d202544eb86a62dd59e9760285
+  completion_publication_commit: e37e609f8db06afba09e5af3acb3a7a35440848a
+  blueprint_acceptance_publication_commit: 2cbeb0c59affec85fc708ce3446b7f79ec4bc5a1
+  blueprint_review_status: accepted_by_blueprint
+  runtime_initialized: false
+  provider_execution_authorized: false
+  production_write_enabled: false
+- id: mixed_raster_vector_composition
+  title: Mixed raster/vector composition
+  state: PLANNED
+  related_roadmap:
+  - GDL-F02
+- id: classical_vector_trace
+  title: Classical raster/vector trace
+  state: PLANNED
+  related_roadmap:
+  - GDL-F03
+- id: semantic_raster_to_vector_reconstruction
+  title: Semantic raster to editable-vector reconstruction
+  state: STRATEGIC_EVALUATE
+  candidate_routes:
+  - classical_trace
+  - ai_semantic_reconstruction
+  - hybrid_raster_vector_rebuild
+  related_roadmap:
+  - GDL-F02
+  - GDL-F03
+  - GDL-F04
+- id: bounded_revision_patch
+  title: Stable-object bounded revision patches
+  state: PARTIAL_IMPLEMENTED_VERIFIED
+  related_roadmap:
+  - GDL-N03
+- id: review_and_print_pdf
+  title: Review and print PDF
+  state: PLANNED
+  related_roadmap:
+  - GDL-F05

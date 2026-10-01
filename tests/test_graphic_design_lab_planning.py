@@ -102,17 +102,14 @@ def test_status_records_preview_experiment_without_selecting_provider():
 
     assert (
         status["current_focus"]
-        == "gdl_creator_result_package_foundation_v0_1"
+        == "gdl_creator_result_package_foundation_accepted"
     )
     assert (
         status["source_prompt_id"]
         == "prepress_gdl_creator_result_package_foundation_v0_1"
     )
-    assert status["prompt_intake"]["status"] == "active"
-    assert (
-        status["prompt_intake"]["active_prompt_id"]
-        == "prepress_gdl_creator_result_package_foundation_v0_1"
-    )
+    assert status["prompt_intake"]["status"] == "completed_in_module"
+    assert "active_prompt_id" not in status["prompt_intake"]
     assert status["prompt_intake"]["blueprint_access"] == "READ_ONLY_STRICT"
     assert (
         status["preview_renderer_candidate_state"]
@@ -155,7 +152,7 @@ def test_verified_intake_handoff_partial_state():
     ):
         assert entries[capability_id]["state"] == "PARTIAL_IMPLEMENTED_VERIFIED"
 
-    assert entries["creator_result_package"]["state"] == "PLANNED_NEAR_TERM"
+    assert entries["creator_result_package"]["state"] == "IMPLEMENTED_VERIFIED"
 
 
 def test_human_readable_views_match_verified_intake_state():
@@ -163,7 +160,7 @@ def test_human_readable_views_match_verified_intake_state():
 
     assert (
         status["next_expected_focus"]
-        == "complete_active_blueprint_prompt"
+        == "separately_authorized_next_gdl_contour"
     )
 
     latest = status["latest_gdl_intake_handoff_foundation"]

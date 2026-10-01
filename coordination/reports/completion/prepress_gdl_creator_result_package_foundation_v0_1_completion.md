@@ -1,6 +1,6 @@
 # ForPrint Prepress Hub — GDL Creator Result Package Foundation completion
 
-`PREPRESS_GDL_CREATOR_RESULT_PACKAGE_FOUNDATION_COMPLETION=READY_FOR_BLUEPRINT_REVIEW`
+`PREPRESS_GDL_CREATOR_RESULT_PACKAGE_FOUNDATION_COMPLETION=ACCEPTED_BY_BLUEPRINT`
 
 ## Identity
 
@@ -8,8 +8,8 @@
 - Capability: `graphic_design_lab`
 - Prompt: `prepress_gdl_creator_result_package_foundation_v0_1`
 - Branch: `main`
-- Local completion state: `READY_FOR_BLUEPRINT_REVIEW`
-- Blueprint acceptance claimed: `false`
+- Local completion state: `ACCEPTED_BY_BLUEPRINT`
+- Blueprint acceptance claimed: `true`
 - Next contour activated: `false`
 
 ## Repository evidence
@@ -214,5 +214,23 @@ This report publishes **module-owned completion evidence for Blueprint review**.
 
 The active prompt remains active locally while awaiting that review. The prompt is not archived
 by this publication step, and no later GDL contour is activated.
+
+`SYSTEM_BLUEPRINT_ACCESS_FROM_PREPRESS=READ_ONLY_STRICT`
+
+## Blueprint acceptance
+
+System Blueprint accepted this bounded foundation.
+
+- Decision: `ACCEPTED`
+- Blueprint review status: `accepted_by_blueprint`
+- Accepted at: `2026-10-01T23:00:22+03:00`
+- Blueprint acceptance publication commit: `2cbeb0c59affec85fc708ce3446b7f79ec4bc5a1`
+- Implementation commit: `323a542355cbe9d202544eb86a62dd59e9760285`
+- Completion publication commit: `e37e609f8db06afba09e5af3acb3a7a35440848a`
+- Next contour activated: `false`
+
+This acceptance does not authorize provider selection/execution, GDL runtime initialization,
+production write, automatic customer messaging, automatic design approval, or any later GDL
+execution contour.
 
 `SYSTEM_BLUEPRINT_ACCESS_FROM_PREPRESS=READ_ONLY_STRICT`

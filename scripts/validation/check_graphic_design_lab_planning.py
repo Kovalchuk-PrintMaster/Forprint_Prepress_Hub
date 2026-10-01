@@ -123,8 +123,28 @@ if not errors:
     creator_result = catalog_by_id.get("creator_result_package")
     if not isinstance(creator_result, dict):
         errors.append("creator_result_package_missing")
-    elif creator_result.get("state") != "PLANNED_NEAR_TERM":
-        errors.append("creator_result_package_promoted_too_early")
+    elif creator_result.get("state") not in {
+        "PLANNED_NEAR_TERM",
+        "IMPLEMENTED_VERIFIED",
+    }:
+        errors.append("creator_result_package_state_invalid")
+    elif creator_result.get("state") == "IMPLEMENTED_VERIFIED":
+        result_intake = status.get("prompt_intake")
+        result_accepted = (
+            status.get("status") == "completed_in_module"
+            and status.get("current_focus")
+            == "gdl_creator_result_package_foundation_accepted"
+            and isinstance(result_intake, dict)
+            and result_intake.get("blueprint_review_status")
+            == "accepted_by_blueprint"
+            and result_intake.get("completion_state")
+            == "ACCEPTED_BY_BLUEPRINT"
+            and result_intake.get("next_contour_activated") is False
+        )
+        if not result_accepted:
+            errors.append(
+                "creator_result_package_promoted_without_blueprint_acceptance"
+            )
 
     # human_readable_verified_intake_markers
     human_markers = {
@@ -185,10 +205,26 @@ if not errors:
         and isinstance(prompt_intake.get("implementation_started"), bool)
     )
 
+    accepted_result_package_focus = (
+        status.get("source_prompt_id")
+        == "prepress_gdl_creator_result_package_foundation_v0_1"
+        and status.get("current_focus")
+        == "gdl_creator_result_package_foundation_accepted"
+        and status.get("status") == "completed_in_module"
+        and isinstance(status.get("prompt_intake"), dict)
+        and status["prompt_intake"].get("status")
+        == "completed_in_module"
+        and status["prompt_intake"].get("blueprint_review_status")
+        == "accepted_by_blueprint"
+        and status["prompt_intake"].get("completion_state")
+        == "ACCEPTED_BY_BLUEPRINT"
+        and status["prompt_intake"].get("next_contour_activated") is False
+    )
     if not (
         previous_terminal_focus
         or active_empirical_focus
         or active_result_package_focus
+        or accepted_result_package_focus
     ):
         errors.append("gdl_current_focus_not_reconciled")
 

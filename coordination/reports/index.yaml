@@ -20,6 +20,10 @@ reports:
   type: completion
   prompt_id: prepress_gdl_creator_result_package_foundation_v0_1
   path: coordination/reports/completion/prepress_gdl_creator_result_package_foundation_v0_1_completion.md
-  status: READY_FOR_BLUEPRINT_REVIEW
+  status: ACCEPTED_BY_BLUEPRINT
   implementation_commit: 323a542355cbe9d202544eb86a62dd59e9760285
+  completion_publication_commit: e37e609f8db06afba09e5af3acb3a7a35440848a
+  blueprint_review_status: accepted_by_blueprint
+  blueprint_accepted_at: '2026-10-01T23:00:22+03:00'
+  blueprint_acceptance_publication_commit: 2cbeb0c59affec85fc708ce3446b7f79ec4bc5a1
 note: Durable module-side report index. Completion reports are local evidence and do not grant Blueprint acceptance.

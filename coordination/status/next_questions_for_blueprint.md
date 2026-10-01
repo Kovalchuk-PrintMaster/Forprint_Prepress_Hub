@@ -53,24 +53,19 @@ No next GDL contour is requested or self-activated by this handoff.
 
 `SYSTEM_BLUEPRINT_ACCESS_FROM_PREPRESS=READ_ONLY_STRICT`
 
-## GDL Creator Result Package completion review request
+## GDL Creator Result Package acceptance recorded
 
-Prepress Hub has completed and pushed the bounded implementation for:
+The bounded `prepress_gdl_creator_result_package_foundation_v0_1` contour has been accepted by System Blueprint.
 
-`prepress_gdl_creator_result_package_foundation_v0_1`
+- Implementation commit: `323a542355cbe9d202544eb86a62dd59e9760285`
+- Completion publication commit: `e37e609f8db06afba09e5af3acb3a7a35440848a`
+- Blueprint acceptance publication commit: `2cbeb0c59affec85fc708ce3446b7f79ec4bc5a1`
+- Accepted at: `2026-10-01T23:00:22+03:00`
+- Local lifecycle target: terminal archived state
+- Next contour activated: `false`
 
-Please review the module-owned completion evidence:
+There is no remaining Blueprint review request for this contour.
 
-`coordination/reports/completion/prepress_gdl_creator_result_package_foundation_v0_1_completion.md`
-
-Implementation evidence commit:
-
-`323a542355cbe9d202544eb86a62dd59e9760285`
-
-Requested Blueprint action: review the completion evidence and return the authoritative
-Blueprint-side acceptance/revision decision.
-
-The module does not request or self-activate the Creator Evaluation / Failure Taxonomy contour
-or any later GDL contour.
+Any later GDL execution contour requires separate reconciliation and Blueprint publication.
 
 `SYSTEM_BLUEPRINT_ACCESS_FROM_PREPRESS=READ_ONLY_STRICT`
