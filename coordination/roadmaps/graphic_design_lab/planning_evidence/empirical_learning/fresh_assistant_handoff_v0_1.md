@@ -117,3 +117,18 @@ Evidence:
 - Next contour activated: `false`.
 - System Blueprint remains `READ_ONLY_STRICT` from Prepress.
 - Provider execution, runtime initialization, production write and next-contour activation remain false.
+
+## Module-local primary GDL knowledge surface
+
+Primary reusable operating knowledge:
+
+`coordination/graphic_design_lab/index.yaml`
+
+Historical empirical evidence remains under:
+
+`coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/`
+
+Do not create new reusable cross-case GDL rules only inside historical planning evidence.
+General rules belong in the module-local primary GDL surface; product-specific rules belong
+under its `directions/`; prompts used in material runs must be preserved/referenced through
+`prompt_evidence/`.

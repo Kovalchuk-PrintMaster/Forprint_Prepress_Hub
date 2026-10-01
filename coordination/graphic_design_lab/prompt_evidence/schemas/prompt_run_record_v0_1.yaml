@@ -1,0 +1,47 @@
+schema_version: gdl_prompt_run_record_v0_1
+required:
+- prompt_id
+- case_id
+- role
+- prompt_type
+- format
+- content_ref
+- result_ref
+- outcome
+fields:
+  prompt_id: stable_string
+  case_id: sanitized_case_reference
+  role:
+  - INTAKE
+  - CREATOR
+  - CORRECTION
+  - CUSTOMER_COMMUNICATION
+  - OTHER
+  prompt_type: string
+  format:
+  - PROSE
+  - STRUCTURED
+  - HYBRID
+  content_ref: repository_or_external_reference
+  source_context_refs: list
+  result_ref: repository_or_external_reference
+  outcome:
+    operator_acceptance:
+    - NOT_RECORDED
+    - ACCEPTED
+    - REJECTED
+    customer_acceptance:
+    - NOT_RECORDED
+    - ACCEPTED
+    - REJECTED
+    customer_explicit_satisfaction:
+    - NOT_OBSERVED
+    - POSITIVE
+    - NEUTRAL
+    - NEGATIVE
+    first_attempt_accepted: true_false_or_not_observed
+    revision_count: integer_or_unknown
+  observations:
+    strengths: list
+    failures: list
+    reusable_pattern_candidate: boolean

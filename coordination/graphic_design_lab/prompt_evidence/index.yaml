@@ -1,0 +1,7 @@
+schema_version: gdl_prompt_evidence_index_v0_1
+status: ACTIVE_LONG_RUNNING
+policy: prompt_evidence_policy_v0_1.yaml
+schema: schemas/prompt_run_record_v0_1.yaml
+template: templates/prompt_run_record_v0_1.yaml
+runs: []
+storage_rule: actual_case_prompt_files_may_live_under_the_case_or_prompt_evidence_runs_but_must_be_indexed_or_referenced_here

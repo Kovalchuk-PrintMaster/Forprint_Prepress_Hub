@@ -1,0 +1,32 @@
+schema_version: gdl_vehicle_branding_customer_intake_fields_v0_1
+direction_id: vehicle_branding
+inherits:
+- ../../policies/customer_interaction_policy_v0_1.yaml
+- ../../customer_communication/telegram_form_style_v0_1.yaml
+field_groups:
+- id: vehicle_identity
+  fields:
+  - manufacturer
+  - model
+  - year_or_generation
+  - body_configuration
+  - body_color
+- id: branding_scope
+  fields:
+  - left_side
+  - right_side
+  - rear
+  - front_doors
+- id: assets
+  fields:
+  - real_vehicle_left_photo
+  - real_vehicle_right_photo
+  - logo_or_coat_of_arms
+  - style_reference
+- id: content
+  fields:
+  - confirmed_text
+  - phone_for_layout
+  - website_or_qr_destination
+customer_message_rule: render_only_missing_fields_as_telegram_friendly_fill_in_form
+do_not_ask_again_when_already_known: true

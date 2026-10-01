@@ -45,6 +45,8 @@ deterministic_operator_surface:
 specialized_directions:
 - direction_id: vehicle_branding
   status: ACTIVE_EMPIRICAL_KNOWLEDGE_SATURATION
-  index: vehicle_branding/index.yaml
-  first_case: vehicle_branding/cases/GDL-VB-20261001-IVECO-001
-  loader: loaders/vehicle_branding/GDL-INTAKE-VEHICLE-BRANDING-v001.md
+  index: coordination/graphic_design_lab/directions/vehicle_branding/index.yaml
+  first_case: coordination/graphic_design_lab/directions/vehicle_branding/cases/GDL-VB-20261001-IVECO-001
+  loader: coordination/graphic_design_lab/loaders/vehicle_branding/GDL-INTAKE-VEHICLE-BRANDING-v001.md
+module_local_primary_gdl_surface: coordination/graphic_design_lab/index.yaml
+role_after_migration: HISTORICAL_AND_EMPIRICAL_EVIDENCE_SOURCE

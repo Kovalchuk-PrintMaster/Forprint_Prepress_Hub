@@ -1,0 +1,29 @@
+schema_version: gdl_prompt_evidence_policy_v0_1
+status: ACTIVE_EMPIRICAL_POLICY
+capture_when:
+- prompt_materially_influences_intake_or_creator_output
+- prompt_is_revised_after_failure
+- prompt_is_customer_facing_and_its_format_is_under_evaluation
+- prompt_becomes_candidate_reusable_pattern
+record:
+- prompt_id
+- case_id
+- role
+- prompt_type
+- format
+- content_ref
+- source_context_refs
+- result_ref
+- operator_acceptance
+- customer_acceptance
+- customer_explicit_satisfaction
+- first_attempt_accepted
+- revision_count
+- observed_strengths
+- observed_failures
+- reusable_pattern_candidate
+privacy:
+  customer_private_contact_in_git: false
+  raw_customer_assets_in_git: false
+  sanitize_customer_identity_when_needed: true
+interpretation_rule: one_case_or_one_success_does_not_promote_prompt_style_to_universal_policy

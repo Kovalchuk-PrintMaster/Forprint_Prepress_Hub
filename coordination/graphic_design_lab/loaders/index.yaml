@@ -1,0 +1,11 @@
+schema_version: gdl_primary_loader_index_v0_1
+status: ACTIVE_LONG_RUNNING
+loaders:
+- id: GDL-INTAKE-VEHICLE-BRANDING-v001
+  role: INTAKE
+  product_family: vehicle_branding
+  path: loaders/vehicle_branding/GDL-INTAKE-VEHICLE-BRANDING-v001.md
+  inherits:
+  - policies/operating_model_v0_1.yaml
+  - policies/customer_interaction_policy_v0_1.yaml
+historical_loader_index: coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/loaders/index.yaml

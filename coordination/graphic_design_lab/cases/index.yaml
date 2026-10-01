@@ -1,0 +1,10 @@
+schema_version: gdl_case_registry_v0_1
+status: ACTIVE_LONG_RUNNING
+cases:
+- case_id: GDL-CASE-VEHICLE-001
+  experiment_id: GDL-VB-20261001-IVECO-001
+  product_family: vehicle_branding
+  status: INTAKE_PENDING
+  direction_path: directions/vehicle_branding
+  case_path: directions/vehicle_branding/cases/GDL-VB-20261001-IVECO-001
+  pii_in_git: false

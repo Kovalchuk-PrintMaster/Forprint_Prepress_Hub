@@ -1,0 +1,7 @@
+schema_version: gdl_customer_communication_index_v0_1
+profile: telegram_plain_chat
+style: telegram_form_style_v0_1.yaml
+templates:
+- templates/customer_information_request_v0_1.md
+- templates/customer_clarification_v0_1.md
+- templates/customer_approval_v0_1.md

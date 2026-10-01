@@ -1,0 +1,32 @@
+schema_version: gdl_customer_interaction_policy_v0_1
+status: ACTIVE_EMPIRICAL_OPERATING_RULE
+default_channel_profile: telegram_plain_chat
+goals:
+- minimize_customer_effort
+- make_missing_fields_obvious
+- avoid_long_unstructured_question_lists
+- collect_only_information_needed_for_next_safe_step
+- make_approval_and_revision_actions_unambiguous
+rules:
+  reuse_known_customer_data: true
+  ask_only_missing_or_uncertain_fields: true
+  group_related_fields: true
+  one_message_when_reasonably_possible: true
+  markdown_tables_for_customer: false
+  yaml_for_customer: false
+  emoji_allowed: true
+  emoji_should_support_scanning_not_decoration: true
+  provide_visible_fill_in_place: true
+  mark_optional_fields: true
+  offer_attachment_or_link_alternatives_when_relevant: true
+  approval_request_must_have_simple_response_options: true
+field_examples:
+  phone: 📞 Телефон для макета:\n____________________
+  qr: 🔗 Куди має вести QR-код?\nНадішліть готовий QR або просто посилання:\n____________________
+  dimensions: 📐 Розмір / габарит:\n____________________
+  file: 📎 Файл / логотип:\nПрикріпіть сюди або надішліть посилання.
+  photo: 📷 Фото:\nПрикріпіть фото сюди.
+clarification_behavior:
+- state_why_the_information_is_needed_in_one_short_sentence_if_not_obvious
+- prefer_fill_in_fields_over_open_ended_prose
+- do_not_mix_internal_status_terms_into_customer_message

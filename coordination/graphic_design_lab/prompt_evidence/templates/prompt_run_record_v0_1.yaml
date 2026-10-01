@@ -1,0 +1,19 @@
+schema_version: gdl_prompt_run_record_v0_1
+prompt_id: REPLACE
+case_id: REPLACE
+role: REPLACE
+prompt_type: REPLACE
+format: REPLACE
+content_ref: REPLACE
+source_context_refs: []
+result_ref: REPLACE
+outcome:
+  operator_acceptance: NOT_RECORDED
+  customer_acceptance: NOT_RECORDED
+  customer_explicit_satisfaction: NOT_OBSERVED
+  first_attempt_accepted: NOT_OBSERVED
+  revision_count: UNKNOWN
+observations:
+  strengths: []
+  failures: []
+  reusable_pattern_candidate: false

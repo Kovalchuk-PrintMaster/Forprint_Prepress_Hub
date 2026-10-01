@@ -1,0 +1,21 @@
+schema_version: gdl_telegram_form_style_v0_1
+channel: telegram_plain_chat
+rules:
+- short_intro_max_2_sentences
+- group_fields_by_meaning
+- each_requested_value_has_visible_fill_in_place_or_attachment_instruction
+- do_not_request_already_known_reliable_values
+- mark_optional_as_optional
+- emoji_optional_but_consistent
+- avoid_tables
+- avoid_yaml_json
+- avoid_internal_project_terms
+- end_with_one_simple_action_instruction
+field_rendering:
+  text: LABEL:\n____________________
+  phone: 📞 LABEL:\n____________________
+  url: 🔗 LABEL:\n____________________
+  size: 📐 LABEL:\n____________________
+  photo: 📷 LABEL:\nПрикріпіть фото сюди.
+  file: 📎 LABEL:\nПрикріпіть файл або посилання.
+  choice: 'Оберіть один варіант: 1 / 2 / 3'

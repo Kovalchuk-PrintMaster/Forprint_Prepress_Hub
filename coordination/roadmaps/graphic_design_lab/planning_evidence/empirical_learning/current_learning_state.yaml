@@ -107,3 +107,4 @@ parallel_active_directions:
   - production_files_wait_for_customer_approval_and_verified_geometry
   - machine_readable_creator_request_is_required
   - engineering_mechanics_are_worker_candidates_not_manual_default_work
+module_local_primary_gdl_surface: coordination/graphic_design_lab/index.yaml

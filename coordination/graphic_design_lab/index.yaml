@@ -1,0 +1,16 @@
+schema_version: gdl_primary_knowledge_index_v0_1
+document_type: GDL_MODULE_LOCAL_PRIMARY_KNOWLEDGE_INDEX
+module_id: forprint_prepress_hub
+capability_id: graphic_design_lab
+status: ACTIVE_LONG_RUNNING
+authority: MODULE_LOCAL_KNOWLEDGE_NOT_RUNTIME_AUTHORITY
+sections:
+  policies: policies/
+  customer_communication: customer_communication/
+  prompt_evidence: prompt_evidence/
+  directions: directions/
+  loaders: loaders/
+  cases: cases/
+historical_evidence_root: coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning
+active_directions:
+- vehicle_branding

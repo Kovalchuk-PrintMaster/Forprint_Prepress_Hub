@@ -1,0 +1,36 @@
+schema_version: gdl_operating_model_v0_1
+status: ACTIVE_EMPIRICAL_OPERATING_RULE
+lane: HUMAN_ASSISTANT_EMPIRICAL_KNOWLEDGE_SATURATION
+general_flow:
+- customer_reality
+- intake
+- structured_creator_request
+- creator_result
+- operator_review
+- customer_review_when_allowed
+- corrections
+- outcome
+- prompt_effectiveness_evidence
+- reusable_findings
+- worker_candidates
+layering:
+- global_rules
+- direction_specific_rules
+- case_context
+- run_prompt
+principles:
+- ask_only_for_materially_missing_information
+- do_not_make_customer_repeat_known_reliable_information
+- customer_messages_are_chat_native_not_machine_native
+- critical_execution_constraints_are_machine_readable_for_creator
+- preserve_raw_prompt_and_result_evidence_for_learning
+- operator_accepted_is_not_customer_accepted
+- customer_accepted_is_not_explicit_customer_satisfaction
+- design_approved_is_not_production_ready
+- engineering_mechanics_are_worker_owned_by_default
+authority:
+  provider_execution: false
+  runtime_initialization: false
+  production_write: false
+  automatic_customer_messaging: false
+  next_contour_activation: false

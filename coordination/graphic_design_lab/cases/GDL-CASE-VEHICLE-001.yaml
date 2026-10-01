@@ -1,0 +1,10 @@
+schema_version: gdl_case_registry_entry_v0_1
+case_id: GDL-CASE-VEHICLE-001
+experiment_id: GDL-VB-20261001-IVECO-001
+customer_ref: vehicle_branding_customer_001
+product_family: vehicle_branding
+status: INTAKE_PENDING
+direction_path: directions/vehicle_branding
+evidence_path: directions/vehicle_branding/cases/GDL-VB-20261001-IVECO-001
+raw_customer_material: external_operator_held
+customer_private_contact_in_git: false

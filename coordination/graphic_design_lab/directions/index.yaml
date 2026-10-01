@@ -1,0 +1,7 @@
+schema_version: gdl_direction_index_v0_1
+status: ACTIVE_LONG_RUNNING
+directions:
+- direction_id: vehicle_branding
+  status: ACTIVE_EMPIRICAL_KNOWLEDGE_SATURATION
+  path: directions/vehicle_branding
+  first_case: GDL-VB-20261001-IVECO-001

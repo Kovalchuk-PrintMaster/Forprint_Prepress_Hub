@@ -29,5 +29,5 @@ specialized_product_loaders:
 - id: GDL-INTAKE-VEHICLE-BRANDING-v001
   role: intake
   product_family: vehicle_branding
-  path: loaders/vehicle_branding/GDL-INTAKE-VEHICLE-BRANDING-v001.md
+  path: coordination/graphic_design_lab/loaders/vehicle_branding/GDL-INTAKE-VEHICLE-BRANDING-v001.md
   status: EMPIRICAL_ACTIVE

@@ -43,7 +43,7 @@ The project should preserve the methodology and evidence chain so a new assistan
 
 A dedicated long-running empirical / knowledge-saturation direction now exists at:
 
-`vehicle_branding/`
+`coordination/graphic_design_lab/directions/vehicle_branding/`
 
 Its first real case is:
 
@@ -65,3 +65,21 @@ The human + assistant lane owns:
 
 Engineering mechanics remain future worker-owned tasks and are not implemented manually
 by default in this lane.
+
+## Primary operating-surface migration
+
+Reusable GDL operating knowledge now lives under:
+
+`coordination/graphic_design_lab/`
+
+This `planning_evidence/empirical_learning/` tree remains historical/empirical evidence
+and continuity material. It is no longer the preferred write location for reusable
+cross-case rules.
+
+The active vehicle-branding direction moved to:
+
+`coordination/graphic_design_lab/directions/vehicle_branding/`
+
+The active vehicle-branding Intake loader moved to:
+
+`coordination/graphic_design_lab/loaders/vehicle_branding/GDL-INTAKE-VEHICLE-BRANDING-v001.md`
