@@ -1,0 +1,24 @@
+schema_version: gdl_prompt_evolution_source_reference_v0_1
+document_type: GDL_PROMPT_EVOLUTION_SOURCE_REFERENCE
+experiment_id: GDL-EXP-20261001-MENU-001
+storage_class: TMP_EXTERNAL_EVIDENCE_NOT_GIT_CANONICAL
+source_archive: tmp/gdl_menu_001_prompt_evolution_source_v0_1.zip
+source_archive_sha256: dbadad92507fab4c7051287d24cf9fc52f5c91aec2836e4999ca852225577766
+materialized_directory: tmp/graphic_design_lab/empirical_experiments/GDL-EXP-20261001-MENU-001/prompt_evolution_source_v0_1
+source_manifest:
+  schema_version: gdl_prompt_evolution_source_manifest_v0_1
+  experiment_id: GDL-EXP-20261001-MENU-001
+  evidence_class: PROMPT_EVOLUTION_DIALOGUE_AND_PATCH_SEQUENCE
+  status: EXTERNAL_EMPIRICAL_EVIDENCE_NOT_EXECUTION_AUTHORITY
+  source_original:
+    uploaded_name: Pasted text(20261001-151208).txt
+    sha256: 9605259a4b21366a071b428df6a0d5507385d5cdde1637c6b5960e96f35b47ed
+    bytes: 30908
+  redacted_dialogue:
+    path: source/dialogue_and_prompt_sequence_redacted.txt
+    sha256: 3509fecfd0c63f5ceb3d417a7f4ae0b72f00d9236a57cce0a7ea8a9536ff06af
+    customer_name_redaction_count: 3
+  extracted_machine_readable_patches:
+    path: source/extracted_machine_readable_patches.md
+    sha256: 9dac7ec493f6fa50128699e22a82b85161114ce69ff9ae81c380ef493a8bf471
+    patch_count: 3

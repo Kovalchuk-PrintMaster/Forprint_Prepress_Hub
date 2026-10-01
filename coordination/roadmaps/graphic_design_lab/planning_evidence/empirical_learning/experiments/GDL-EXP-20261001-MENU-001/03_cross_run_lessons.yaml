@@ -59,6 +59,14 @@ lessons:
   state: OPEN_HYPOTHESIS
   lesson: Generic/generated food imagery may be useful as decorative atmosphere, but should not be presented as
     a factual depiction of a specific customer dish unless dish identity is verified.
+- id: machine_readable_execution_patches_improve_creator_convergence
+  state: PRIMARY_EMPIRICAL_FINDING_STRONG_HYPOTHESIS
+  lesson: In MENU-001, Creator quality improved most clearly after correction prompts became structured execution
+    contracts with explicit locks, data authority, exact mutation sets and final gates. Prose-only corrective guidance
+    was less reliable.
+  limitations: The single-case sequence does not isolate format from increasing specificity, cleaner source data
+    and repeated iteration.
+  evidence_path: coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/experiments/GDL-EXP-20261001-MENU-001/17_prompt_format_effect_observation.yaml
 do_not_promote_yet:
 - exact_number_of_variants_for_all_products
 - SVG_as_universal_final_production_format

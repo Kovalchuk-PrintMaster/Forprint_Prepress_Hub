@@ -1,0 +1,31 @@
+schema_version: gdl_machine_readable_execution_patch_pattern_v0_1
+document_type: GDL_MACHINE_READABLE_EXECUTION_PATCH_PATTERN_CANDIDATE
+status: EMPIRICAL_PATTERN_CANDIDATE_NOT_CANONICAL
+use_when:
+- factual_content_is_high_risk
+- correction_must_preserve_existing_valid_work
+- creator_has_previously_dropped_or_invented_constraints
+- result_needs_clear_customer_forwarding_gate
+recommended_structure:
+- MODE
+- SCOPE
+- LOCKS
+- DATA_AUTHORITY
+- HARD_RULES
+- PRESERVE
+- REMOVE
+- CORRECT
+- ADD
+- SPACE_MANAGEMENT
+- UNRESOLVED_POLICY
+- FINAL_GATE
+- OUTPUT_STATUS
+representation_rules:
+- use_explicit_booleans_or_enum_states_where_possible
+- prefer_exact_row_objects_for_factual_content
+- separate_preserve_from_mutate_surfaces
+- enumerate_allowed_and_forbidden_actions
+- make_failure_conditions_explicit
+- declare_output_readiness_state
+prose_role: Short prose may explain intent, but must not be the only carrier of high-risk execution constraints.
+current_evidence: GDL-PRIMARY-FINDING-PROMPT-FORMAT-001

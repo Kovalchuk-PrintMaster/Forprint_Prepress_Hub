@@ -30,6 +30,8 @@ strong_hypotheses:
 - page_count_must_not_imply_completeness_when_scope_is_partial
 - correction_runs_need_independent_content_and_visual_direction_locks
 - customer_review_ready_requires_scope_truthfulness
+- machine_readable_execution_patches_improve_high_constraint_creator_convergence
+- prose_should_not_be_the_only_carrier_of_high_risk_creator_constraints
 open_hypotheses:
 - two_first_review_variants_should_be_default_for_open_visual_tasks
 - SVG_should_be_primary_editable_source_for_menu_like_layouts
@@ -43,6 +45,9 @@ next_experiment_requirements:
 - require explicit output classification and customer forwarding decision
 - block customer forwarding for style-only or content-partial outputs
 - validate every visible factual item against authorized source before customer review
+- use_structured_machine_readable_execution_patch_for_high_risk_corrections
+- preserve_short_prose_as_context_but_put_execution_constraints_in_structured_fields
+- collect_comparable_prompt_format_evidence_on_additional_real_cases
 next_action:
   state: WAIT_FOR_CREATOR_ITERATION_003
   experiment_id: GDL-EXP-20261001-MENU-001
@@ -73,3 +78,11 @@ latest_creator_iteration:
   visual_direction_continuity: PARTIAL
   evidence_path: coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/experiments/GDL-EXP-20261001-MENU-001/13_creator_iteration_002_observation.yaml
   visual_review_path: coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/experiments/GDL-EXP-20261001-MENU-001/14_creator_iteration_002_visual_review.md
+primary_empirical_finding:
+  id: GDL-PRIMARY-FINDING-PROMPT-FORMAT-001
+  status: STRONG_HYPOTHESIS
+  finding: Machine-readable structured execution patches currently show materially better Creator convergence than
+    human-style descriptive correction prose in MENU-001.
+  evidence_path: coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/experiments/GDL-EXP-20261001-MENU-001/17_prompt_format_effect_observation.yaml
+  pattern_candidate: coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/patterns/machine_readable_execution_patch_v0_1.yaml
+  promotion_pending: true

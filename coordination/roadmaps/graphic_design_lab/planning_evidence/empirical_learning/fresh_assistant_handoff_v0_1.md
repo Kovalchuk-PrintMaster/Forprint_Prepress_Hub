@@ -87,3 +87,20 @@ The next case-local instruction is
 Do not restart Intake. Wait for Creator iteration 003 and evaluate it against:
 content fidelity, scope completeness, artifact cleanliness, language, visual-direction
 continuity, and explicit `customer_forwarding_allowed`.
+
+## Primary empirical finding â€” prompt representation
+
+The strongest current learning from MENU-001 is that structured, machine-readable Creator
+execution patches produced markedly better convergence than descriptive human-style correction
+text.
+
+Status: `STRONG_HYPOTHESIS`, not yet universal policy.
+
+For the next relevant real cases:
+- keep prose short and contextual;
+- carry high-risk execution constraints in structured fields;
+- explicitly define locks, data authority, allowed mutations, forbidden mutations and final gates;
+- collect comparable evidence before promoting this to canonical GDL policy.
+
+Evidence:
+`experiments/GDL-EXP-20261001-MENU-001/17_prompt_format_effect_observation.yaml`

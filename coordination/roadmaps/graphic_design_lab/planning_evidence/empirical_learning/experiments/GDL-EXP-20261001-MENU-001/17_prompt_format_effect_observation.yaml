@@ -1,0 +1,79 @@
+schema_version: gdl_prompt_format_effect_observation_v0_1
+document_type: GDL_PROMPT_FORMAT_EFFECT_OBSERVATION
+finding_id: GDL-PRIMARY-FINDING-PROMPT-FORMAT-001
+experiment_id: GDL-EXP-20261001-MENU-001
+observed_date: '2026-10-01'
+status: PRIMARY_EMPIRICAL_FINDING_STRONG_HYPOTHESIS
+authority: EMPIRICAL_EVIDENCE_NOT_CANONICAL_POLICY
+finding: Within MENU-001, increasingly machine-readable Creator execution patches were associated with a marked
+  improvement in factual compliance, constraint retention and convergence compared with prose-oriented corrective
+  instructions.
+plain_language: For high-constraint Creator corrections, structured machine-readable prompts currently appear materially
+  more effective than human-style descriptive prose.
+evidence_sequence:
+- stage: descriptive_human_style_review
+  observed_outcome: Creator continued to mix verified customer data with demo or generic menu content and repeatedly
+    lost constraints.
+- stage: CREATOR_EXECUTION_PATCH_v0_8
+  prompt_shape: machine_readable_strict_data_replacement
+  key_controls:
+  - MODE
+  - VISUAL_FREEZE
+  - DATA_AUTHORITY
+  - HARD_RULE
+  - REMOVE_UNVERIFIED_CURRENT_ITEMS
+  - CORRECT_EXISTING
+  - ADD_MISSING_CONFIRMED
+  - FINAL_GATE
+  observed_outcome: Demo contamination was largely removed and visible price/weight accuracy improved, while completeness
+    remained the dominant failure.
+- stage: CREATOR_EXECUTION_PATCH_v0_9
+  prompt_shape: machine_readable_completeness_reconciliation
+  key_controls:
+  - PRESERVE_EXACTLY
+  - RESTORE_MISSING_CONFIRMED
+  - SPACE_MANAGEMENT
+  - UNRESOLVED_POLICY
+  - FINAL_GATE
+  observed_outcome: 'The result converged further: correct rows were preserved and the remaining problem narrowed
+    to a small known set of omitted confirmed rows.'
+- stage: CREATOR_FINAL_RECONCILIATION_PATCH_v1_0
+  prompt_shape: machine_readable_minimal_final_patch
+  key_controls:
+  - modify_only_items_explicitly_listed_in_this_patch
+  - ADD_CONFIRMED_ROWS
+  - REMOVE_TEXT
+  - IF_ADDITIONAL_SPACE_REQUIRED
+  - FINAL_GATE
+  - OUTPUT_STATUS
+  observed_outcome: The final candidate passed the working confirmed-content completeness check and became suitable
+    for customer review.
+likely_effective_mechanisms:
+- explicit execution mode
+- separate locked vs mutable surfaces
+- declared data authority
+- exact allow and forbid lists
+- row-level factual triplets
+- explicit unresolved policy
+- bounded space-management actions
+- machine-checkable final gates
+- explicit failure and output states
+important_limitations:
+- single_case_observation
+- prompt_format_and_prompt_specificity_are_entangled
+- later_iterations_also_benefited_from_more_verified_source_data
+- repeated_iteration_itself_may_contribute_to_improvement
+- causal_superiority_is_not_yet_proven
+current_operating_implication: For the next empirical cases, high-risk factual correction prompts should default
+  to a structured execution-patch form, while prose remains useful as short human context around the machine-readable
+  contract.
+promotion_criteria:
+- reproduce_on_at_least_two_additional_real_cases
+- test_on_at_least_one_non_menu_product_family
+- compare_similar_constraint_sets_in_prose_vs_structured_form_when_practical
+source_evidence:
+  archive: tmp/gdl_menu_001_prompt_evolution_source_v0_1.zip
+  archive_sha256: dbadad92507fab4c7051287d24cf9fc52f5c91aec2836e4999ca852225577766
+  materialized_directory: tmp/graphic_design_lab/empirical_experiments/GDL-EXP-20261001-MENU-001/prompt_evolution_source_v0_1
+  redacted_dialogue_sha256: 3509fecfd0c63f5ceb3d417a7f4ae0b72f00d9236a57cce0a7ea8a9536ff06af
+  extracted_patches_sha256: 9dac7ec493f6fa50128699e22a82b85161114ce69ff9ae81c380ef493a8bf471

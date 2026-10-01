@@ -98,3 +98,27 @@ Keep separate:
 - production ready.
 
 These states are not synonyms.
+
+## Empirical amendment â€” structured prompt representation
+
+Current primary empirical finding from `GDL-EXP-20261001-MENU-001`:
+
+> For high-constraint Creator corrections, machine-readable structured execution patches
+> currently produce materially better convergence than human-style descriptive prose.
+
+Treat this as a **strong hypothesis**, not universal policy yet.
+
+Recommended experimental default:
+
+```text
+short human context
++
+machine-readable execution patch
+```
+
+The structured patch should separate immutable and mutable surfaces and explicitly carry:
+`MODE`, `LOCKS`, `DATA_AUTHORITY`, `PRESERVE`, `REMOVE`, `CORRECT`, `ADD`,
+`SPACE_MANAGEMENT`, `UNRESOLVED_POLICY`, `FINAL_GATE`, and `OUTPUT_STATUS`.
+
+Do not infer that YAML syntax itself is the cause. The observed benefit may come from the
+combination of structure, specificity, explicit state and bounded mutation rules.
