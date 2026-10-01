@@ -43,6 +43,22 @@ lessons:
   state: STRONG_HYPOTHESIS
   lesson: Before customer forwarding, every visible factual item must be checked against authorized source content;
     wrong or invented content is a hard failure even when the customer likes the visual direction.
+- id: customer_review_ready_requires_artifact_cleanliness_gate
+  state: STRONG_HYPOTHESIS
+  lesson: Visible template remnants, rotated fragments or accidental layout debris are hard blockers for customer-review-ready
+    classification.
+- id: page_count_must_not_imply_false_completeness
+  state: STRONG_HYPOTHESIS
+  lesson: Pagination such as 1/2 and 2/2 must not imply that a menu is complete when known confirmed customer content
+    is still omitted.
+- id: correction_runs_need_content_and_visual_direction_locks
+  state: STRONG_HYPOTHESIS
+  lesson: When a customer likes the visual direction but content needs correction, the workflow must preserve the
+    approved visual direction independently from the content-replacement operation.
+- id: generic_food_imagery_needs_nonfactual_role
+  state: OPEN_HYPOTHESIS
+  lesson: Generic/generated food imagery may be useful as decorative atmosphere, but should not be presented as
+    a factual depiction of a specific customer dish unless dish identity is verified.
 do_not_promote_yet:
 - exact_number_of_variants_for_all_products
 - SVG_as_universal_final_production_format

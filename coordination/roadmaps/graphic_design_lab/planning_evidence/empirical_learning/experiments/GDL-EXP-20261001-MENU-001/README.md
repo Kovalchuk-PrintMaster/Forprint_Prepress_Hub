@@ -37,3 +37,13 @@ visually plausible
 Future Creator outputs must explicitly declare review-readiness and whether they may be
 forwarded to the customer. Style-only or placeholder-based visuals must be visibly marked
 as non-customer content and must not be forwarded as a customer menu.
+
+## Creator iteration 002 â€” content correction became CONTENT_PARTIAL
+
+The second Creator iteration materially improved content fidelity and used substantially
+more real customer menu data. It still failed customer-review readiness because the visible
+scope was incomplete, page numbering implied false completeness, stray template/layout
+artifacts remained, and the visual direction drifted from the earlier style the customer liked.
+
+Iteration 002 is preserved as evidence and classified `CONTENT_PARTIAL`.
+The case now waits for `CREATOR-ITERATION-003`; Intake is not restarted.

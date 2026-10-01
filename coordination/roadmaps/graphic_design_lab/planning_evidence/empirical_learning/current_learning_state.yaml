@@ -26,9 +26,14 @@ strong_hypotheses:
 - mandatory_identity_elements_need_compliance_check
 - creator_output_must_declare_conformity_and_review_scope
 - non_customer_content_must_never_be_silently_customer_forwardable
+- customer_review_ready_requires_artifact_cleanliness_gate
+- page_count_must_not_imply_completeness_when_scope_is_partial
+- correction_runs_need_independent_content_and_visual_direction_locks
+- customer_review_ready_requires_scope_truthfulness
 open_hypotheses:
 - two_first_review_variants_should_be_default_for_open_visual_tasks
 - SVG_should_be_primary_editable_source_for_menu_like_layouts
+- generic_food_images_should_be_decorative_only_unless_dish_identity_is_verified
 next_experiment_requirements:
 - use revised intake language gate
 - use explicit Creator execution-role loader
@@ -39,9 +44,12 @@ next_experiment_requirements:
 - block customer forwarding for style-only or content-partial outputs
 - validate every visible factual item against authorized source before customer review
 next_action:
-  state: WAIT_FOR_NEXT_REAL_CASE_OR_BLUEPRINT_EXECUTABLE_PROMPT
-  note: Do not rerun MENU-001 RUN-001. Preserve it as baseline evidence and apply the lessons to the next relevant
-    real customer case.
+  state: WAIT_FOR_CREATOR_ITERATION_003
+  experiment_id: GDL-EXP-20261001-MENU-001
+  instruction_path: coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/experiments/GDL-EXP-20261001-MENU-001/15_creator_correction_instruction_v0_3.md
+  note: Do not restart Intake. Preserve iteration 002 as evidence and evaluate the next Creator correction against
+    factual content, completeness, artifact cleanliness, visual-direction continuity and explicit customer-forwarding
+    readiness.
 blueprint:
   horizon_package_submitted: true
   first_new_executable_prompt_received: false
@@ -53,3 +61,15 @@ latest_customer_feedback:
   content_fidelity: REJECTED
   customer_confusion_observed: true
   evidence_path: coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/experiments/GDL-EXP-20261001-MENU-001/11_customer_feedback_and_creator_nonconformance.yaml
+latest_creator_iteration:
+  experiment_id: GDL-EXP-20261001-MENU-001
+  creator_iteration_id: CREATOR-ITERATION-002
+  output_classification: CONTENT_PARTIAL
+  customer_forwarding_allowed: false
+  customer_review_ready: false
+  content_fidelity: IMPROVED_PARTIAL
+  scope_completeness: FAIL
+  artifact_cleanliness: FAIL
+  visual_direction_continuity: PARTIAL
+  evidence_path: coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/experiments/GDL-EXP-20261001-MENU-001/13_creator_iteration_002_observation.yaml
+  visual_review_path: coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/experiments/GDL-EXP-20261001-MENU-001/14_creator_iteration_002_visual_review.md

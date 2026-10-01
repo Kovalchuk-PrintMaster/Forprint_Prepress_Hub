@@ -1,0 +1,22 @@
+schema_version: gdl_creator_iteration_artifact_manifest_v0_1
+document_type: GDL_CREATOR_ITERATION_ARTIFACT_MANIFEST
+experiment_id: GDL-EXP-20261001-MENU-001
+creator_iteration_id: CREATOR-ITERATION-002
+storage_class: TMP_EXTERNAL_EVIDENCE_NOT_GIT_CANONICAL
+source_archive: tmp/gdl_menu_001_creator_iteration_002_source_v0_1.zip
+source_archive_sha256: d2fa1146d154fda925289f524377926ca006e4a481ae46ec1071d90bc8f6f3af
+materialized_directory: tmp/graphic_design_lab/empirical_experiments/GDL-EXP-20261001-MENU-001/creator_iteration_002_source_v0_1
+artifacts:
+- path: source/menu_vitaliy_corrected_page_1.png
+  sha256: 1c331c6d58b304423425dbf6a1746db36b1a522417a24fa326f501e61a1de03f
+  bytes: 975643
+- path: source/menu_vitaliy_corrected_page_2.png
+  sha256: f8865e8af2d2ad34aaf595ba92a574b535eee2374d1d4919ae265c73d4503ce0
+  bytes: 847160
+- path: source/creator_iteration_002_review_and_instruction.md
+  sha256: aa256b410f704db4fd1034b9d092420c3888d321c7f99f97fd1507cff58a22ca
+  bytes: 18604
+interpretation:
+  page_1_role: creator_review_preview
+  page_2_role: creator_review_preview
+  review_markdown_role: operator_review_and_next_correction_instruction

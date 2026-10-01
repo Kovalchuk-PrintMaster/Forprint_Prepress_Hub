@@ -1,0 +1,53 @@
+schema_version: gdl_creator_iteration_observation_v0_1
+document_type: GDL_CREATOR_ITERATION_OBSERVATION
+experiment_id: GDL-EXP-20261001-MENU-001
+case_id: GDL-CASE-MENU-001
+run_id: RUN-001
+creator_iteration_id: CREATOR-ITERATION-002
+observed_date: '2026-10-01'
+authority: EMPIRICAL_EVIDENCE_NOT_EXECUTION_AUTHORITY
+input_context:
+  trigger: correction_after_creator_iteration_001_content_nonconformance
+  goal: restore_customer_content_while_retaining_useful_visual_direction
+result_classification:
+  output_classification: CONTENT_PARTIAL
+  customer_forwarding_allowed: false
+  customer_review_ready: false
+  production_ready: false
+observed_improvements:
+- real_customer_menu_content_is_now_substantially_used
+- venue_identity_is_present
+- customer_facing_text_is_largely_ukrainian
+- names_weights_prices_for_included_blocks_are_materially_closer_to_intake
+observed_failures:
+- template_or_layout_artifacts_remain_visible
+- menu_scope_is_incomplete
+- page_numbering_implies_false_completeness
+- large_unused_layout_areas_create_unfinished_impression
+- visual_direction_drifted_from_previously_preferred_style
+visible_artifact_notes:
+- top_left_leftover_fragment_from_another_menu_block
+- bottom_right_upside_down_or_stray_layout_fragment
+coverage_notes:
+  included_blocks:
+  - mangal
+  - cold_appetizers
+  - rolls_or_mangal
+  - skewers_partial
+  - salads
+  - fryer
+  - sauces
+  known_missing_or_incomplete_scope:
+  - first_courses
+  - second_courses
+  - additional_confirmed_items
+  numeric_score_intentionally_not_used: true
+next_iteration:
+  requested: true
+  expected_id: CREATOR-ITERATION-003
+  instruction_path: coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/experiments/GDL-EXP-20261001-MENU-001/15_creator_correction_instruction_v0_3.md
+  state: AWAITING_CREATOR_RESULT
+external_visual_evidence:
+  directory: tmp/graphic_design_lab/empirical_experiments/GDL-EXP-20261001-MENU-001/creator_iteration_002_source_v0_1
+  source_archive: tmp/gdl_menu_001_creator_iteration_002_source_v0_1.zip
+  archive_sha256: d2fa1146d154fda925289f524377926ca006e4a481ae46ec1071d90bc8f6f3af

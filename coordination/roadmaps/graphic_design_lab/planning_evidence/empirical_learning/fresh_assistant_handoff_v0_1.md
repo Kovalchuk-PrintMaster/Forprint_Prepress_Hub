@@ -68,3 +68,22 @@ must be marked `STYLE_ONLY_REFERENCE`, visibly labeled as not being the customer
 and blocked from customer forwarding.
 
 Next Creator loader candidate: `GDL-CREATOR-v002`.
+
+## MENU-001 current stage â€” awaiting Creator iteration 003
+
+Creator iteration 002 improved factual content but is still `CONTENT_PARTIAL` and must not
+be treated as customer-review-ready.
+
+Known remaining defects:
+- visible template/layout debris;
+- incomplete confirmed menu scope;
+- pagination implying false completeness;
+- excess unused layout area;
+- drift from the earlier preferred visual direction.
+
+The next case-local instruction is
+`experiments/GDL-EXP-20261001-MENU-001/15_creator_correction_instruction_v0_3.md`.
+
+Do not restart Intake. Wait for Creator iteration 003 and evaluate it against:
+content fidelity, scope completeness, artifact cleanliness, language, visual-direction
+continuity, and explicit `customer_forwarding_allowed`.
