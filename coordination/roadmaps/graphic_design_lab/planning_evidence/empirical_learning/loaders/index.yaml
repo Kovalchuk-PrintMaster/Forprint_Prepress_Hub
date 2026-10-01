@@ -25,3 +25,9 @@ roles:
       - customer_forwarding_gate
       - style_only_visible_marking
       - content_fidelity_pre_return_validation
+specialized_product_loaders:
+- id: GDL-INTAKE-VEHICLE-BRANDING-v001
+  role: intake
+  product_family: vehicle_branding
+  path: loaders/vehicle_branding/GDL-INTAKE-VEHICLE-BRANDING-v001.md
+  status: EMPIRICAL_ACTIVE

@@ -38,3 +38,30 @@ The project should preserve the methodology and evidence chain so a new assistan
 - `make gdl-empirical-index` prints deterministic evidence discovery metadata.
 - `make gdl-empirical-summary` prints a human-readable evidence summary.
 - These commands are read-only with respect to empirical evidence and do not activate runtime.
+
+## Specialized direction: vehicle branding
+
+A dedicated long-running empirical / knowledge-saturation direction now exists at:
+
+`vehicle_branding/`
+
+Its first real case is:
+
+`GDL-VB-20261001-IVECO-001`
+
+The direction studies the path from vehicle identification and reference geometry
+through a `FIRST_REVIEWABLE_VEHICLE_CONCEPT` and, only after customer approval plus
+verified geometry, production preparation.
+
+The human + assistant lane owns:
+
+- real cases;
+- intake analysis;
+- Creator-prompt experiments;
+- result evaluation;
+- production-constraint discovery;
+- reusable findings;
+- worker-task candidates.
+
+Engineering mechanics remain future worker-owned tasks and are not implemented manually
+by default in this lane.

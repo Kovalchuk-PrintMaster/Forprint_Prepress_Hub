@@ -1,0 +1,19 @@
+schema_version: gdl_vehicle_branding_worker_candidates_v0_1
+direction_id: vehicle_branding
+status: CANDIDATE_NOT_AUTHORIZED
+owner_lane: future_engineering_worker
+candidates:
+- vehicle_configuration_registry
+- vehicle_template_reference_registry
+- reference_geometry_search_adapter
+- physical_measurement_capture_schema
+- vehicle_safe_zone_annotation_model
+- brand_asset_cleanup_and_vectorization_workflow
+- mockup_projection_helper
+- plotter_cut_package_builder
+- print_and_cut_package_builder
+- hybrid_production_manifest_builder
+- side_specific_artboard_generator
+- installation_allowance_and_overlap_rules
+- preflight_for_text_logo_cut_contour_and_bleed
+human_assistant_lane_rule: collect_evidence_and_requirements_only_do_not_implement_worker_mechanics_by_default

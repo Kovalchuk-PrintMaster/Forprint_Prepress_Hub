@@ -1,0 +1,24 @@
+schema_version: gdl_vehicle_branding_creator_stage_boundary_v0_1
+experiment_id: GDL-VB-20261001-IVECO-001
+current_creator_stage: FIRST_REVIEWABLE_VEHICLE_CONCEPT
+allowed:
+- visual_mockup_left_side
+- visual_mockup_right_side
+- composition_proposal
+- typography_proposal
+- emerald_green_color_direction
+- identity_element_placement_proposal
+- show_explicit_unresolved_geometry_warning
+not_allowed_yet:
+- production_scale_claim
+- final_cut_paths
+- final_print_panels
+- final_print_and_cut_contours
+- installation_overlaps
+- production_ready_export
+transition_to_production_requires:
+- customer_visual_approval
+- exact_vehicle_configuration
+- verified_geometry_or_measurements
+- identity_asset_quality_sufficient_for_production
+- production_technology_selection

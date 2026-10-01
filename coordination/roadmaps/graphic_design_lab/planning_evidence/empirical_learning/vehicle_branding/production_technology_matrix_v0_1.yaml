@@ -1,0 +1,41 @@
+schema_version: gdl_vehicle_branding_production_technology_matrix_v0_1
+direction_id: vehicle_branding
+status: EMPIRICAL_REFERENCE_NOT_PRODUCTION_AUTHORITY
+routes:
+- id: COLORED_FILM_PLOTTER_CUT
+  fit:
+  - simple_text
+  - simple_vector_marks
+  - few_spot_colors
+  - no_photo_or_continuous_tone_required
+  production_outputs:
+  - vector_cut_paths
+  - color_separations
+  - installation_reference
+- id: PRINTED_WHITE_FILM
+  fit:
+  - multicolor_graphics
+  - gradients
+  - complex_coat_of_arms
+  - photographic_or_continuous_tone_content
+  production_outputs:
+  - print_ready_artwork
+  - panel_or_artboard_mapping
+  - installation_reference
+- id: PRINT_AND_CONTOUR_CUT
+  fit:
+  - multicolor_isolated_elements
+  - printed_logo_or_badge_with_shaped_boundary
+  production_outputs:
+  - print_layer
+  - cut_contour
+  - registration_or_workflow_notes
+- id: HYBRID
+  fit:
+  - plotter_cut_text_plus_printed_complex_identity
+  - mixed_simple_and_complex_graphics
+  production_outputs:
+  - cut_film_elements
+  - printed_elements
+  - shared_installation_plan
+selection_rule: technology_selection_occurs_after_visual_direction_and_required_artifact_types_are_understood_and_before_final_production_package

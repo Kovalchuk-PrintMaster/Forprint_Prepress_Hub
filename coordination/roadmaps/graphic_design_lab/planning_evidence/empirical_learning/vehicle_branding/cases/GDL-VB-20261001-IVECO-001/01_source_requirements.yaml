@@ -1,0 +1,35 @@
+schema_version: gdl_vehicle_branding_source_requirements_v0_1
+experiment_id: GDL-VB-20261001-IVECO-001
+source: operator_supplied_customer_dialogue_and_reference_images
+confirmed:
+  vehicle_model_text: IVECO DAILY
+  branding_sides:
+  - left_side
+  - right_side
+  color_direction: emerald_greenish_like_customer_supplied_Dmytrivka_coat_of_arms_reference
+  required_text:
+  - Дмитрівська громада
+  - Центр надання соціальних послуг Дмитрівської сільської ради
+  - service_phone_text_preserved_in_external_source_not_git
+  approval_gate: approve_visual_layout_before_print
+  style_flexibility: may_change_typographic_and_layout_treatment_relative_to_sample_and_should_not_be_a_direct_copy
+unresolved:
+- exact_iveco_daily_year_or_generation
+- exact_body_length_or_wheelbase_variant
+- roof_height_variant
+- body_type_and_conversion
+- real_vehicle_left_side_photo
+- real_vehicle_right_side_photo
+- window_configuration
+- rear_branding_requirement
+- front_door_branding_requirement
+- actual_vehicle_body_color
+- higher_quality_or_official_logo_coat_of_arms_source
+- final_production_technology
+- verified_production_dimensions
+forbidden_assumptions:
+- do_not_infer_exact_dimensions_from_model_name_only
+- do_not_invent_vehicle_configuration
+- do_not_invent_official_identity_assets
+- do_not_copy_sample_layout_literally
+- do_not_claim_production_ready_fit_before_geometry_verification

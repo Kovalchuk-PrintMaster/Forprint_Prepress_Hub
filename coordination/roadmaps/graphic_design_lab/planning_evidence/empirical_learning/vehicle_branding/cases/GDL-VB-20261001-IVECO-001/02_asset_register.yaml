@@ -1,0 +1,32 @@
+schema_version: gdl_vehicle_branding_asset_register_v0_1
+experiment_id: GDL-VB-20261001-IVECO-001
+repository_policy:
+  raw_customer_assets_in_git: false
+  customer_private_contact_in_git: false
+  external_references_only: true
+assets:
+- asset_ref: VB-IVECO-001-REF-01
+  role: sample_branding_reference
+  storage: external_operator_held
+  available: true
+- asset_ref: VB-IVECO-001-IDENTITY-01
+  role: coat_of_arms_color_reference
+  storage: external_operator_held
+  available: true
+  normalization_required: true
+  notes:
+  - source_is_screenshot_quality
+  - inspect_for_vector_reconstruction_or_clean_high_resolution_redraw
+  - preserve_official_identity_do_not_silently_redesign
+- asset_ref: VB-IVECO-001-VEHICLE-LEFT
+  role: real_vehicle_photo_left
+  storage: external_operator_held
+  available: false
+- asset_ref: VB-IVECO-001-VEHICLE-RIGHT
+  role: real_vehicle_photo_right
+  storage: external_operator_held
+  available: false
+- asset_ref: VB-IVECO-001-GEOMETRY-01
+  role: verified_vehicle_geometry_or_template
+  storage: future_reference
+  available: false

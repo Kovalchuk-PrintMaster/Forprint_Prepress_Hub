@@ -37,9 +37,14 @@ blueprint_sync:
   pending: true
   access_from_prepress: READ_ONLY_STRICT
   next_contour_activated: false
-
 deterministic_operator_surface:
   validate: make gdl-empirical-check
   index: make gdl-empirical-index
   summary: make gdl-empirical-summary
   mutates_evidence: false
+specialized_directions:
+- direction_id: vehicle_branding
+  status: ACTIVE_EMPIRICAL_KNOWLEDGE_SATURATION
+  index: vehicle_branding/index.yaml
+  first_case: vehicle_branding/cases/GDL-VB-20261001-IVECO-001
+  loader: loaders/vehicle_branding/GDL-INTAKE-VEHICLE-BRANDING-v001.md

@@ -1,0 +1,33 @@
+schema_version: gdl_vehicle_geometry_rules_v0_1
+direction_id: vehicle_branding
+status: EMPIRICAL_RULESET_v0_1
+vehicle_identity_fields:
+- manufacturer
+- model
+- generation_or_year
+- body_type
+- wheelbase_or_length_variant
+- roof_height_variant
+- side_door_configuration
+- window_configuration
+- rear_door_configuration
+- body_color
+- special_body_conversion_if_any
+reference_geometry_authority_order:
+- measured_real_vehicle
+- verified_exact_manufacturer_or_body_builder_drawing
+- verified_exact_vehicle_template
+- customer_dimensional_evidence
+- internet_reference_for_concept_only
+concept_stage_rules:
+- internet_reference_may_support_visual_concept
+- unknown_variant_must_be_marked_unresolved
+- do_not_claim_exact_fit_without_verified_geometry
+- avoid_designing_critical_content_across_unknown_handles_seams_or_openings
+production_stage_rules:
+- verify_exact_vehicle_configuration
+- verify_real_dimensions_or_exact_template
+- identify_handles_seams_mouldings_wheel_arches_rails_windows_and_fuel_flaps
+- define_safe_and_risky_application_zones
+- define_side_specific_artwork
+- define_installation_allowances_or_panel_overlaps_when_required

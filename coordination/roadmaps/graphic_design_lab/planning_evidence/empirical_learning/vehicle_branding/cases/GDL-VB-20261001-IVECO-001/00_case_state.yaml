@@ -1,0 +1,26 @@
+schema_version: gdl_vehicle_branding_case_state_v0_1
+experiment_id: GDL-VB-20261001-IVECO-001
+case_id: GDL-CASE-VEHICLE-001
+customer_ref: vehicle_branding_customer_001
+product_family: vehicle_branding
+vehicle:
+  manufacturer: IVECO
+  model: Daily
+  generation_or_year: UNRESOLVED
+  exact_body_configuration: UNRESOLVED
+  body_color: UNRESOLVED
+current_stage: INTAKE_PENDING
+target_stage: FIRST_REVIEWABLE_VEHICLE_CONCEPT
+brand_surfaces:
+  left_side: CONFIRMED
+  right_side: CONFIRMED
+  rear: UNRESOLVED
+  front_doors: UNRESOLVED
+customer_approval_before_print: true
+production_ready: false
+provider_execution_authorized: false
+runtime_initialized: false
+production_write_enabled: false
+next_contour_activated: false
+pii_in_git: false
+heavy_artifacts_in_git: false

@@ -1,0 +1,44 @@
+schema_version: gdl_vehicle_branding_direction_v0_1
+document_type: GDL_EMPIRICAL_SPECIALIZED_DIRECTION
+module_id: forprint_prepress_hub
+capability_id: graphic_design_lab
+direction_id: vehicle_branding
+status: ACTIVE_EMPIRICAL_KNOWLEDGE_SATURATION
+authority:
+  execution_authority: false
+  provider_selection_authority: false
+  runtime_initialization_authority: false
+  production_write_authority: false
+  next_contour_activation_authority: false
+purpose: learn_and_structure_the_shortest_stable_path_from_real_vehicle_branding_request_to_customer_approved_concept_and_later_production_package
+human_assistant_lane:
+- real_customer_cases
+- intake_analysis
+- reference_geometry_reasoning
+- creator_prompt_design
+- creator_result_evaluation
+- production_constraint_discovery
+- empirical_findings
+- worker_task_candidates
+phase_model:
+- phase: INTAKE_AND_VEHICLE_IDENTIFICATION
+  production_ready: false
+- phase: REFERENCE_GEOMETRY_AND_ASSET_NORMALIZATION
+  production_ready: false
+- phase: FIRST_REVIEWABLE_VEHICLE_CONCEPT
+  production_ready: false
+  customer_approval_required: true
+- phase: VERIFIED_GEOMETRY_AND_PRODUCTION_PLANNING
+  requires_concept_approval: true
+- phase: PRODUCTION_PACKAGE
+  requires_verified_geometry: true
+  requires_selected_production_technology: true
+core_semantic_distinctions:
+- reference_geometry != verified_production_geometry
+- concept_visualization != production_file
+- customer_approved_visual != production_ready
+- artifact_cleanup != identity_redesign
+- vehicle_model_name != exact_body_configuration
+- printed_film != plotter_cut_film
+initial_case: GDL-VB-20261001-IVECO-001
+pii_rule: customer_identity_and_private_contact_data_must_not_be_committed_to_git

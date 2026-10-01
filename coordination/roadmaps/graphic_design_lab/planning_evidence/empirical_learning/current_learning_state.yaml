@@ -89,7 +89,6 @@ primary_empirical_finding:
   evidence_path: coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/experiments/GDL-EXP-20261001-MENU-001/17_prompt_format_effect_observation.yaml
   pattern_candidate: coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/patterns/machine_readable_execution_patch_v0_1.yaml
   promotion_pending: true
-
 deterministic_operator_surface:
   tool: scripts/coordination/gdl_empirical_learning.py
   validate: make gdl-empirical-check
@@ -97,3 +96,14 @@ deterministic_operator_surface:
   summary: make gdl-empirical-summary
   runtime_initialized: false
   production_write_enabled: false
+parallel_active_directions:
+- direction_id: vehicle_branding
+  experiment_id: GDL-VB-20261001-IVECO-001
+  state: INTAKE_PENDING
+  next_action: run_vehicle_branding_intake_analyst
+  notes:
+  - customer_private_contact_and_raw_images_remain_external
+  - first_target_is_FIRST_REVIEWABLE_VEHICLE_CONCEPT
+  - production_files_wait_for_customer_approval_and_verified_geometry
+  - machine_readable_creator_request_is_required
+  - engineering_mechanics_are_worker_candidates_not_manual_default_work

@@ -1,0 +1,13 @@
+schema_version: gdl_vehicle_branding_direction_index_v0_1
+direction_id: vehicle_branding
+status: ACTIVE_EMPIRICAL_KNOWLEDGE_SATURATION
+documents:
+- README.md
+- direction_v0_1.yaml
+- vehicle_geometry_and_measurement_rules_v0_1.yaml
+- production_technology_matrix_v0_1.yaml
+- worker_candidates_v0_1.yaml
+loaders:
+- ../loaders/vehicle_branding/GDL-INTAKE-VEHICLE-BRANDING-v001.md
+cases:
+- cases/GDL-VB-20261001-IVECO-001
