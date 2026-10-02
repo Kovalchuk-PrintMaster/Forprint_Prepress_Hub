@@ -108,3 +108,6 @@ parallel_active_directions:
   - machine_readable_creator_request_is_required
   - engineering_mechanics_are_worker_candidates_not_manual_default_work
 module_local_primary_gdl_surface: coordination/graphic_design_lab/index.yaml
+primary_case_workflow: coordination/graphic_design_lab/workflow/case_workflow_v0_1.yaml
+primary_review_gate: coordination/graphic_design_lab/review/global_review_gate_v0_1.yaml
+primary_assistant_context_contract: coordination/graphic_design_lab/continuity/assistant_context_contract_v0_1.yaml

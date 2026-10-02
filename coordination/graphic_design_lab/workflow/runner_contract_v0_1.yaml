@@ -1,0 +1,41 @@
+schema_version: gdl_case_runner_contract_v0_1
+status: DESIGN_READY_WORKER_CANDIDATE
+initial_execution_mode: HUMAN_COPY_PASTE_BRIDGE
+purpose: compile_and_route_case_work_without_storing_workflow_logic_in_chat
+inputs:
+- case_id
+- case_state
+- case_bundle
+- global_policies
+- direction_profile
+- review_profile
+- design_lock_if_present
+- previous_run_evidence
+- new_case_events
+operations:
+- normalize_or_ingest_event
+- determine_next_allowed_action
+- compile_intake_prompt
+- compile_creator_request
+- record_exact_prompt_before_dispatch
+- attach_result_reference
+- request_internal_review
+- compile_machine_readable_correction_patch_on_fail
+- render_customer_message
+- ingest_customer_feedback
+- update_case_state
+- update_prompt_effectiveness_evidence
+future_commands:
+- new-case
+- ingest
+- compile-intake
+- compile-creator
+- attach-result
+- review
+- compile-correction
+- render-customer-message
+- record-feedback
+- status
+- close
+not_implemented_in_this_package: true
+provider_execution_authorized: false

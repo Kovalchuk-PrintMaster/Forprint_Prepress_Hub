@@ -5,3 +5,6 @@ schema: schemas/prompt_run_record_v0_1.yaml
 template: templates/prompt_run_record_v0_1.yaml
 runs: []
 storage_rule: actual_case_prompt_files_may_live_under_the_case_or_prompt_evidence_runs_but_must_be_indexed_or_referenced_here
+lifecycle: prompt_lifecycle_v0_1.yaml
+effectiveness_model: prompt_effectiveness_model_v0_1.yaml
+registry_contract: prompt_registry_contract_v0_1.yaml

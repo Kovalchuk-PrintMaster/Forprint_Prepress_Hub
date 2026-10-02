@@ -1,0 +1,31 @@
+schema_version: gdl_dynamic_customer_form_contract_v0_1
+status: ACTIVE_EMPIRICAL_OPERATING_RULE
+input:
+- known_customer_data
+- missing_or_uncertain_fields
+- next_safe_workflow_step
+- channel_profile
+algorithm:
+- remove_fields_already_known_reliably
+- remove_fields_not_needed_for_next_safe_step
+- group_remaining_fields_by_meaning
+- render_fill_in_places_or_attachment_instructions
+- use_short_context_sentence_only_when_needed
+- return_copy_paste_ready_customer_message
+telegram_rules:
+- plain_chat_not_table
+- emoji_may_support_scanning
+- visible_fill_in_place
+- attachment_or_link_alternative_when_relevant
+- preferred_question_count_1_to_5
+examples:
+  phone: '📞 Телефон для макета:
+
+    ____________________'
+  qr: '🔗 Надішліть готовий QR або посилання, куди він має вести:
+
+    ____________________'
+  size: '📐 Розмір:
+
+    ____________________'
+  file: 📎 Прикріпіть файл або надішліть посилання.

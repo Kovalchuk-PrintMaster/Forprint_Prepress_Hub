@@ -1,0 +1,28 @@
+schema_version: gdl_global_review_gate_v0_1
+status: ACTIVE_EMPIRICAL_OPERATING_RULE
+evaluation:
+- PASS
+- PARTIAL
+- FAIL
+- NOT_APPLICABLE
+checks:
+- id: source_fidelity
+  meaning: visible factual content matches authorized sources
+- id: scope_completeness
+  meaning: required scope is present or omissions explicit
+- id: no_invented_customer_content
+  meaning: unsupported customer data is not fabricated
+- id: language_consistency
+  meaning: required language/script consistent
+- id: identity_integrity
+  meaning: required identity elements correct
+- id: artifact_cleanliness
+  meaning: no placeholder clipping broken or stray content
+- id: structure_truthfulness
+  meaning: page/surface/block structure matches task
+- id: unresolved_truthfulness
+  meaning: unknowns remain explicit
+- id: design_continuity
+  meaning: active design lock respected
+- id: output_classification
+  meaning: result and forwarding readiness explicit

@@ -8,3 +8,7 @@ cases:
   direction_path: directions/vehicle_branding
   case_path: directions/vehicle_branding/cases/GDL-VB-20261001-IVECO-001
   pii_in_git: false
+case_package_schema: case_package_schema_v0_1.yaml
+manager_input_form: manager_input_form_v0_1.yaml
+asset_manifest_schema: asset_manifest_schema_v0_1.yaml
+case_event_schema: case_event_schema_v0_1.yaml

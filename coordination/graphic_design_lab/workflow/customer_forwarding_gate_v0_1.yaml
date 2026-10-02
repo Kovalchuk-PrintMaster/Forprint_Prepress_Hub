@@ -1,0 +1,15 @@
+schema_version: gdl_customer_forwarding_gate_v0_1
+status: ACTIVE_EMPIRICAL_OPERATING_RULE
+customer_forwarding_allowed_only_when:
+- global_review_gate_pass
+- product_or_direction_review_gate_pass
+- content_fidelity_pass_or_not_applicable
+- scope_truthful
+- known_deviations_customer_safe_and_explicit
+- artifact_clean_enough_for_review
+- no_hidden_placeholder_or_non_customer_content
+does_not_imply:
+- customer_acceptance
+- design_approval
+- production_readiness
+default_when_uncertain: NOT_FORWARDABLE

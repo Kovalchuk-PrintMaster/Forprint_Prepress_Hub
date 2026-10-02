@@ -1,0 +1,28 @@
+schema_version: gdl_artifact_layer_model_v0_1
+status: ACTIVE_EMPIRICAL_OPERATING_MODEL
+layers:
+- id: L1_QUICK_VISUAL
+  goal: obtain_directional_feedback_fast
+  typical_outputs:
+  - review_preview
+  - creator_result_package_or_equivalent
+  - machine_readable_design_rationale_or_manifest_light
+  production_ready: false
+- id: L2_EDITABLE_DESIGN_PACKAGE
+  goal: preserve_approved_visual_system_while_business_content_remains_easy_to_change
+  typical_outputs:
+  - stable_raster_background_or_visual_assets
+  - editable_svg_or_vector_text_structure
+  - machine_readable_design_manifest
+  - asset_reference_manifest
+  design_manifest_should_capture:
+  - page_or_surface_structure
+  - stable_block_ids
+  - content_block_mapping
+  - typography_names_and_roles
+  - sizes_and_spacing_rules
+  - alignment_rules
+  - asset_refs
+  - design_lock_state
+  production_ready: false
+future_layer_3: UNDEFINED_NOT_IN_V0_1_SCOPE

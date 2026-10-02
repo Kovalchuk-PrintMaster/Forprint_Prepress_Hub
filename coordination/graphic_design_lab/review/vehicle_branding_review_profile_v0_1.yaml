@@ -1,0 +1,25 @@
+schema_version: gdl_vehicle_branding_review_profile_v0_1
+status: ACTIVE_EMPIRICAL_REVIEW_PROFILE
+product_family: vehicle_branding
+inherits: global_review_gate_v0_1.yaml
+checks:
+- id: vehicle_identity
+  meaning: configuration claims do not exceed evidence
+- id: branded_surfaces
+  meaning: requested surfaces represented
+- id: customer_text
+  meaning: confirmed text correct
+- id: identity_assets
+  meaning: logo/coat of arms preserves identity
+- id: color_direction
+  meaning: approved color direction represented
+- id: geometry_truthfulness
+  meaning: reference geometry not presented as production geometry
+- id: handles_windows_seams
+  meaning: carrier features respected
+- id: design_lock
+  meaning: approved direction stable
+- id: left_right_consistency
+  meaning: both sides share design system unless intentional
+- id: production_boundary
+  meaning: concept not mislabeled production-ready

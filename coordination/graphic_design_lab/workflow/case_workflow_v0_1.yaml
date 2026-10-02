@@ -1,0 +1,26 @@
+schema_version: gdl_case_workflow_v0_1
+status: ACTIVE_EMPIRICAL_OPERATING_MODEL
+source_of_truth: PROJECT_CASE_BUNDLE_NOT_CHAT_HISTORY
+workflow:
+- SOURCE_DATA_RECEIVED
+- CASE_BUNDLE_NORMALIZED
+- INTAKE_ANALYSIS
+- CREATOR_REQUEST_COMPILED
+- CREATOR_RESULT_ATTACHED
+- INTERNAL_REVIEW_GATE
+- CUSTOMER_REVIEW_READY
+- CUSTOMER_FEEDBACK_INGESTED
+- DESIGN_DIRECTION_LOCKED_WHEN_APPROVED
+- L1_CLOSE_OR_L2_EDITABLE_PACKAGE
+- PROMPT_AND_OUTCOME_EVIDENCE_RECORDED
+minimal_first_concept_rule:
+  enabled: true
+  variant_count: 1_to_2_when_useful
+  may_proceed_with_explicit_unresolved_items: true
+  principle: prefer_feedback_producing_work_over_nonessential_question_rounds
+must_not:
+- keep_material_case_state_only_in_chat
+- send_creator_result_to_customer_without_internal_review
+- reask_reliable_known_information
+- silently_redesign_after_design_lock
+- promote_one_case_observation_to_global_policy_without_evidence

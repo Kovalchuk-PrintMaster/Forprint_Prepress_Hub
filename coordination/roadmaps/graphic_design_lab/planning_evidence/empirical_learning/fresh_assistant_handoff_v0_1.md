@@ -132,3 +132,9 @@ Do not create new reusable cross-case GDL rules only inside historical planning 
 General rules belong in the module-local primary GDL surface; product-specific rules belong
 under its `directions/`; prompts used in material runs must be preserved/referenced through
 `prompt_evidence/`.
+
+## Canonical Case Workflow / project-first continuity
+
+Before generating new GDL workflow behavior, read `coordination/graphic_design_lab/workflow/`,
+`review/`, `continuity/assistant_context_contract_v0_1.yaml`, and `prompt_evidence/`.
+A fresh assistant must not reconstruct the Intake/Creator/review loop from chat history.

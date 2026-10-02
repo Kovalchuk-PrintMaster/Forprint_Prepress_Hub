@@ -1,0 +1,4 @@
+schema_version: gdl_prompt_effectiveness_aggregator_candidate_v0_1
+status: CANDIDATE_NOT_AUTHORIZED
+goal: aggregate_prompt_run_evidence_into_product_and_prompt_metrics
+must_not: overwrite_raw_case_evidence

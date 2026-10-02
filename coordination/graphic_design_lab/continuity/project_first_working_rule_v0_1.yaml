@@ -1,0 +1,11 @@
+schema_version: gdl_project_first_working_rule_v0_1
+status: ACTIVE_OPERATING_RULE
+rule: chat_may_model_or_draft_but_reusable_workflow_knowledge_must_be_integrated_into_project
+before_context_closeout:
+- integrate_new_global_rules
+- integrate_new_direction_rules
+- record_material_prompts_or_refs
+- record_case_outcomes
+- update_active_case_next_state
+- ensure_assistant_context_surface_points_to_new_knowledge
+success_condition: next_assistant_does_not_need_to_rediscover_the_same_behavior

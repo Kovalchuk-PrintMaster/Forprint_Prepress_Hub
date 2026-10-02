@@ -1,0 +1,40 @@
+schema_version: gdl_manager_input_form_v0_1
+status: ACTIVE_INPUT_CHANNEL_CONTRACT
+purpose: predictable_manager_or_operator_input_easy_to_parse
+fields:
+  case_identity:
+  - case_id_if_existing
+  - customer_ref
+  - product_family
+  - requested_product_or_service
+  request:
+  - customer_request_summary
+  - desired_result
+  - deadline_if_known
+  - quantity_if_relevant
+  - format_or_dimensions_if_known
+  content:
+  - text_source_type
+  - text_or_source_ref
+  - content_extraction_required
+  - language
+  assets:
+  - logo_refs
+  - photo_refs
+  - reference_design_refs
+  - other_file_refs
+  customer_constraints:
+  - must_keep
+  - must_not
+  - preferred_style
+  - approval_requirements
+  operator_notes:
+  - known_missing_information
+  - what_can_be_inferred_or_searched
+  - special_handling
+accepted_human_channels:
+- structured_text_form
+- word_document_using_fixed_headings
+- spreadsheet_using_fixed_columns
+- future_ui_form
+canonical_output: normalized_case_bundle_not_original_form

@@ -1,0 +1,16 @@
+schema_version: gdl_case_runner_worker_candidate_v0_1
+status: CANDIDATE_NOT_AUTHORIZED
+goal: implement_case_state_machine_and_prompt_compilation_without_changing_case_semantics
+candidate_capabilities:
+- create_case_bundle
+- ingest_structured_manager_input
+- ingest_customer_event
+- compile_prompt_from_global_plus_direction_plus_case_rules
+- persist_prompt_run_record
+- attach_result
+- evaluate_deterministic_checks
+- request_assistant_review_for_non_deterministic_checks
+- compile_correction_patch
+- render_customer_form
+- update_state
+provider_execution: false

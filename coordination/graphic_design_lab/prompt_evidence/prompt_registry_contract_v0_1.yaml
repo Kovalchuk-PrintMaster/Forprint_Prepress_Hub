@@ -1,0 +1,18 @@
+schema_version: gdl_prompt_registry_contract_v0_1
+status: ACTIVE_EMPIRICAL_OPERATING_RULE
+every_material_run_records:
+- prompt_id
+- version
+- case_id
+- role
+- task_type
+- format
+- exact_or_sanitized_prompt_ref
+- input_context_refs
+- result_ref
+- internal_review_outcome
+- customer_outcome_if_observed
+- revision_count
+- manual_intervention
+- failure_modes
+project_first_rule: prompt_used_in_work_must_not_exist_only_in_chat

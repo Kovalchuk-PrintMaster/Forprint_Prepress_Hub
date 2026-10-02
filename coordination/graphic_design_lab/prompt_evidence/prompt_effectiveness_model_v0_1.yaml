@@ -1,0 +1,20 @@
+schema_version: gdl_prompt_effectiveness_model_v0_1
+status: ACTIVE_EMPIRICAL_METRIC_MODEL
+metrics:
+- internal_first_pass_rate
+- customer_first_review_acceptance_rate
+- creator_iterations_to_internal_pass
+- total_iterations_to_customer_approval
+- content_fidelity_failure_rate
+- manual_intervention_rate
+- design_drift_rate
+- customer_clarification_round_count
+dimensions:
+- prompt_id_and_version
+- product_family
+- direction_id
+- task_type
+- format_PROSE_STRUCTURED_HYBRID
+minimum_evidence_rule: do_not_call_a_prompt_STABLE_from_one_case
+single_score_required: false
+thermal_label_rule: may_be_derived_later_from_metrics_but_not_manually_invented

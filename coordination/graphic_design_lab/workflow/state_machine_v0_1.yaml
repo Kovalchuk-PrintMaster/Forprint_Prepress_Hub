@@ -1,0 +1,78 @@
+schema_version: gdl_case_state_machine_v0_1
+status: ACTIVE_EMPIRICAL_OPERATING_MODEL
+states:
+- RECEIVED
+- NORMALIZED
+- INTAKE_IN_PROGRESS
+- CUSTOMER_INFO_REQUIRED
+- CREATOR_REQUEST_READY
+- CREATOR_RESULT_PENDING
+- INTERNAL_REVIEW
+- CORRECTION_REQUIRED
+- CUSTOMER_REVIEW_READY
+- CUSTOMER_REVIEW_PENDING
+- CUSTOMER_CHANGES_REQUESTED
+- DESIGN_APPROVED
+- L1_COMPLETE
+- L2_EDITABLE_PACKAGE_IN_PROGRESS
+- L2_EDITABLE_PACKAGE_READY
+- BLOCKED
+- CLOSED
+transitions:
+- from: RECEIVED
+  to: NORMALIZED
+  'on': case_bundle_created
+- from: NORMALIZED
+  to: INTAKE_IN_PROGRESS
+  'on': intake_started
+- from: INTAKE_IN_PROGRESS
+  to: CUSTOMER_INFO_REQUIRED
+  'on': material_blocker_found
+- from: CUSTOMER_INFO_REQUIRED
+  to: INTAKE_IN_PROGRESS
+  'on': new_customer_data_ingested
+- from: INTAKE_IN_PROGRESS
+  to: CREATOR_REQUEST_READY
+  'on': creator_request_compiled
+- from: CREATOR_REQUEST_READY
+  to: CREATOR_RESULT_PENDING
+  'on': prompt_dispatched
+- from: CREATOR_RESULT_PENDING
+  to: INTERNAL_REVIEW
+  'on': creator_result_attached
+- from: INTERNAL_REVIEW
+  to: CORRECTION_REQUIRED
+  'on': review_gate_fail
+- from: CORRECTION_REQUIRED
+  to: CREATOR_RESULT_PENDING
+  'on': correction_patch_dispatched
+- from: INTERNAL_REVIEW
+  to: CUSTOMER_REVIEW_READY
+  'on': review_gate_pass
+- from: CUSTOMER_REVIEW_READY
+  to: CUSTOMER_REVIEW_PENDING
+  'on': operator_forwards_to_customer
+- from: CUSTOMER_REVIEW_PENDING
+  to: CUSTOMER_CHANGES_REQUESTED
+  'on': customer_requests_changes
+- from: CUSTOMER_CHANGES_REQUESTED
+  to: CREATOR_REQUEST_READY
+  'on': feedback_normalized
+- from: CUSTOMER_REVIEW_PENDING
+  to: DESIGN_APPROVED
+  'on': customer_approves_design
+- from: DESIGN_APPROVED
+  to: L1_COMPLETE
+  'on': case_stops_at_quick_visual_layer
+- from: DESIGN_APPROVED
+  to: L2_EDITABLE_PACKAGE_IN_PROGRESS
+  'on': editable_package_required
+- from: L2_EDITABLE_PACKAGE_IN_PROGRESS
+  to: L2_EDITABLE_PACKAGE_READY
+  'on': editable_package_review_pass
+- from: L1_COMPLETE
+  to: CLOSED
+  'on': case_close
+- from: L2_EDITABLE_PACKAGE_READY
+  to: CLOSED
+  'on': case_close

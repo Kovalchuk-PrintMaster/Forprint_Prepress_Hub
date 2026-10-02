@@ -1,0 +1,23 @@
+schema_version: gdl_case_package_schema_v0_1
+status: ACTIVE_EMPIRICAL_SCHEMA
+required:
+- case_id
+- product_family
+- current_state
+- source_refs
+- asset_manifest_ref
+- confirmed_requirements
+- unresolved_items
+- event_log_ref
+- prompt_run_refs
+- review_refs
+optional:
+- customer_ref
+- direction_id
+- external_private_workspace_ref
+- design_lock_ref
+- design_manifest_ref
+- customer_feedback_refs
+privacy:
+  raw_private_customer_contact_in_git: false
+  raw_heavy_artifacts_in_git: false

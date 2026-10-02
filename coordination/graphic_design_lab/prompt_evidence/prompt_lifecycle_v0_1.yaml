@@ -1,0 +1,19 @@
+schema_version: gdl_prompt_lifecycle_v0_1
+status: ACTIVE_EMPIRICAL_OPERATING_MODEL
+states:
+- DRAFT
+- ACTIVE_EXPERIMENT
+- PROMISING
+- STABLE
+- DEGRADED
+- BLOCKED
+- RETIRED
+promotion_rule: status_changes_require_recorded_case_evidence_not_chat_impression
+material_prompt_types:
+- INTAKE
+- CREATOR_INITIAL
+- CREATOR_CORRECTION
+- CUSTOMER_COMMUNICATION
+- FINAL_RECONCILIATION
+capture_before_dispatch: true
+capture_result_and_outcome_after_run: true

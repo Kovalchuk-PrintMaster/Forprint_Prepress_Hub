@@ -1,0 +1,37 @@
+schema_version: gdl_design_lock_v0_1
+status: ACTIVE_EMPIRICAL_OPERATING_RULE
+states:
+- UNLOCKED
+- PROVISIONAL_DIRECTION
+- LOCKED
+- REDESIGN_AUTHORIZED
+activate_when:
+- customer_explicitly_accepts_visual_direction
+- operator_records_visual_direction_as_approved_for_continuation
+default_locked_dimensions:
+- background_concept
+- palette
+- typography_system
+- composition_skeleton
+- visual_hierarchy
+- identity_placement_logic
+- image_or_illustration_style
+default_mutable_dimensions:
+- authorized_text_values
+- prices_weights_and_similar_business_values
+- item_order_within_authorized_scope
+- local_line_breaks
+- local_spacing
+- local_block_height
+- minor_alignment
+change_classes:
+  MICRO: typographic_or_spacing_change_without_system_change
+  LOCAL: bounded_block_change_preserving_overall_visual_system
+  STRUCTURAL: changes_composition_skeleton_or_major_regions
+  REDESIGN: changes_visual_direction_or_design_system
+allowed_without_redesign_authorization:
+- MICRO
+- LOCAL
+requires_explicit_redesign_authorization:
+- STRUCTURAL
+- REDESIGN

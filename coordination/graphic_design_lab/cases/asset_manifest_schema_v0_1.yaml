@@ -1,0 +1,26 @@
+schema_version: gdl_asset_manifest_schema_v0_1
+status: ACTIVE_EMPIRICAL_SCHEMA
+asset_fields:
+- asset_ref
+- role
+- storage_class
+- content_type
+- source
+- available
+- customer_supplied
+- authoritative_for
+- normalization_required
+- privacy_class
+- notes
+common_roles:
+- logo
+- coat_of_arms
+- photo
+- customer_text_source
+- reference_design
+- template
+- vehicle_reference
+- dimensional_reference
+- background
+- editable_source
+- preview

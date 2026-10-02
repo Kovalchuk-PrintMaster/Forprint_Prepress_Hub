@@ -1,0 +1,46 @@
+schema_version: gdl_menu_review_profile_v0_1
+status: ACTIVE_EMPIRICAL_REVIEW_PROFILE
+product_family: menu
+inherits: global_review_gate_v0_1.yaml
+checks:
+- id: page_count
+  meaning: required page count matches
+- id: category_count
+  meaning: required categories are present
+- id: item_count
+  meaning: authorized item count matches
+- id: dish_names
+  meaning: names match source
+- id: weights
+  meaning: weights match source
+- id: prices
+  meaning: prices match source
+- id: category_assignment
+  meaning: items in correct category
+- id: item_order
+  meaning: required order preserved
+- id: page_mapping
+  meaning: content on intended page
+- id: block_mapping
+  meaning: content in intended block
+- id: omissions
+  meaning: no required item omitted
+- id: duplicates
+  meaning: no unintended duplicates
+- id: invented_items
+  meaning: no unsupported items
+- id: truncation
+  meaning: no required text unintentionally clipped
+- id: substitution
+  meaning: no silent substitutions
+- id: identity
+  meaning: venue/name identity correct
+- id: design_lock
+  meaning: approved direction preserved
+- id: image_semantics
+  meaning: decorative images do not falsely represent specific dishes
+- id: artifact_cleanliness
+  meaning: no broken visual residue
+- id: forwarding_gate
+  meaning: forwarding explicitly allowed only after pass
+correction_patch_rule: identify_exact_page_block_item_and_authoritative_value_for_every_failed_content_check

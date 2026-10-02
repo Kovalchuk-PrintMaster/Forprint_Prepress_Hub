@@ -1,0 +1,20 @@
+schema_version: gdl_internal_review_loop_v0_1
+status: ACTIVE_EMPIRICAL_OPERATING_RULE
+invariant: CREATOR_RESULT_MUST_PASS_INTERNAL_REVIEW_BEFORE_CUSTOMER_FORWARDING
+loop:
+- creator_result_attached
+- global_review_gate
+- direction_or_product_review_profile
+- design_lock_check_if_active
+- PASS_or_FAIL
+- on_FAIL_compile_machine_readable_correction_patch
+- creator_revision
+- repeat_until_PASS_or_BLOCKED
+correction_patch_requirements:
+- preserve_locked_visual_system
+- identify_exact_missing_or_wrong_items
+- identify_page_surface_block_and_position_when_known
+- identify_authoritative_source_value
+- forbid_unrelated_changes
+- declare_output_scope
+- declare_customer_forwarding_not_allowed_until_re_review

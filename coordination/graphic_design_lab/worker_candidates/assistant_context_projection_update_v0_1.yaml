@@ -1,0 +1,9 @@
+schema_version: gdl_assistant_context_projection_update_candidate_v0_1
+status: CANDIDATE_NOT_AUTHORIZED
+goal: ensure_primary_gdl_workflow_surfaces_are_in_generated_assistant_context
+verification:
+- fresh_assistant_can_name_primary_surface
+- fresh_assistant_can_state_review_loop
+- fresh_assistant_can_state_design_lock
+- fresh_assistant_can_locate_active_case
+- fresh_assistant_can_continue_without_chat_history

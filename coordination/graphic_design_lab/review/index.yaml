@@ -1,0 +1,6 @@
+schema_version: gdl_review_index_v0_1
+status: ACTIVE_EMPIRICAL_OPERATING_MODEL
+global_gate: global_review_gate_v0_1.yaml
+profiles:
+- menu_review_profile_v0_1.yaml
+- vehicle_branding_review_profile_v0_1.yaml

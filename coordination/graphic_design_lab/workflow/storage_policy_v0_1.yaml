@@ -1,0 +1,26 @@
+schema_version: gdl_case_storage_policy_v0_1
+status: ACTIVE_LOGICAL_POLICY_STORAGE_BACKEND_UNRESOLVED
+storage_classes:
+- id: GIT_SAFE_STRUCTURED
+  contains:
+  - sanitized_case_state
+  - schemas
+  - policies
+  - prompt_templates
+  - sanitized_prompt_evidence
+  - review_results_without_private_data
+- id: PRIVATE_PERSISTENT_CASE_WORKSPACE
+  contains:
+  - customer_identity
+  - private_contact_data
+  - raw_customer_dialogue_when_needed
+  - private_source_documents
+  backend: UNRESOLVED
+- id: HEAVY_ARTIFACT_STORAGE
+  contains:
+  - raw_images
+  - creator_visual_outputs
+  - editable_design_binaries
+  - large_print_artifacts
+  backend: UNRESOLVED
+rule: git_records_stable_refs_and_manifests_for_external_private_or_heavy_objects

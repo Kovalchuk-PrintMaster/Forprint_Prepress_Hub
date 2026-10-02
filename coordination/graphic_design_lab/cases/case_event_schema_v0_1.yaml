@@ -1,0 +1,26 @@
+schema_version: gdl_case_event_schema_v0_1
+status: ACTIVE_EMPIRICAL_SCHEMA
+required:
+- event_id
+- case_id
+- event_type
+- observed_at
+- source
+- normalized_payload
+event_types:
+- CASE_CREATED
+- SOURCE_ADDED
+- CUSTOMER_DATA_RECEIVED
+- INTAKE_COMPLETED
+- PROMPT_COMPILED
+- CREATOR_RESULT_ATTACHED
+- INTERNAL_REVIEW_COMPLETED
+- CORRECTION_REQUESTED
+- CUSTOMER_MESSAGE_SENT
+- CUSTOMER_FEEDBACK_RECEIVED
+- DESIGN_APPROVED
+- DESIGN_LOCK_CHANGED
+- ARTIFACT_LAYER_CHANGED
+- CASE_BLOCKED
+- CASE_CLOSED
+event_log_append_only: true

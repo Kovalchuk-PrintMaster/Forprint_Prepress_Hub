@@ -1,0 +1,14 @@
+schema_version: gdl_review_gate_automation_candidate_v0_1
+status: CANDIDATE_NOT_AUTHORIZED
+deterministic_candidates:
+- item_count
+- required_text_presence
+- price_weight_exact_match
+- duplicate_detection
+- page_count
+- stable_block_id_presence
+assistant_review_candidates:
+- visual_hierarchy
+- design_continuity
+- artifact_cleanliness
+- carrier_fit_reasonableness

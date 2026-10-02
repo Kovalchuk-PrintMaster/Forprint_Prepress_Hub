@@ -1,0 +1,11 @@
+schema_version: gdl_case_workflow_index_v0_1
+status: ACTIVE_EMPIRICAL_OPERATING_MODEL
+documents:
+- case_workflow_v0_1.yaml
+- state_machine_v0_1.yaml
+- runner_contract_v0_1.yaml
+- internal_review_loop_v0_1.yaml
+- customer_forwarding_gate_v0_1.yaml
+- design_lock_v0_1.yaml
+- artifact_layer_model_v0_1.yaml
+- storage_policy_v0_1.yaml

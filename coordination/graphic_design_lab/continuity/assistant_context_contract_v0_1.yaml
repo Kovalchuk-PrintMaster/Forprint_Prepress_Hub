@@ -1,0 +1,30 @@
+schema_version: gdl_assistant_context_contract_v0_1
+status: ACTIVE_CONTINUITY_REQUIREMENT
+fresh_assistant_must_know:
+- primary_gdl_surface
+- global_operating_model
+- case_workflow_and_state_machine
+- internal_review_loop
+- customer_forwarding_gate
+- design_lock_semantics
+- artifact_layer_model
+- customer_communication_form_rule
+- prompt_evidence_lifecycle
+- active_directions
+- active_case_refs_and_next_states
+- authority_boundaries
+fresh_assistant_must_not:
+- invent_workflow_behavior_from_memory
+- generate_reusable_rules_only_in_chat
+- skip_project_update_for_material_new_findings
+- send_creator_result_to_customer_without_review_gate
+acceptance_question: Can a fresh assistant continue an active GDL case from project/context-pack state without reading
+  the previous chat?
+context_pack_priority_paths:
+- coordination/graphic_design_lab/index.yaml
+- coordination/graphic_design_lab/policies/
+- coordination/graphic_design_lab/workflow/
+- coordination/graphic_design_lab/review/
+- coordination/graphic_design_lab/prompt_evidence/
+- coordination/graphic_design_lab/directions/index.yaml
+- coordination/graphic_design_lab/cases/index.yaml

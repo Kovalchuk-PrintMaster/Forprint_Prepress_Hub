@@ -34,3 +34,10 @@ authority:
   production_write: false
   automatic_customer_messaging: false
   next_contour_activation: false
+canonical_case_workflow: ../workflow/case_workflow_v0_1.yaml
+canonical_state_machine: ../workflow/state_machine_v0_1.yaml
+internal_review_loop: ../workflow/internal_review_loop_v0_1.yaml
+customer_forwarding_gate: ../workflow/customer_forwarding_gate_v0_1.yaml
+design_lock: ../workflow/design_lock_v0_1.yaml
+artifact_layers: ../workflow/artifact_layer_model_v0_1.yaml
+project_first_persistence: ../continuity/project_first_working_rule_v0_1.yaml

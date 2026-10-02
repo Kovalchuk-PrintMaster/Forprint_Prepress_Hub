@@ -82,3 +82,11 @@ authorize provider execution, runtime initialization, production write, automati
 customer communication, or a new engineering contour.
 
 `SYSTEM_BLUEPRINT_ACCESS_FROM_PREPRESS=READ_ONLY_STRICT`
+
+## Canonical case workflow
+
+Reusable GDL case work follows `workflow/case_workflow_v0_1.yaml`.
+Creator output requires internal review before customer forwarding.
+Approved visual directions activate Design Lock.
+Material prompts and outcomes are preserved through `prompt_evidence/`;
+reusable workflow knowledge must live in the project rather than only in chat.

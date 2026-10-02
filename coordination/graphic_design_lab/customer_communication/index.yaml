@@ -5,3 +5,4 @@ templates:
 - templates/customer_information_request_v0_1.md
 - templates/customer_clarification_v0_1.md
 - templates/customer_approval_v0_1.md
+dynamic_form_contract: dynamic_form_contract_v0_1.yaml
