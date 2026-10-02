@@ -1,0 +1,45 @@
+schema_version: gdl_notebooks_prompt_profile_v0_1
+direction_id: notebooks
+current_subprofile: dated_planner_v0_1
+status: ACTIVE_EMPIRICAL_PROMPT_PROFILE
+intake_must_determine:
+- product_subtype
+- page_size_and_orientation
+- binding_type
+- cover_type
+- target_page_count_if_known
+- date_period_if_dated
+- spread_types
+- monthly_structure_if_applicable
+- weekly_structure_if_applicable
+- language
+- color_or_month_mapping
+- service_page_requirements
+- customer_content_and_identity
+- design_reference_and_design_flexibility
+- production_hold_points_known_at_current_stage
+structure_first_rule:
+  required_before_full_rollout: true
+  structure_map_fields:
+  - page_number
+  - side
+  - kind
+  - spread_sequence
+  - date_or_period
+  - template_id
+  - active_or_inactive_state
+  - notes
+minimal_first_concept:
+  enabled: true
+  goal: obtain_feedback_before_full_document_generation
+  preferred_sample:
+  - representative_monthly_spread_if_applicable
+  - representative_weekly_spread_if_applicable
+  do_not_block_on:
+  - final_spine_width
+  - final_bleed_if_printer_not_selected
+  - final_inner_gutter_if_block_opening_not_tested
+  must_keep_these_as_explicit_hold_points: true
+creator_prompt_format: MACHINE_READABLE_OR_HYBRID_WITH_STRUCTURED_EXECUTION_CONTRACT
+creator_correction_format: PATCH_SCOPED_MACHINE_READABLE
+customer_questions: render_only_material_missing_fields_using_global_dynamic_customer_form

@@ -1,0 +1,52 @@
+schema_version: gdl_notebooks_dated_planner_review_profile_v0_1
+status: ACTIVE_EMPIRICAL_REVIEW_PROFILE
+direction_id: notebooks
+subprofile: dated_planner_v0_1
+inherits: global_review_gate_v0_1.yaml
+checks:
+- id: declared_page_count
+  meaning: page_count_matches_structure_map
+- id: page_map_complete
+  meaning: every_page_has_exactly_one_mapping
+- id: spread_pairing
+  meaning: left_right_spread_structure_is_consistent
+- id: service_pages
+  meaning: intentional_blank_or_service_pages_are_explicit
+- id: monthly_spreads
+  meaning: required_monthly_spreads_are_complete
+- id: weekly_spreads
+  meaning: required_weekly_spreads_are_complete
+- id: active_date_uniqueness
+  meaning: every_active_weekly_date_occurs_once
+- id: weekday_correctness
+  meaning: every_date_has_correct_weekday
+- id: month_length
+  meaning: month_lengths_are_correct
+- id: year_transition
+  meaning: year_boundaries_are_correct
+- id: transition_weeks
+  meaning: cross_month_weeks_remain_single_valid_spreads
+- id: month_style_mapping
+  meaning: transition_days_use_their_own_month_style_when_required
+- id: missing_dates
+  meaning: no_required_active_dates_are_missing
+- id: duplicate_dates
+  meaning: no_active_weekly_dates_are_duplicated
+- id: boundary_dates
+  meaning: prestart_postend_or_inactive_dates_follow_case_rule
+- id: content_clipping
+  meaning: required_visible_text_is_not_unintentionally_clipped
+- id: design_lock
+  meaning: approved_visual_system_is_preserved
+- id: patch_scope
+  meaning: unaffected_pages_remain_unchanged_after_correction
+- id: editable_artifacts
+  meaning: declared_editable_units_exist_or_are_explicitly_not_required
+- id: production_hold_points
+  meaning: unresolved_gutter_spine_bleed_or_printer_geometry_remains_explicit
+- id: artifact_integrity
+  meaning: manifest_checksums_or_equivalent_integrity_evidence_is_consistent_when_used
+- id: customer_forwarding
+  meaning: forwarding_is_allowed_only_after_relevant_checks_pass
+customer_forwarding_requires: all_mandatory_structural_content_and_calendar_checks_pass
+production_ready_requires_separate_gate: true

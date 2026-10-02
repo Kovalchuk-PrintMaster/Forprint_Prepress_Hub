@@ -1,0 +1,31 @@
+schema_version: gdl_notebooks_quality_control_rules_v0_1
+status: ACTIVE_EMPIRICAL_QC_RULES
+global_checks:
+- total_page_count_matches_declared_structure
+- page_map_covers_every_page
+- spread_pairing_is_consistent
+- service_pages_are_explicit
+- required_spread_types_are_complete
+- design_lock_is_respected
+- patch_scope_did_not_modify_unaffected_pages
+- required_text_is_not_clipped_or_missing
+- artifact_manifest_and_real_files_agree
+- known_production_hold_points_are_not_silently_marked_complete
+dated_planner_checks:
+- every_active_weekly_date_present_once
+- correct_weekday_for_every_date
+- correct_month_lengths
+- correct_year_transition
+- all_required_month_colors_defined
+- transition_weeks_remain_single_spreads
+- transition_days_use_own_calendar_month_rules
+- no_duplicate_active_weekly_dates
+- no_missing_active_weekly_dates
+- project_start_and_end_behavior_match_case_spec
+- boundary_inactive_dates_are_handled_explicitly
+evaluation:
+- PASS
+- PARTIAL
+- FAIL
+- NOT_APPLICABLE
+customer_forwarding_rule: structural_and_content_failures_block_customer_forwarding_until_re_review

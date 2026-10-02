@@ -1,0 +1,23 @@
+schema_version: gdl_notebooks_artifact_contract_v0_1
+status: ACTIVE_EMPIRICAL_ARTIFACT_CONTRACT
+L1_QUICK_VISUAL:
+  required_or_recommended:
+  - review_preview_pdf_or_png
+  - representative_spread_preview
+  - machine_readable_structure_summary
+  production_ready: false
+L2_EDITABLE_DESIGN_PACKAGE:
+  recommended:
+  - full_review_pdf
+  - spread_review_pdf_when_useful
+  - editable_vector_or_svg_per_stable_spread_unit
+  - page_map_csv_or_yaml
+  - calendar_validation_yaml_if_dated
+  - internal_quality_control_report
+  - design_notes_or_manifest
+  - file_checksum_manifest
+  principle: stable_visual_assets_and_editable_text_vector_structure_should_be_separable_when_the_product_is_expected_to_change
+  production_ready: false
+integrity:
+  checksum_manifest_recommended_for_multi_artifact_package: true
+  artifact_refs_should_remain_stable_across_patch_cycles: true

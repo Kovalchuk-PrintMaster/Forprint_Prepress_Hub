@@ -8,3 +8,9 @@ storage_rule: actual_case_prompt_files_may_live_under_the_case_or_prompt_evidenc
 lifecycle: prompt_lifecycle_v0_1.yaml
 effectiveness_model: prompt_effectiveness_model_v0_1.yaml
 registry_contract: prompt_registry_contract_v0_1.yaml
+direction_prompt_profiles:
+- direction_id: notebooks
+  profile: ../directions/notebooks/prompt_profile_v0_1.yaml
+  creator_request_profile: ../directions/notebooks/creator_request_profile_v0_1.yaml
+  loader: ../directions/notebooks/prompts/GDL-INTAKE-NOTEBOOKS-v001.md
+  evidence: ../directions/notebooks/empirical_evidence/NOTEBOOK-QUALITY-EVIDENCE-001.yaml

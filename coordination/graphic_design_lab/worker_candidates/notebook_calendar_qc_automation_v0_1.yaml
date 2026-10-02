@@ -1,0 +1,25 @@
+schema_version: gdl_notebook_calendar_qc_worker_candidate_v0_1
+status: CANDIDATE_NOT_AUTHORIZED
+direction_id: notebooks
+goal: automate_deterministic_page_map_calendar_and_artifact_integrity_checks_without_replacing_visual_human_or_assistant_review
+deterministic_candidates:
+- page_count_vs_page_map
+- page_side_parity
+- spread_pairing
+- date_sequence_generation
+- weekday_correctness
+- month_length_correctness
+- year_transition
+- duplicate_date_detection
+- missing_date_detection
+- transition_week_detection
+- boundary_date_policy
+- artifact_manifest_presence
+- sha256_integrity_validation
+assistant_or_human_review_remains_required_for:
+- visual_hierarchy
+- aesthetic_quality
+- text_clipping_when_not_machine_detectable
+- design_continuity
+- customer_review_readiness
+engineering_worker_implementation: false

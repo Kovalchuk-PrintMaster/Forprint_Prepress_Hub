@@ -1,0 +1,51 @@
+schema_version: gdl_notebook_quality_evidence_v0_1
+evidence_id: NOTEBOOK-QUALITY-EVIDENCE-001
+source_type: SANITIZED_REAL_DATED_PLANNER_QUALITY_PACKAGE
+status: EMPIRICAL_SOURCE_EVIDENCE
+privacy:
+  customer_identity_in_git: false
+  raw_customer_artifacts_in_git: false
+observed_case_structure:
+  active_dated_days: 446
+  monthly_spreads: 15
+  weekly_spreads: 64
+  content_spreads: 79
+  content_pages: 158
+  service_pages: 2
+  total_pages: 160
+  transition_weeks_checked: 12
+observed_successful_check_categories:
+- every_active_weekly_date_present_once
+- correct_weekday_for_every_date
+- correct_month_lengths
+- correct_year_transition
+- all_month_colors_defined
+- transition_weeks_remain_single_spreads
+- transition_days_use_own_calendar_month_color
+- no_duplicate_active_weekly_dates
+- no_missing_active_weekly_dates
+- explicit_project_start_behavior
+- explicit_project_end_behavior
+- boundary_inactive_dates
+- even_left_odd_right_spread_alignment
+observed_artifact_patterns:
+- full_review_pdf
+- spread_review_pdf
+- editable_svg_per_spread
+- page_map
+- calendar_validation
+- internal_qc_report
+- design_notes_or_manifest
+- checksum_manifest
+observed_production_hold_points:
+- final_inner_gutter
+- cover_spine_width
+- final_cover_flat_size
+- final_bleed_geometry
+observed_patch_pattern:
+  type: BOUNDED_FIRST_WEEK_CORRECTION
+  principle: change_only_affected_weekly_content_and_preserve_other_approved_pages
+promotion_limits:
+- case_specific_dates_are_not_universal_defaults
+- case_specific_page_count_is_not_universal_default
+- calendar_checks_apply_only_to_dated_products

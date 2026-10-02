@@ -1,0 +1,23 @@
+schema_version: gdl_notebooks_direction_index_v0_1
+direction_id: notebooks
+status: ACTIVE_EMPIRICAL_KNOWLEDGE_SATURATION
+current_evidence_backed_subprofiles:
+- dated_planner_v0_1
+future_unproven_subprofiles:
+- plain_notebook
+- undated_planner
+- specialized_logbook
+documents:
+- direction_v0_1.yaml
+- prompt_profile_v0_1.yaml
+- creator_request_profile_v0_1.yaml
+- artifact_contract_v0_1.yaml
+- quality_control_rules_v0_1.yaml
+- calendar_validation_profile_v0_1.yaml
+- page_map_contract_v0_1.yaml
+- correction_patch_rules_v0_1.yaml
+- production_hold_points_v0_1.yaml
+loader: prompts/GDL-INTAKE-NOTEBOOKS-v001.md
+review_profile: ../../review/notebooks_dated_planner_review_profile_v0_1.yaml
+source_evidence:
+- empirical_evidence/NOTEBOOK-QUALITY-EVIDENCE-001.yaml

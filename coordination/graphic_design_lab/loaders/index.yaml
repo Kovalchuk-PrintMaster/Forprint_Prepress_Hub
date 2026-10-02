@@ -8,4 +8,15 @@ loaders:
   inherits:
   - policies/operating_model_v0_1.yaml
   - policies/customer_interaction_policy_v0_1.yaml
+- id: GDL-INTAKE-NOTEBOOKS-v001
+  role: INTAKE
+  product_family: notebooks
+  current_subprofile: dated_planner_v0_1
+  path: directions/notebooks/prompts/GDL-INTAKE-NOTEBOOKS-v001.md
+  inherits:
+  - policies/operating_model_v0_1.yaml
+  - policies/customer_interaction_policy_v0_1.yaml
+  - workflow/case_workflow_v0_1.yaml
+  - workflow/internal_review_loop_v0_1.yaml
+  - workflow/design_lock_v0_1.yaml
 historical_loader_index: coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning/loaders/index.yaml

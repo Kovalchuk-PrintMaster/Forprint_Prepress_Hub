@@ -138,3 +138,18 @@ under its `directions/`; prompts used in material runs must be preserved/referen
 Before generating new GDL workflow behavior, read `coordination/graphic_design_lab/workflow/`,
 `review/`, `continuity/assistant_context_contract_v0_1.yaml`, and `prompt_evidence/`.
 A fresh assistant must not reconstruct the Intake/Creator/review loop from chat history.
+
+## Notebooks / dated planners direction
+
+Primary knowledge:
+
+`coordination/graphic_design_lab/directions/notebooks/`
+
+Current evidence-backed subprofile:
+
+`dated_planner_v0_1`
+
+Use `GDL-INTAKE-NOTEBOOKS-v001` for notebook/planner intake. For full dated-planner
+rollout, compile a document structure map before Creator generation, run deterministic
+calendar/page QC, preserve Design Lock during patches, and keep production hold points
+separate from design/calendar validity.

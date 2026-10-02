@@ -1,0 +1,33 @@
+schema_version: gdl_notebooks_direction_v0_1
+direction_id: notebooks
+status: ACTIVE_EMPIRICAL_DIRECTION
+scope:
+  broad_family:
+  - notebooks
+  - diaries
+  - planners
+  currently_evidence_backed:
+  - dated_planner
+principles:
+- structure_map_before_full_rollout
+- prefer_small_first_reviewable_sample_before_expensive_rollout
+- preserve_approved_design_system_during_content_corrections
+- separate_design_validation_from_production_readiness
+- use_deterministic_calendar_and_page_structure_checks_where_possible
+- keep_page_spread_identity_stable
+- treat_service_pages_as_explicit_structure_not_accidental_blanks
+- preserve_editable_units_for_repeat_changes
+phase_model:
+- phase: L1_FIRST_REVIEWABLE_SAMPLE
+  goal: validate_visual_direction_and_structure_with_minimum_work
+  typical_scope:
+  - one_monthly_spread_if_applicable
+  - one_weekly_spread_if_applicable
+  - cover_concept_if_needed
+- phase: L2_FULL_EDITABLE_ROLLOUT
+  goal: expand_approved_system_across_full_document_with_machine_qc
+  requires:
+  - approved_or_operator_accepted_design_direction
+  - stable_structure_map
+  - design_lock
+production_boundary: calendar_or_document_structure_may_be_valid_while_gutter_bleed_spine_and_printer_specific_geometry_remain_pending

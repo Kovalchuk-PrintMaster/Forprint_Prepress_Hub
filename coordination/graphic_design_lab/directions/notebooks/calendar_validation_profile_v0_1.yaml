@@ -1,0 +1,32 @@
+schema_version: gdl_notebooks_calendar_validation_profile_v0_1
+status: ACTIVE_EMPIRICAL_VALIDATION_PROFILE
+applies_to:
+- dated_diary
+- dated_planner
+inputs:
+- project_start_date
+- project_end_date
+- active_date_policy
+- weekly_spread_sequence
+- monthly_spread_sequence
+- month_color_or_style_mapping_if_used
+- boundary_day_policy
+deterministic_checks:
+- active_date_count
+- unique_active_dates
+- weekday_correctness
+- month_length_correctness
+- year_transition_correctness
+- missing_active_dates
+- duplicate_active_dates
+- transition_week_integrity
+- boundary_inactive_date_handling
+- month_specific_style_mapping
+output_should_include:
+- spread_counts
+- page_counts
+- check_results
+- transition_week_list
+- boundary_exceptions
+- notes
+important: case_specific_dates_and_counts_are_evidence_not_universal_defaults

@@ -90,3 +90,17 @@ Creator output requires internal review before customer forwarding.
 Approved visual directions activate Design Lock.
 Material prompts and outcomes are preserved through `prompt_evidence/`;
 reusable workflow knowledge must live in the project rather than only in chat.
+
+## Direction: notebooks / dated planners
+
+The module-local GDL surface now includes:
+
+`directions/notebooks/`
+
+Its current evidence-backed profile is `dated_planner_v0_1`.
+
+The direction formalizes structure-first Creator prompts, page maps, calendar QC,
+patch-scoped corrections, editable spread artifacts, artifact integrity evidence and
+explicit production hold points.
+
+Calendar-specific rules are **not** automatically applied to every notebook subtype.

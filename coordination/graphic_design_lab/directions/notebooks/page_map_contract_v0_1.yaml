@@ -1,0 +1,27 @@
+schema_version: gdl_notebooks_page_map_contract_v0_1
+status: ACTIVE_EMPIRICAL_STRUCTURE_CONTRACT
+recommended_fields:
+- pdf_page
+- side
+- kind
+- spread_seq
+- date_or_month
+- template_id
+- note
+side_values:
+- left
+- right
+kind_examples:
+- service_blank_front
+- service_blank_back
+- month
+- week
+- notes
+- custom
+rules:
+- every_pdf_page_has_exactly_one_row
+- spread_members_share_spread_seq
+- service_blank_pages_are_explicit
+- page_side_parity_is_validated_against_bound_block_plan
+- date_or_period_is_present_for_dated_content
+- page_map_is_updated_with_every_structural_patch

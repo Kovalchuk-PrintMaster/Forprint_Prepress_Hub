@@ -1,0 +1,16 @@
+schema_version: gdl_notebooks_production_hold_points_v0_1
+status: ACTIVE_EMPIRICAL_PRODUCTION_BOUNDARY
+common_hold_points:
+- final_inner_gutter
+- creep_or_shingling_if_applicable
+- final_bleed_geometry
+- cover_spine_width
+- final_cover_flat_size
+- paper_and_block_opening_behavior
+- binding_specific_geometry
+- printer_or_finisher_specification
+rule: design_and_calendar_validation_may_pass_while_production_readiness_remains_pending
+must_not:
+- infer_spine_width_without_actual_block_thickness_or_authoritative_spec
+- infer_final_bleed_without_printer_spec_when_not_defined
+- mark_production_ready_only_because_review_pdf_looks_correct

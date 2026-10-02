@@ -4,3 +4,4 @@ global_gate: global_review_gate_v0_1.yaml
 profiles:
 - menu_review_profile_v0_1.yaml
 - vehicle_branding_review_profile_v0_1.yaml
+- notebooks_dated_planner_review_profile_v0_1.yaml

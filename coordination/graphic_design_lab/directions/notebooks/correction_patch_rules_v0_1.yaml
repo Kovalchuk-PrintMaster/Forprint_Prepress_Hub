@@ -1,0 +1,29 @@
+schema_version: gdl_notebooks_correction_patch_rules_v0_1
+status: ACTIVE_EMPIRICAL_CORRECTION_RULE
+patch_fields:
+- patch_id
+- affected_spreads
+- affected_pages
+- affected_objects_or_fields
+- old_rule
+- new_rule
+- preserve
+- forbidden_changes
+- validation_required_after_patch
+preserve_by_default:
+- all_unaffected_pages
+- approved_design_system
+- approved_palette
+- approved_typography
+- approved_spread_templates
+- stable_object_ids_where_available
+forbidden_by_default:
+- global_redesign
+- unrelated_page_regeneration
+- silent_page_count_change
+- silent_calendar_rule_change
+post_patch_required:
+- rebuild_or_update_page_map_if_structure_changed
+- rerun_calendar_validation_if_date_logic_changed
+- rerun_internal_qc
+- refresh_artifact_checksums_for_changed_files

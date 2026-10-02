@@ -1,0 +1,35 @@
+schema_version: gdl_notebooks_creator_request_profile_v0_1
+status: ACTIVE_EMPIRICAL_CREATOR_PROFILE
+required_sections:
+- MODE
+- SCOPE
+- DATA_AUTHORITY
+- DOCUMENT_GEOMETRY
+- DOCUMENT_STRUCTURE_MAP
+- SPREAD_TEMPLATES
+- CONTENT_RULES
+- CALENDAR_RULES_IF_APPLICABLE
+- DESIGN_SYSTEM
+- DESIGN_LOCK
+- ASSET_REFERENCES
+- PATCH_SCOPE_IF_CORRECTION
+- PRESERVE
+- FORBIDDEN
+- OUTPUTS
+- FINAL_GATE
+- OUTPUT_STATUS
+document_structure_map_rule: Creator_must_receive_explicit_page_spread_structure_not_only_natural_language
+correction_rule:
+  identify_affected_pages_or_spreads: true
+  identify_exact_fields_or_objects_to_change: true
+  preserve_all_unaffected_pages: true
+  preserve_locked_design_system: true
+  forbid_unrelated_regeneration: true
+creator_should_return_machine_description:
+- page_or_spread_structure_used
+- template_or_block_mapping
+- typography_roles
+- spacing_or_alignment_logic
+- asset_refs
+- design_lock_state
+- known_deviations
