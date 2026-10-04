@@ -1,0 +1,16 @@
+schema_version: gdl_preview_approval_pipeline_v0_1
+status: ACTIVE_EMPIRICAL_OPERATING_MODEL
+pipeline:
+- ASSEMBLE_EDITABLE_SOURCE
+- RENDER_LIGHTWEIGHT_PREVIEW
+- INTERNAL_REVIEW
+- CUSTOMER_REVIEW
+- PATCH_IF_REQUIRED
+- RENDER_NEW_PREVIEW
+- CUSTOMER_APPROVAL
+- PRODUCTION_EXPORT
+- FINAL_QC
+reuse_preview_route:
+  state: REUSE_PREVIEW_ONLY
+  customer_rejects: escalate only affected asset
+production_export_before_customer_approval: false

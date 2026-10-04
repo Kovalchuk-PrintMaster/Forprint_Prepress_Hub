@@ -1,0 +1,17 @@
+schema_version: gdl_greeting_card_routing_model_draft_v0_1
+status: DRAFT_EMPIRICAL_ROUTING
+routes:
+- condition: flowers_variant_all_assets_and_text_known
+  creator_required: false
+  route: ROUTE_A_OR_B
+- condition: approved_logo_current_source_materially_same_and_new_text_only
+  creator_required: false
+  route: ROUTE_B
+- condition: current_supplied_logo_materially_changed
+  creator_required: true
+  creator_scope: logo_only
+  route: ROUTE_C
+- condition: new_portrait_requires_repair_or_cutout
+  creator_required: true
+  creator_scope: portrait_only
+  route: ROUTE_C

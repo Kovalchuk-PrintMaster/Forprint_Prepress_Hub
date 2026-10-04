@@ -104,3 +104,11 @@ patch-scoped corrections, editable spread artifacts, artifact integrity evidence
 explicit production hold points.
 
 Calendar-specific rules are **not** automatically applied to every notebook subtype.
+
+## Deterministic execution and recurring client workflows
+
+Primary surfaces: `execution/` and `client_workflows/`.
+
+Recurring client work always produces both a client-specific execution profile and a reusable skeleton.
+Preferred flow: normalize → resolve → compare → reuse → plan → deterministic execution →
+Creator only for unresolved visual assets → deterministic composition → review → preview → learn.

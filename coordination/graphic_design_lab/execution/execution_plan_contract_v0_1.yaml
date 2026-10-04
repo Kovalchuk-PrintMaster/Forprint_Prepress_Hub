@@ -1,0 +1,20 @@
+schema_version: gdl_execution_plan_contract_v0_1
+status: ACTIVE_EMPIRICAL_CONTRACT
+inputs:
+- normalized_job
+- client_profile
+- reusable_skeleton
+- entity_registry
+- asset_registry
+- preference_history
+- job_delta
+sections:
+- route
+- deterministic_steps
+- creator_tasks
+- post_creator_normalization
+- composition_steps
+- review_requirements
+- preview_output
+- production_export_state
+hard_rule: creator_task_list_may_be_empty

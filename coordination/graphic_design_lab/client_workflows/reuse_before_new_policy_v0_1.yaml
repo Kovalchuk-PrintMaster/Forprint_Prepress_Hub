@@ -1,0 +1,16 @@
+schema_version: gdl_reuse_before_new_policy_v0_1
+status: ACTIVE_EMPIRICAL_POLICY
+decision_order:
+- REUSE
+- EXTEND
+- ADAPT
+- REPLACE
+- NEW
+search_dimensions:
+- product_family
+- geometry
+- workflow_pattern
+- asset_pattern
+- production_method
+- client_profile
+- historical_job_variant

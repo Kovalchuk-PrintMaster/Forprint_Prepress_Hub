@@ -1,0 +1,22 @@
+schema_version: gdl_greeting_cards_direction_v0_1
+status: PILOT_SCAFFOLD_AWAITING_REAL_ASSETS
+current_product: A3_single_fold_to_A4_four_logical_pages
+known_rules:
+- logical_pages_separate_from_physical_imposition
+- page_4_expected_locked
+- page_1_sender_logo_occasion_text_optional_recipient_logo
+- page_2_fixed_flowers_or_portrait_under_mask
+- page_3_greeting_closing_phrase_signature_variant
+- text_and_known_geometry_should_be_deterministic
+- creator_should_handle_only_unresolved_visual_assets_after_freeze
+unresolved_until_template:
+- coordinates
+- imposition
+- fonts
+- font_ranges
+- bleed
+- safe_margins
+- mask_geometry
+- logo_zones
+- signature_variants
+- production_color_profile

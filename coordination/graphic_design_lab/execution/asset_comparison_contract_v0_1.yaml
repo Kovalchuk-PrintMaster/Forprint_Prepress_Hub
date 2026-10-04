@@ -1,0 +1,23 @@
+schema_version: gdl_asset_comparison_contract_v0_1
+status: ACTIVE_EMPIRICAL_CONTRACT
+logo:
+  same_entity_is_not_same_logo_version: true
+  compare:
+  - visible_text
+  - punctuation
+  - legal_form
+  - symbol_geometry
+  - layout_structure
+  - brand_colors
+  ignore_as_identity_difference:
+  - jpeg_compression
+  - resolution
+  - background_noise
+  - minor_capture_distortion
+portrait:
+  states:
+  - SAME_SOURCE_VARIANT
+  - SAME_PERSON_NEW_PORTRAIT
+  - DIFFERENT_OR_UNRESOLVED
+  same_source_variant: reuse approved high-quality asset allowed
+  same_person_new_portrait: current supplied source has semantic precedence unless reuse-preview route is explicit

@@ -1,0 +1,42 @@
+schema_version: gdl_client_workspace_architecture_v0_1
+status: ACTIVE_EMPIRICAL_ARCHITECTURE
+workspace_dir_name: _forprint_automation
+human_files_are_canonical_machine_source: false
+tree:
+  client_profile: []
+  aliases: []
+  assets:
+  - logos
+  - portraits
+  - signatures
+  - masks
+  - watermarks
+  - backgrounds
+  templates:
+  - source
+  - normalized
+  - manifests
+  presets: []
+  rules: []
+  preferences: []
+  jobs: []
+  previews: []
+  approved: []
+  prompt_runs: []
+  creator_manifests: []
+  qc: []
+  archive: []
+repo_stores:
+- schemas
+- reusable_rules
+- skeletons
+- sanitized_evidence
+- canonical_path_templates
+workspace_stores:
+- private_assets
+- raw_sources
+- approved_assets
+- editable_documents
+- job_history
+- previews
+- client_preferences

@@ -1,0 +1,28 @@
+schema_version: gdl_client_asset_registry_schema_v0_1
+status: ACTIVE_EMPIRICAL_SCHEMA
+asset_fields:
+- asset_id
+- entity_id
+- asset_type
+- path
+- format
+- status
+- approved_at
+- supersedes
+- source_ref
+- usage_notes
+- preference_refs
+logo_statuses:
+- CURRENT_APPROVED
+- HISTORICAL_APPROVED
+- CANDIDATE
+- SUPERSEDED
+portrait_statuses:
+- APPROVED_PORTRAIT
+- APPROVED_ALTERNATE
+- CURRENTLY_SUPPLIED
+- HISTORICAL
+rules:
+- keep historical approved versions
+- reuse approved before reconstruction
+- same entity does not imply same current asset

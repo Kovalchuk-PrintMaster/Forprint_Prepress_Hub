@@ -1,0 +1,29 @@
+schema_version: gdl_greeting_card_first_batch_test_plan_v0_1
+status: READY_FOR_FIRST_REAL_BATCH
+sequence:
+- ingest_raw_bundle
+- batch_intake
+- resolve_entities
+- resolve_history
+- compare_assets
+- classify_routes
+- build_job_delta
+- build_execution_plan
+- deterministic_first
+- creator_only_if_required
+- normalize_creator_output
+- compose
+- preview
+- internal_review
+- customer_review
+- record_learning
+capture:
+- creator_calls_used
+- creator_calls_avoided
+- reuse_candidates
+- reuse_preview_acceptance
+- manual_interventions
+- preview_revisions
+- new_aliases
+- new_approved_assets
+- new_skeleton_findings

@@ -1,0 +1,17 @@
+schema_version: gdl_creator_task_boundary_v0_1
+status: ACTIVE_EMPIRICAL_BOUNDARY
+hard_rule: CREATOR_RECEIVES_SMALLEST_UNRESOLVED_VISUAL_UNIT
+output_types:
+- NORMALIZED_PORTRAIT_ASSET
+- NORMALIZED_LOGO_ASSET
+- RESTORED_RASTER_ASSET
+- NEW_VISUAL_COMPONENT_CANDIDATE
+- DESIGN_EXPLORATION_CANDIDATE
+creator_geometry_authority_default: false
+base_portrait_normalization:
+- recover_detail
+- normalize_contrast
+- normalize_natural_skin_color
+- remove_background
+- prepare_required_crop
+directed_appearance_edits_require_explicit_request: true

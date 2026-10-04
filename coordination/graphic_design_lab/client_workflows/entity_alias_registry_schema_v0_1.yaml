@@ -1,0 +1,18 @@
+schema_version: gdl_entity_alias_registry_schema_v0_1
+status: ACTIVE_EMPIRICAL_SCHEMA
+entity_fields:
+- entity_id
+- entity_type
+- canonical_name
+- exact_aliases
+- observed_customer_variants
+- linked_assets
+- notes
+entity_types:
+- organization
+- person
+- brand
+- sender
+- recipient
+- other
+ambiguity_state: UNRESOLVED

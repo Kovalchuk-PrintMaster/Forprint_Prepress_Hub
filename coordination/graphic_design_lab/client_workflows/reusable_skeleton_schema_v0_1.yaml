@@ -1,0 +1,18 @@
+schema_version: gdl_reusable_skeleton_schema_v0_1
+status: ACTIVE_EMPIRICAL_SCHEMA
+required:
+- skeleton_id
+- product_family
+- geometry_model
+- stable_object_model
+- variant_model
+- deterministic_operations
+- creator_boundaries
+- review_profile
+- production_defaults
+lifecycle:
+- UNPROVEN
+- PROMISING
+- STABLE
+- DEGRADED
+- RETIRED

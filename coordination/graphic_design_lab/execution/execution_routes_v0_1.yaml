@@ -1,0 +1,15 @@
+schema_version: gdl_execution_routes_v0_1
+status: ACTIVE_EMPIRICAL_ROUTING_MODEL
+routes:
+- id: ROUTE_A_REUSE_ONLY
+  creator_required: false
+  description: everything already resolved
+- id: ROUTE_B_DETERMINISTIC_ADAPTATION
+  creator_required: false
+  description: text/scale/position/preset changes
+- id: ROUTE_C_AI_ASSET_TRANSFORMATION
+  creator_required: true
+  description: only unresolved visual assets
+- id: ROUTE_D_DESIGN_EXPLORATION
+  creator_required: true
+  description: new visual structure or explicit redesign

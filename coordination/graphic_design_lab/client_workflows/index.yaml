@@ -1,0 +1,12 @@
+schema_version: gdl_client_workflows_index_v0_1
+status: ACTIVE_EMPIRICAL_OPERATING_MODEL
+policy: every recurring client workflow must pair with reusable skeleton learning
+documents:
+- client_workspace_architecture_v0_1.yaml
+- client_execution_profile_schema_v0_1.yaml
+- reusable_skeleton_schema_v0_1.yaml
+- entity_alias_registry_schema_v0_1.yaml
+- asset_registry_schema_v0_1.yaml
+- client_preference_model_schema_v0_1.yaml
+- preset_schema_v0_1.yaml
+- reuse_before_new_policy_v0_1.yaml

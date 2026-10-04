@@ -1,0 +1,13 @@
+schema_version: gdl_client_execution_profile_schema_v0_1
+status: ACTIVE_EMPIRICAL_SCHEMA
+required:
+- client_id
+- workspace_root
+- inherits_skeletons
+- presets
+- entity_registry_ref
+- asset_registry_ref
+- preference_model_ref
+- production_defaults_or_refs
+- allowed_overrides
+rule: store client-specific differences over reusable skeleton

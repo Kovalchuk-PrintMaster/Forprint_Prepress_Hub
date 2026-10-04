@@ -1,0 +1,10 @@
+schema_version: gdl_client_preset_schema_v0_1
+status: ACTIVE_EMPIRICAL_SCHEMA
+fields:
+- preset_id
+- inherits_skeleton
+- variant_parameters
+- default_assets
+- production_overrides
+- customer_specific_rules
+- review_overrides

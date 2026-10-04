@@ -1,0 +1,26 @@
+schema_version: gdl_execution_philosophy_v0_1
+status: ACTIVE_EMPIRICAL_OPERATING_MODEL
+canonical_flow:
+- NORMALIZE
+- RESOLVE
+- COMPARE
+- REUSE
+- PLAN
+- EXECUTE_LOCALLY
+- CREATOR_ONLY_FOR_UNRESOLVED_VISUAL_ASSETS
+- NORMALIZE_CREATOR_OUTPUT
+- COMPOSE_DETERMINISTICALLY
+- INTERNAL_REVIEW
+- PREVIEW
+- CUSTOMER_FEEDBACK
+- LEARN
+principles:
+- human_raw_input_requires_semantic_normalization
+- machine_conformant_input_may_bypass_intake
+- reuse_before_generation
+- deterministic_processing_before_ai
+- creator_receives_smallest_unresolved_visual_unit
+- creator_does_not_own_final_document_geometry
+- approved_structure_is_frozen_into_machine_template
+- preview_is_rendered_from_same_editable_source_as_future_production_export
+- client_profile_and_reusable_skeleton_evolve_in_parallel

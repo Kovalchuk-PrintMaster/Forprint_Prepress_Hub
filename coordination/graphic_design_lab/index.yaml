@@ -15,6 +15,8 @@ sections:
   review: review/
   continuity: continuity/
   worker_candidates: worker_candidates/
+  execution: execution/
+  client_workflows: client_workflows/
 historical_evidence_root: coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning
 active_directions:
 - vehicle_branding
@@ -22,3 +24,5 @@ canonical_case_workflow: workflow/case_workflow_v0_1.yaml
 canonical_state_machine: workflow/state_machine_v0_1.yaml
 canonical_internal_review_loop: workflow/internal_review_loop_v0_1.yaml
 canonical_design_lock: workflow/design_lock_v0_1.yaml
+canonical_execution_philosophy: execution/execution_philosophy_v0_1.yaml
+canonical_client_workflow_architecture: client_workflows/client_workspace_architecture_v0_1.yaml

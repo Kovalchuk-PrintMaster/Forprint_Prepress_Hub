@@ -10,3 +10,7 @@ directions:
   path: directions/notebooks
   current_evidence_backed_subprofile: dated_planner_v0_1
   source_evidence: NOTEBOOK-QUALITY-EVIDENCE-001
+- direction_id: greeting_cards
+  status: PILOT_SCAFFOLD_AWAITING_TEMPLATE_INSPECTION
+  path: directions/greeting_cards
+  next_action: inspect_real_template_and_first_customer_batch

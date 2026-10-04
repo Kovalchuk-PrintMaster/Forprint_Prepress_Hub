@@ -1,0 +1,20 @@
+schema_version: gdl_greeting_card_stable_object_model_draft_v0_1
+status: DRAFT_IDS_TO_BE_CONFIRMED_FROM_TEMPLATE
+objects:
+- front.background
+- front.sender_logo
+- front.recipient_logo
+- front.occasion_text
+- inside_image.background
+- inside_image.flowers
+- inside_image.portrait
+- inside_image.portrait_mask
+- inside_image.watermark
+- inside_text.background
+- inside_text.greeting
+- inside_text.closing_phrase
+- inside_text.signature
+- inside_text.watermark
+- back.background
+- back.fixed_mark
+- back.watermark

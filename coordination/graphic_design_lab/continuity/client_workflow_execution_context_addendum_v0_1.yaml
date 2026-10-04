@@ -1,0 +1,16 @@
+schema_version: gdl_client_workflow_execution_context_addendum_v0_1
+status: ACTIVE_CONTINUITY_REQUIREMENT
+fresh_assistant_must_know:
+- recurring client work builds client profile and reusable skeleton in parallel
+- private assets live outside git in _forprint_automation workspace
+- reuse before new is mandatory
+- intake normalizes human input
+- deterministic planning decides creator scope
+- creator receives smallest unresolved visual unit
+- composition is deterministic after design freeze
+- preview comes from same editable source
+- machine-conformant input may bypass intake
+primary_paths:
+- coordination/graphic_design_lab/execution/
+- coordination/graphic_design_lab/client_workflows/
+- coordination/graphic_design_lab/directions/greeting_cards/

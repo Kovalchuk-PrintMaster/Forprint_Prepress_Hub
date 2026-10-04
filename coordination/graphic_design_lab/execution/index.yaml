@@ -1,0 +1,15 @@
+schema_version: gdl_execution_index_v0_1
+status: ACTIVE_EMPIRICAL_OPERATING_MODEL
+documents:
+- execution_philosophy_v0_1.yaml
+- deterministic_ai_isolation_policy_v0_1.yaml
+- execution_routes_v0_1.yaml
+- batch_intake_contract_v0_1.yaml
+- reuse_resolution_contract_v0_1.yaml
+- asset_comparison_contract_v0_1.yaml
+- job_delta_contract_v0_1.yaml
+- execution_plan_contract_v0_1.yaml
+- creator_task_boundary_v0_1.yaml
+- deterministic_compositor_contract_v0_1.yaml
+- preview_approval_pipeline_v0_1.yaml
+- learning_metrics_v0_1.yaml

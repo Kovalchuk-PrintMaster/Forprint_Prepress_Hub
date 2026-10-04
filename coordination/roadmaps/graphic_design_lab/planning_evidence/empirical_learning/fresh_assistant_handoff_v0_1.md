@@ -153,3 +153,9 @@ Use `GDL-INTAKE-NOTEBOOKS-v001` for notebook/planner intake. For full dated-plan
 rollout, compile a document structure map before Creator generation, run deterministic
 calendar/page QC, preserve Design Lock during patches, and keep production hold points
 separate from design/calendar validity.
+
+## Deterministic execution / recurring client workflows
+
+Read `coordination/graphic_design_lab/execution/`, `client_workflows/`, and `directions/greeting_cards/`.
+Intake normalizes human input; deterministic planning decides Creator scope; Creator receives only the
+smallest unresolved visual unit; composition is deterministic after design freeze.

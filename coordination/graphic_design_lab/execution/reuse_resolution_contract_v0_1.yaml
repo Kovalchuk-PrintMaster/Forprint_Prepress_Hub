@@ -1,0 +1,24 @@
+schema_version: gdl_reuse_resolution_contract_v0_1
+status: ACTIVE_EMPIRICAL_CONTRACT
+decision_order:
+- REUSE
+- EXTEND
+- ADAPT
+- REPLACE
+- NEW
+possible_states:
+- EXACT_REUSE
+- REUSE_SAFE
+- REUSE_PREVIEW_ONLY
+- NEW_ASSET_REQUIRED
+- UNRESOLVED
+resolution_order:
+- resolve_entity
+- find_approved_assets
+- find_approved_variants
+- find_skeleton
+- find_client_profile
+- find_preferences
+- compare_current_vs_history
+- build_job_delta
+numeric_confidence_required: false

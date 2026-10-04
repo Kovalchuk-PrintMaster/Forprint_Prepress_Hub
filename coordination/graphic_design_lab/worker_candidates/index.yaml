@@ -5,3 +5,8 @@ candidates:
 - review_gate_automation_v0_1.yaml
 - prompt_effectiveness_aggregator_v0_1.yaml
 - assistant_context_projection_update_v0_1.yaml
+- client_workspace_initializer_v0_1.yaml
+- entity_alias_resolver_v0_1.yaml
+- asset_reuse_verifier_v0_1.yaml
+- execution_planner_v0_1.yaml
+- deterministic_compositor_v0_1.yaml

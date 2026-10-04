@@ -1,0 +1,24 @@
+schema_version: gdl_batch_intake_contract_v0_1
+status: ACTIVE_EMPIRICAL_CONTRACT
+accepted_raw_sources:
+- chat
+- word
+- pdf
+- jpeg
+- png
+- tiff
+- screenshots
+- embedded_logos
+- mixed_batch
+output: NORMALIZED_BATCH
+job_fields:
+- job_id
+- raw_recipient_name
+- candidate_entity_id
+- occasion
+- greeting_text_source
+- sender_variant
+- supplied_assets
+- special_requests
+- uncertainties
+rule: intake_normalizes_semantics_but_does_not_decide_final_creator_scope

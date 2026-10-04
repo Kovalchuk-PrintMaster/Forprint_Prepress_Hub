@@ -1,0 +1,27 @@
+schema_version: gdl_greeting_card_reusable_skeleton_draft_v0_1
+skeleton_id: greeting_card_a3_single_fold_v0_1
+status: DRAFT_AWAITING_TEMPLATE_MEASUREMENT
+logical_pages:
+- id: PAGE_1_FRONT
+  state: PARAMETRIC
+- id: PAGE_2_INSIDE_IMAGE
+  state: PARAMETRIC
+- id: PAGE_3_INSIDE_GREETING
+  state: PARAMETRIC
+- id: PAGE_4_BACK
+  state: LOCKED_EXPECTED
+deterministic_candidates:
+- occasion_text
+- text_font_fit
+- sender_logo_variant_position
+- recipient_logo_placement
+- flowers_reuse
+- signature_selection
+- portrait_scale_after_normalization
+- mask_z_order
+- preview_render
+creator_candidates:
+- new_or_changed_logo
+- portrait_restoration_cutout
+- directed_portrait_retouch
+- explicit_design_exploration

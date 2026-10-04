@@ -1,0 +1,9 @@
+schema_version: gdl_greeting_cards_direction_index_v0_1
+direction_id: greeting_cards
+status: PILOT_SCAFFOLD_AWAITING_TEMPLATE_INSPECTION
+documents:
+- direction_v0_1.yaml
+- reusable_skeleton_draft_v0_1.yaml
+- stable_object_model_draft_v0_1.yaml
+- routing_model_draft_v0_1.yaml
+- first_batch_test_plan_v0_1.yaml

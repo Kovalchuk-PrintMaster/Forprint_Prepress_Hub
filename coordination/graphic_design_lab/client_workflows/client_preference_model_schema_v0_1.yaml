@@ -1,0 +1,21 @@
+schema_version: gdl_client_preference_model_schema_v0_1
+status: ACTIVE_EMPIRICAL_SCHEMA
+precedence:
+- GLOBAL_DEFAULT
+- PRODUCT_DEFAULT
+- CLIENT_LEARNED_PREFERENCE
+- CASE_SPECIFIC_EXPLICIT_VALUE
+fields:
+- preference_id
+- target
+- trigger_phrase_or_condition
+- recommended_start_value_or_range
+- evidence_count
+- accepted_examples
+- rejected_examples
+- status
+status_values:
+- OBSERVED
+- PROMISING
+- STRONG_CLIENT_SPECIFIC_EVIDENCE
+- DEGRADED

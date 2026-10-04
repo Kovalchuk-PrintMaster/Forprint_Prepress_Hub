@@ -18,8 +18,8 @@ fresh_assistant_must_not:
 - generate_reusable_rules_only_in_chat
 - skip_project_update_for_material_new_findings
 - send_creator_result_to_customer_without_review_gate
-acceptance_question: Can a fresh assistant continue an active GDL case from project/context-pack state without reading
-  the previous chat?
+acceptance_question: Can a fresh assistant continue an active GDL case from project/context-pack state without reading the
+  previous chat?
 context_pack_priority_paths:
 - coordination/graphic_design_lab/index.yaml
 - coordination/graphic_design_lab/policies/
@@ -28,3 +28,6 @@ context_pack_priority_paths:
 - coordination/graphic_design_lab/prompt_evidence/
 - coordination/graphic_design_lab/directions/index.yaml
 - coordination/graphic_design_lab/cases/index.yaml
+- coordination/graphic_design_lab/execution/
+- coordination/graphic_design_lab/client_workflows/
+- coordination/graphic_design_lab/directions/greeting_cards/

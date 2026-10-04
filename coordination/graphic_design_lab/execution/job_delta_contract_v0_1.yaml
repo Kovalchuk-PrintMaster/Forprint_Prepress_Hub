@@ -1,0 +1,8 @@
+schema_version: gdl_job_delta_contract_v0_1
+status: ACTIVE_EMPIRICAL_CONTRACT
+sections:
+- resolved_from_existing_assets
+- deterministic_changes
+- creator_required_assets
+- human_or_customer_clarification
+- unchanged_locked_structure

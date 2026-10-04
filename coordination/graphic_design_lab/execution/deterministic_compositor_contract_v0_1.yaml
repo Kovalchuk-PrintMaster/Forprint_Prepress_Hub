@@ -1,0 +1,17 @@
+schema_version: gdl_deterministic_compositor_contract_v0_1
+status: DESIGN_READY_WORKER_CANDIDATE
+responsibilities:
+- load_template
+- select_variant
+- resolve_object_ids
+- apply_text
+- fit_typography
+- scale_preserving_aspect_ratio
+- position_by_rules
+- apply_masks
+- enforce_overlap
+- apply_z_order
+- render_preview
+- export_editable_and_later_production_artifact
+creator_output_rule: creator canvas size is not document geometry authority
+preview_rule: preview must come from same editable source as final export

@@ -1,0 +1,12 @@
+schema_version: gdl_execution_learning_metrics_v0_1
+status: ACTIVE_EMPIRICAL_METRIC_MODEL
+metrics:
+- creator_calls_per_job
+- creator_calls_avoided_by_reuse
+- creator_calls_avoided_by_deterministic_processing
+- reuse_preview_acceptance_rate
+- false_reuse_rate
+- creator_escalation_after_reuse_preview
+- intake_bypass_rate_for_machine_conformant_jobs
+- first_preview_acceptance_rate
+- average_preview_revision_count
