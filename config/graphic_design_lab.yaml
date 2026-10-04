@@ -24,6 +24,13 @@ storage:
   temp_root: tmp/graphic_design_lab
   cache_root: runtime/graphic_design_lab/cache
 
+toolchain:
+  contract: coordination/graphic_design_lab/execution/gdl_toolchain_contract_v0_1.yaml
+  readiness_check: scripts/validation/check_gdl_toolchain_readiness.py
+  provider_selection_from_availability: false
+  runtime_initialization_from_availability: false
+  production_write_from_availability: false
+
 providers:
   svg_renderer:
     selected: UNRESOLVED
@@ -58,6 +65,8 @@ providers:
 
 document_defaults:
   units: mm
+  working_document_container: pdf
+  atomic_vector_interchange: svg
   editable_interchange: svg
   review_output: pdf
   preview_output: png

@@ -1,0 +1,140 @@
+schema_version: forprint_gdl_toolchain_contract_v0_1
+contract_id: gdl_toolchain_contract_v0_1
+capability: graphic_design_lab
+status: CANONICAL_FOUNDATION_CONTRACT
+
+authority:
+  selects_provider: false
+  initializes_runtime: false
+  enables_production_write: false
+  authorizes_creator_execution: false
+  mutates_blueprint: false
+
+document_strategy:
+  mode: PDF_FIRST_COMPONENT_BASED
+  working_document_container: pdf
+  review_output: pdf
+  production_output: pdf
+  atomic_vector_formats: [svg, pdf]
+  atomic_raster_formats: [png, tiff, jpeg]
+  preserve_text_as_text_where_possible: true
+  stable_object_ids: true
+  illustrator_private_data:
+    allowed_as_compatibility_layer: true
+    machine_source_of_truth: false
+
+python_environment:
+  optional_dependency_group: gdl
+  required:
+    - distribution: PyMuPDF
+      import_name: pymupdf
+      version_spec: ">=1.28,<2"
+    - distribution: Pillow
+      import_name: PIL
+      version_spec: ">=12,<13"
+    - distribution: pikepdf
+      import_name: pikepdf
+      version_spec: ">=10,<11"
+    - distribution: pypdf
+      import_name: pypdf
+      version_spec: ">=6,<7"
+    - distribution: reportlab
+      import_name: reportlab
+      version_spec: ">=5,<6"
+    - distribution: fonttools
+      import_name: fontTools
+      version_spec: ">=4.66,<5"
+    - distribution: lxml
+      import_name: lxml
+      version_spec: ">=6,<7"
+    - distribution: python-docx
+      import_name: docx
+      version_spec: ">=1.2,<2"
+    - distribution: CairoSVG
+      import_name: cairosvg
+      version_spec: ">=2.9,<3"
+
+system_tools:
+  - id: poppler_pdfinfo
+    command: pdfinfo
+    package_hint_debian: poppler-utils
+    purpose: pdf_metadata_and_page_boxes
+  - id: poppler_pdffonts
+    command: pdffonts
+    package_hint_debian: poppler-utils
+    purpose: embedded_font_inspection
+  - id: poppler_pdfimages
+    command: pdfimages
+    package_hint_debian: poppler-utils
+    purpose: raster_object_inventory
+  - id: poppler_pdftocairo
+    command: pdftocairo
+    package_hint_debian: poppler-utils
+    purpose: deterministic_pdf_rendering
+  - id: qpdf
+    command: qpdf
+    package_hint_debian: qpdf
+    purpose: structural_pdf_health
+  - id: ghostscript
+    command: gs
+    package_hint_debian: ghostscript
+    purpose: pdf_interpreter_and_rendering
+  - id: mupdf
+    command: mutool
+    package_hint_debian: mupdf-tools
+    purpose: secondary_pdf_inspection
+  - id: exiftool
+    command: exiftool
+    package_hint_debian: libimage-exiftool-perl
+    purpose: metadata_inspection
+  - id: librsvg
+    command: rsvg-convert
+    package_hint_debian: librsvg2-bin
+    purpose: svg_rendering
+  - id: inkscape
+    command: inkscape
+    package_hint_debian: inkscape
+    purpose: vector_cli_execution
+  - id: vips
+    command: vips
+    package_hint_debian: libvips-tools
+    purpose: raster_processing
+  - id: libreoffice
+    command: soffice
+    package_hint_debian: libreoffice-writer
+    purpose: office_document_conversion
+  - id: potrace
+    command: potrace
+    package_hint_debian: potrace
+    purpose: deterministic_bitmap_vectorization
+  - id: fontconfig
+    command: fc-list
+    package_hint_debian: fontconfig
+    purpose: font_inventory
+
+font_policy:
+  automatic_substitution_allowed: false
+  exact_font_required_for_text_regeneration: true
+  embedded_font_sufficient_for_unchanged_pdf_rendering: true
+  observed_template_fonts:
+    - Monotype Corsiva
+    - ZapfChanceryC
+    - Mazzard H
+    - Myriad Pro
+    - Asterisk Sans
+  missing_exact_fonts_are:
+    host_readiness_failure: false
+    text_regeneration_blocker_for_affected_objects: true
+
+readiness:
+  contract_check_is_portable: true
+  host_check_requires_installed_system_tools: true
+  host_check_required_before_pdf_execution: true
+  tool_presence_does_not_select_provider: true
+  tool_presence_does_not_initialize_runtime: true
+  tool_presence_does_not_enable_production_write: true
+
+privacy:
+  client_paths_in_contract: false
+  pii_in_contract: false
+  heavy_customer_artifacts_in_repository: false
