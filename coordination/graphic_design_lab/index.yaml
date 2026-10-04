@@ -20,6 +20,7 @@ sections:
 historical_evidence_root: coordination/roadmaps/graphic_design_lab/planning_evidence/empirical_learning
 active_directions:
 - vehicle_branding
+- greeting_cards
 canonical_case_workflow: workflow/case_workflow_v0_1.yaml
 canonical_state_machine: workflow/state_machine_v0_1.yaml
 canonical_internal_review_loop: workflow/internal_review_loop_v0_1.yaml

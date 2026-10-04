@@ -1,0 +1,187 @@
+schema_version: gdl_reusable_skeleton_instance_v0_1
+skeleton_id: greeting_card_a3_single_fold_v0_1
+product_family: recurring_folded_greeting_card
+lifecycle: PROMISING
+status: STRUCTURAL_DESIGN_FROZEN_EXECUTION_NOT_READY
+
+geometry_model:
+  units: mm
+  working_document_container: pdf
+  physical_page_count: 4
+  media_size: [214.0, 301.0]
+  trim_size: [210.0, 297.0]
+  bleed_each_side: 2.0
+  physical_to_logical_page_map:
+    1: PAGE_1_FRONT
+    2: PAGE_4_BACK
+    3: PAGE_2_INSIDE_IMAGE
+    4: PAGE_3_INSIDE_GREETING
+  logical_page_order:
+    - PAGE_1_FRONT
+    - PAGE_2_INSIDE_IMAGE
+    - PAGE_3_INSIDE_GREETING
+    - PAGE_4_BACK
+  geometry_authority: CANONICAL_NORMALIZED_FROM_10_JOB_EMPIRICAL_CORPUS
+
+stable_object_model:
+  identity_rule: semantic_role_not_raw_pdf_object_identity
+  objects:
+    - id: front.background
+      page: PAGE_1_FRONT
+      state: LOCKED_REUSABLE
+    - id: front.sender_logo
+      page: PAGE_1_FRONT
+      state: PARAMETRIC_BY_FRONT_FAMILY
+    - id: front.recipient_branding
+      page: PAGE_1_FRONT
+      state: OPTIONAL_PARAMETRIC
+      implementation_subtypes: [TEXT, RASTER]
+    - id: front.occasion_text
+      page: PAGE_1_FRONT
+      state: PARAMETRIC
+    - id: inside_image.background
+      page: PAGE_2_INSIDE_IMAGE
+      state: LOCKED_REUSABLE
+    - id: inside_image.frame
+      page: PAGE_2_INSIDE_IMAGE
+      state: LOCKED_REUSABLE
+    - id: inside_image.portrait
+      page: PAGE_2_INSIDE_IMAGE
+      state: CASE_SPECIFIC_VARIABLE
+    - id: inside_image.portrait_mask
+      page: PAGE_2_INSIDE_IMAGE
+      state: DETERMINISTIC_TEMPLATE_BEHAVIOR
+    - id: inside_text.background
+      page: PAGE_3_INSIDE_GREETING
+      state: LOCKED_REUSABLE
+    - id: inside_text.greeting
+      page: PAGE_3_INSIDE_GREETING
+      state: PARAMETRIC_TEXT
+    - id: inside_text.closing_phrase
+      page: PAGE_3_INSIDE_GREETING
+      state: PARAMETRIC_TEXT
+    - id: inside_text.sender_block
+      page: PAGE_3_INSIDE_GREETING
+      state: PARAMETRIC_VARIANT
+    - id: inside_text.signature
+      page: PAGE_3_INSIDE_GREETING
+      state: PARAMETRIC_ASSET
+    - id: inside_text.watermark
+      page: PAGE_3_INSIDE_GREETING
+      state: LOCKED_REUSABLE
+    - id: back.background
+      page: PAGE_4_BACK
+      state: LOCKED_REUSE_ONLY
+    - id: back.fixed_mark
+      page: PAGE_4_BACK
+      state: LOCKED_REUSE_ONLY
+    - id: back.watermark
+      page: PAGE_4_BACK
+      state: LOCKED_REUSE_ONLY
+  draft_aliases:
+    front.recipient_logo: front.recipient_branding
+
+variant_model:
+  front:
+    semantic_families:
+      - id: STANDARD
+        observed_jobs: 6
+        sender_logo_bbox_mm: [64.5, 59.5, 149.5, 144.5]
+        occasion_bbox_mm: [32.0, 203.5, 182.0, 248.0]
+        occasion_font_size_pt: 52.0
+      - id: RECIPIENT_BRANDING_OVERLAY
+        observed_jobs: 3
+        sender_logo_bbox_mm: [69.0, 39.0, 145.0, 115.0]
+        occasion_bbox_mm: [32.0, 203.5, 182.0, 248.0]
+        occasion_font_size_pt: 52.0
+        recipient_branding_zone_mm: [26.0, 134.0, 188.0, 191.0]
+        implementation_subtypes: [TEXT, RASTER]
+      - id: BILINGUAL_OCCASION
+        observed_jobs: 1
+        sender_logo_bbox_mm: [74.0, 112.0, 140.0, 178.0]
+        occasion_bbox_mm: [21.5, 191.0, 194.5, 262.5]
+        occasion_font_size_pt: 51.5
+    family_selection_rule: semantic_visible_layout_change_not_minor_editor_drift
+  greeting_body:
+    canonical_font_size_tiers_pt: [22.5, 20.0, 17.0]
+    selection_rule: LARGEST_CANONICAL_TIER_THAT_FITS_GEOMETRY_AND_PRESERVES_SENDER_GAP
+    choose_by_line_count_only: false
+    required_exact_font_family: ZapfChanceryC
+  sender_block:
+    canonical_start_y_variants_mm: [214.0, 224.0, 236.0]
+    semantic_variants:
+      - SINGLE_PRIMARY
+      - SINGLE_SECONDARY
+      - DUAL_SENDER
+      - BILINGUAL_SENDER_BLOCK
+
+deterministic_operations:
+  - select_front_semantic_family
+  - apply_canonical_geometry
+  - place_sender_logo_by_family
+  - place_optional_recipient_branding
+  - apply_occasion_text
+  - normalize_and_place_portrait
+  - apply_portrait_mask_and_z_order
+  - select_sender_block_variant
+  - select_signature_asset
+  - fit_greeting_using_canonical_font_tiers
+  - ignore_hidden_or_offboard_authoring_artifacts_without_rendered_contribution
+  - reuse_locked_back_page
+  - render_preview_from_same_editable_source
+  - export_working_pdf
+
+creator_boundaries:
+  deterministic_first: true
+  creator_only_for:
+    - new_or_materially_changed_logo_asset
+    - portrait_restoration_or_cutout_not_safely_deterministic
+    - explicitly_requested_portrait_retouch
+    - explicit_design_exploration
+  creator_must_not_control:
+    - document_geometry
+    - canonical_page_mapping
+    - locked_back_page
+    - canonical_text_slots
+    - canonical_z_order
+    - production_export_rules
+
+review_profile:
+  global_review_gate_ref: ../../review/global_review_gate_v0_1.yaml
+  required_checks:
+    - page_mapping
+    - semantic_family_selection
+    - object_visibility
+    - text_fidelity
+    - font_exactness_before_regeneration
+    - portrait_crop_and_mask
+    - design_lock_if_customer_approved
+    - preview_from_same_editable_source
+
+production_defaults:
+  review_output: pdf
+  production_output: pdf
+  preview_output: png
+  text_regeneration_ready: false
+  production_ready: false
+  provider_selected: false
+  runtime_initialized: false
+  unresolved_execution_requirements:
+    - exact_production_fonts
+    - production_color_profile
+    - final_production_preflight_profile
+
+empirical_asset_fingerprints:
+  note: hashes_only_no_heavy_or_private_assets_in_git
+  background_paper: "7e00983a508f9c59fb6148e9d33a52ca"
+  ornate_frame: "b136196cfb1dcc996333e75707257946"
+  watermark_emblem: "216f5696fab35f44f4b18c8efe82cefa"
+  sender_logo_observed: "78b87a6195270a66b0e32de814f8f597"
+
+authority:
+  structural_design_frozen: true
+  workflow_design_lock_activated: false
+  customer_approval_implied: false
+  production_write_authorized: false
+  provider_execution_authorized: false
+  blueprint_mutation_authorized: false

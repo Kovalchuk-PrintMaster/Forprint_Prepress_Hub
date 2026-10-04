@@ -1,0 +1,43 @@
+schema_version: gdl_human_authoring_noise_policy_v0_1
+status: ACTIVE_DIRECTION_POLICY
+scope: greeting_cards
+principle: SEMANTIC_AND_VISIBLE_DIFFERENCES_OVER_RAW_EDITOR_DRIFT
+
+normalization_tolerances:
+  purpose: CLUSTERING_AND_CANONICALIZATION_ONLY_NOT_FINAL_RENDER_TOLERANCE
+  position_mm: 1.5
+  dimension_mm: 1.5
+  font_size_pt: 1.25
+  rotation_deg: 0.5
+  scale_percent: 1.5
+
+canonicalization:
+  position_and_size: MEDIAN_THEN_ROUND_TO_0_5_MM
+  font_size: MEDIAN_THEN_ROUND_TO_0_5_PT
+  prefer_majority_geometry_when_semantics_equal: true
+  preserve_raw_measurements_as_empirical_evidence: true
+  deterministic_render_uses_exact_canonical_values_after_family_selection: true
+
+variant_creation:
+  small_coordinate_drift_creates_variant: false
+  small_font_size_drift_creates_variant: false
+  raw_pdf_object_type_difference_creates_variant: false
+  semantic_role_change_creates_variant: true
+  visible_layout_change_beyond_normalization_tolerance_creates_variant: true
+  multilingual_or_expanded_content_can_create_variant: true
+
+authoring_artifact_policy:
+  hidden_or_offboard_object_with_zero_rendered_contribution: IGNORE_AUTHORING_ARTIFACT
+  duplicate_hidden_object: IGNORE_AUTHORING_ARTIFACT
+  unused_editor_leftover: IGNORE_UNLESS_VISIBLE_OR_SEMANTICALLY_REQUIRED
+  raw_pdf_object_presence_is_semantic_authority: false
+
+review_policy:
+  first_canonical_render_may_receive_targeted_adjustments: true
+  targeted_adjustment_should_update_canonical_value_not_spawn_noise_variant: true
+  do_not_overfit_template_to_human_editor_noise: true
+  production_alignment_tolerance_is_separate_from_normalization_tolerance: true
+
+promotion_policy:
+  status: DIRECTION_SPECIFIC_FIRST
+  promote_to_global_gdl_only_after_cross_direction_evidence: true

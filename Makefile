@@ -1,4 +1,4 @@
-.PHONY: help env test bootstrap-check governance-check status graphic-design-lab-planning-check graphic-design-lab-contracts-check graphic-design-lab-svg-check gdl-intake-handoff-check gdl-empirical-check gdl-empirical-index gdl-empirical-summary gdl-result-package-check gdl-toolchain-contract-check gdl-toolchain-check
+.PHONY: help env test bootstrap-check governance-check status graphic-design-lab-planning-check graphic-design-lab-contracts-check graphic-design-lab-svg-check gdl-intake-handoff-check gdl-empirical-check gdl-empirical-index gdl-empirical-summary gdl-result-package-check gdl-toolchain-contract-check gdl-toolchain-check gdl-greeting-card-freeze-check
 
 PYTHON ?= .venv_prepress_hub/bin/python
 
@@ -16,6 +16,7 @@ help:
 	@echo "  make gdl-result-package-check - validate deterministic GDL Creator Result Package foundation"
 	@echo "  make gdl-toolchain-contract-check - validate portable GDL PDF/toolchain contract"
 	@echo "  make gdl-toolchain-check - validate installed GDL PDF/vector/raster host toolchain"
+	@echo "  make gdl-greeting-card-freeze-check - validate canonical recurring greeting-card structural freeze"
 	@echo "  make gdl-empirical-check - validate GDL empirical case semantics and privacy boundaries"
 	@echo "  make gdl-empirical-index - print deterministic GDL empirical evidence discovery index"
 	@echo "  make gdl-empirical-summary - print human-readable GDL empirical evidence summary"
@@ -57,7 +58,10 @@ gdl-toolchain-contract-check:
 gdl-toolchain-check: gdl-toolchain-contract-check
 	$(PYTHON) scripts/validation/check_gdl_toolchain_readiness.py --mode host
 
-governance-check: bootstrap-check graphic-design-lab-planning-check graphic-design-lab-contracts-check graphic-design-lab-svg-check gdl-intake-handoff-check gdl-result-package-check gdl-toolchain-contract-check gdl-empirical-check test
+gdl-greeting-card-freeze-check:
+	$(PYTHON) scripts/validation/check_graphic_design_lab_greeting_card_freeze.py
+
+governance-check: bootstrap-check graphic-design-lab-planning-check graphic-design-lab-contracts-check graphic-design-lab-svg-check gdl-intake-handoff-check gdl-result-package-check gdl-toolchain-contract-check gdl-greeting-card-freeze-check gdl-empirical-check test
 	@git diff --check
 	@echo "PREPRESS_HUB_GOVERNANCE_CHECK=PASS"
 

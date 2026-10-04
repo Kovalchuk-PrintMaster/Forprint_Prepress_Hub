@@ -1,22 +1,21 @@
 schema_version: gdl_greeting_cards_direction_v0_1
-status: PILOT_SCAFFOLD_AWAITING_REAL_ASSETS
+status: STRUCTURAL_MODEL_FROZEN_EXECUTION_NOT_READY
 current_product: A3_single_fold_to_A4_four_logical_pages
 known_rules:
 - logical_pages_separate_from_physical_imposition
-- page_4_expected_locked
-- page_1_sender_logo_occasion_text_optional_recipient_logo
-- page_2_fixed_flowers_or_portrait_under_mask
-- page_3_greeting_closing_phrase_signature_variant
+- physical_page_2_is_locked_PAGE_4_BACK
+- physical_page_3_is_PAGE_2_INSIDE_IMAGE_locked_shell_plus_variable_portrait
+- physical_page_4_is_PAGE_3_INSIDE_GREETING
+- front_uses_three_semantic_layout_families
+- small_human_authoring_drift_is_normalized_not_modeled
+- hidden_zero_render_contribution_pdf_objects_are_ignored
 - text_and_known_geometry_should_be_deterministic
 - creator_should_handle_only_unresolved_visual_assets_after_freeze
-unresolved_until_template:
-- coordinates
-- imposition
-- fonts
-- font_ranges
-- bleed
-- safe_margins
-- mask_geometry
-- logo_zones
-- signature_variants
+canonical_structural_model: product_skeleton_v0_1.yaml
+empirical_client_profile: client_execution_profile_v0_1.yaml
+human_authoring_noise_policy: human_authoring_noise_policy_v0_1.yaml
+structural_design_freeze: structural_design_freeze_v0_1.yaml
+remaining_execution_and_production_unknowns:
+- exact_production_fonts
 - production_color_profile
+- final_production_preflight_profile

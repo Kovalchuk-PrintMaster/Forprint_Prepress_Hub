@@ -1,9 +1,15 @@
 schema_version: gdl_greeting_cards_direction_index_v0_1
 direction_id: greeting_cards
-status: PILOT_SCAFFOLD_AWAITING_TEMPLATE_INSPECTION
+status: STRUCTURAL_MODEL_FROZEN_EXECUTION_NOT_READY
 documents:
 - direction_v0_1.yaml
 - reusable_skeleton_draft_v0_1.yaml
 - stable_object_model_draft_v0_1.yaml
 - routing_model_draft_v0_1.yaml
 - first_batch_test_plan_v0_1.yaml
+- product_skeleton_v0_1.yaml
+- client_execution_profile_v0_1.yaml
+- human_authoring_noise_policy_v0_1.yaml
+- structural_design_freeze_v0_1.yaml
+canonical_structural_model: product_skeleton_v0_1.yaml
+structural_design_freeze: structural_design_freeze_v0_1.yaml

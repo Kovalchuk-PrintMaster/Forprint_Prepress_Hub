@@ -1,0 +1,58 @@
+schema_version: gdl_client_execution_profile_instance_v0_1
+client_id: recurring_greeting_card_client_001
+status: SANITIZED_STRUCTURAL_PROFILE_PRIVATE_BINDINGS_EXTERNAL
+workspace_root: EXTERNAL_PRIVATE_CLIENT_WORKSPACE
+inherits_skeletons:
+  - greeting_card_a3_single_fold_v0_1
+
+presets:
+  - greeting_card_standard
+  - greeting_card_recipient_branding_overlay
+  - greeting_card_bilingual_occasion
+
+entity_registry_ref: EXTERNAL_PRIVATE_CLIENT_STATE/entity_registry
+asset_registry_ref: EXTERNAL_PRIVATE_CLIENT_STATE/asset_registry
+preference_model_ref: EXTERNAL_PRIVATE_CLIENT_STATE/preference_model
+
+production_defaults_or_refs:
+  skeleton_ref: product_skeleton_v0_1.yaml
+  working_document_container: pdf
+  review_output: pdf
+  production_output: pdf
+  back_page_policy: LOCKED_REUSE_ONLY
+  front_default_family: STANDARD
+  typefit_policy_ref: product_skeleton_v0_1.yaml#variant_model.greeting_body
+  noise_policy_ref: human_authoring_noise_policy_v0_1.yaml
+  text_regeneration_ready: false
+  production_ready: false
+
+allowed_overrides:
+  - occasion_text
+  - greeting_text
+  - recipient_branding
+  - portrait_asset
+  - sender_block_variant
+  - signature_asset
+  - bilingual_occasion_mode
+  - closing_phrase
+  - local_line_breaks_within_typefit_gate
+
+learned_defaults:
+  standard_front_family_is_majority_default: true
+  sender_logo_reused_when_current_approved_asset_is_materially_same: true
+  inside_portrait_is_case_specific: true
+  back_page_is_locked_reuse_only: true
+  small_human_editor_drift_is_not_a_client_preference: true
+
+privacy:
+  pii_allowed_in_git: false
+  real_workspace_path_allowed_in_git: false
+  heavy_or_raw_customer_assets_allowed_in_git: false
+  private_registry_bindings_resolved_outside_git: true
+
+authority:
+  structural_profile_only: true
+  customer_identity_disclosed: false
+  customer_approval_implied: false
+  production_write_authorized: false
+  provider_execution_authorized: false

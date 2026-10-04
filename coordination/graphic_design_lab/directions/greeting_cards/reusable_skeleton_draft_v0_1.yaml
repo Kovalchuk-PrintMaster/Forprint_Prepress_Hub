@@ -1,6 +1,6 @@
 schema_version: gdl_greeting_card_reusable_skeleton_draft_v0_1
 skeleton_id: greeting_card_a3_single_fold_v0_1
-status: DRAFT_AWAITING_TEMPLATE_MEASUREMENT
+status: SUPERSEDED_BY_CANONICAL_PRODUCT_SKELETON_V0_1
 logical_pages:
 - id: PAGE_1_FRONT
   state: PARAMETRIC
@@ -25,3 +25,4 @@ creator_candidates:
 - portrait_restoration_cutout
 - directed_portrait_retouch
 - explicit_design_exploration
+superseded_by: product_skeleton_v0_1.yaml

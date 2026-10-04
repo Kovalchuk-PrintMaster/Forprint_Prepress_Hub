@@ -10,3 +10,8 @@ documents:
 - client_preference_model_schema_v0_1.yaml
 - preset_schema_v0_1.yaml
 - reuse_before_new_policy_v0_1.yaml
+active_instances:
+- direction_id: greeting_cards
+  reusable_skeleton_ref: ../directions/greeting_cards/product_skeleton_v0_1.yaml
+  client_execution_profile_ref: ../directions/greeting_cards/client_execution_profile_v0_1.yaml
+  state: STRUCTURAL_MODEL_FROZEN_EXECUTION_NOT_READY

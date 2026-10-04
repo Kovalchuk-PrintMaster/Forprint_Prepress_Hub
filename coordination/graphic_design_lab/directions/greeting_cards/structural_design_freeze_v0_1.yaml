@@ -1,0 +1,80 @@
+schema_version: gdl_greeting_card_structural_design_freeze_v0_1
+freeze_id: greeting_card_a3_single_fold_structural_freeze_v0_1
+freeze_type: PRODUCT_SKELETON_STRUCTURAL_FREEZE
+status: ESTABLISHED
+established: true
+
+scope:
+  product_family: recurring_folded_greeting_card
+  skeleton_id: greeting_card_a3_single_fold_v0_1
+  client_profile_ref: client_execution_profile_v0_1.yaml
+  noise_policy_ref: human_authoring_noise_policy_v0_1.yaml
+
+empirical_basis:
+  analyzed_final_pdf_count: 10
+  analyzed_page_count: 40
+  page_mapping_confirmed: true
+  physical_page_2_locked_composition_jobs: 10
+  physical_page_3_variable_portrait_jobs: 10
+  front_exact_observed_variants: 5
+  front_semantic_families_after_noise_normalization: 3
+  greeting_body_canonical_font_tiers_pt: [22.5, 20.0, 17.0]
+  sender_start_y_variants_mm: [214.0, 224.0, 236.0]
+  page4_duplicate_portrait_objects_audited: 8
+  page4_duplicate_portrait_objects_with_visible_contribution: 0
+
+frozen_structural_decisions:
+  - pdf_is_working_document_container
+  - four_physical_pages_with_explicit_logical_page_mapping
+  - page_4_back_is_locked_reuse_only
+  - page_2_inside_image_is_locked_shell_plus_case_specific_portrait
+  - page_1_uses_three_semantic_front_families
+  - page_3_uses_parameterized_greeting_sender_and_signature_roles
+  - canonical_font_tiers_are_22_5_20_17_pt
+  - small_human_authoring_drift_is_normalized_not_modeled_as_new_variant
+  - hidden_offboard_zero_render_contribution_objects_are_ignored
+  - creator_receives_only_smallest_unresolved_visual_unit
+  - deterministic_compositor_owns_geometry_typography_placement_z_order_and_export
+
+front_semantic_families:
+  - STANDARD
+  - RECIPIENT_BRANDING_OVERLAY
+  - BILINGUAL_OCCASION
+
+separate_from_workflow_design_lock:
+  workflow_design_lock_ref: ../../workflow/design_lock_v0_1.yaml
+  workflow_design_lock_state: NOT_ACTIVATED_BY_THIS_FREEZE
+  customer_visual_approval_required_for_workflow_lock: true
+  structural_product_freeze_implies_customer_approval: false
+
+execution_readiness:
+  exact_fonts_available: false
+  text_regeneration_ready: false
+  provider_selected: false
+  runtime_initialized: false
+  production_write_enabled: false
+  production_ready: false
+  remaining_execution_blockers:
+    - exact_production_fonts
+    - production_color_profile
+    - final_production_preflight_profile
+
+next_step:
+  action: BUILD_FIRST_CANONICAL_DETERMINISTIC_RENDER
+  purpose:
+    - validate_canonical_geometry_visually
+    - apply_targeted_non_noise_corrections
+    - validate_pdf_composition_path
+  redesign_authorized: false
+
+privacy:
+  customer_pii_in_git: false
+  raw_customer_assets_in_git: false
+  customer_workspace_path_in_git: false
+
+authority:
+  module_local_structural_knowledge: true
+  activates_provider_execution: false
+  initializes_runtime: false
+  enables_production_write: false
+  mutates_blueprint: false

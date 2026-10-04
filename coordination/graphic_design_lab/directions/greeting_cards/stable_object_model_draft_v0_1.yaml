@@ -1,5 +1,5 @@
 schema_version: gdl_greeting_card_stable_object_model_draft_v0_1
-status: DRAFT_IDS_TO_BE_CONFIRMED_FROM_TEMPLATE
+status: SUPERSEDED_BY_CANONICAL_PRODUCT_SKELETON_V0_1
 objects:
 - front.background
 - front.sender_logo
@@ -18,3 +18,4 @@ objects:
 - back.background
 - back.fixed_mark
 - back.watermark
+superseded_by: product_skeleton_v0_1.yaml
