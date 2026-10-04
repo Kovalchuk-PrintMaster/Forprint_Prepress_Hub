@@ -28,6 +28,7 @@ context_pack_priority_paths:
 - coordination/graphic_design_lab/prompt_evidence/
 - coordination/graphic_design_lab/directions/index.yaml
 - coordination/graphic_design_lab/cases/index.yaml
+- coordination/graphic_design_lab/continuity/
 - coordination/graphic_design_lab/execution/
 - coordination/graphic_design_lab/client_workflows/
 - coordination/graphic_design_lab/directions/greeting_cards/

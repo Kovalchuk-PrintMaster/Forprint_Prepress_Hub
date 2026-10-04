@@ -270,6 +270,92 @@ def match_topics(path: Path, root: Path, topics: list[str]) -> bool:
     return any(topic in text for topic in topics)
 
 
+SCOPE_CONTEXT_CONTRACTS: dict[str, str] = {
+    "graphic_design_lab": (
+        "coordination/graphic_design_lab/continuity/"
+        "assistant_context_contract_v0_1.yaml"
+    ),
+}
+
+
+def context_pack_priority_paths(module_root: Path, scope: str) -> list[str]:
+    # Read bounded scope-priority paths without adding a YAML dependency.
+    contract_rel = SCOPE_CONTEXT_CONTRACTS.get(scope)
+    if contract_rel is None:
+        return []
+
+    contract_path = module_root / contract_rel
+    if not contract_path.is_file():
+        return []
+
+    try:
+        contract_path.resolve().relative_to(module_root.resolve())
+    except ValueError:
+        return []
+
+    priority_paths: list[str] = []
+    active = False
+    for raw_line in contract_path.read_text(
+        encoding="utf-8", errors="ignore"
+    ).splitlines():
+        stripped = raw_line.strip()
+
+        if stripped == "context_pack_priority_paths:":
+            active = True
+            continue
+
+        if not active:
+            continue
+
+        if not stripped:
+            continue
+
+        if stripped.startswith("- "):
+            value = stripped[2:].strip().strip("'").strip('"')
+            if value:
+                priority_paths.append(value)
+            continue
+
+        break
+
+    return priority_paths
+
+
+def add_priority_candidate(
+    selected: dict[str, Path],
+    module_root: Path,
+    raw: str,
+) -> None:
+    path = module_root / raw
+
+    try:
+        path.resolve().relative_to(module_root.resolve())
+    except ValueError:
+        return
+
+    if path.is_file():
+        if safe_candidate(path, module_root):
+            selected[path.relative_to(module_root).as_posix()] = path
+        return
+
+    if not path.is_dir():
+        return
+
+    for candidate in path.rglob("*"):
+        if safe_candidate(candidate, module_root):
+            selected[candidate.relative_to(module_root).as_posix()] = candidate
+
+
+def scope_priority_candidates(
+    module_root: Path,
+    scope: str,
+) -> list[Path]:
+    selected: dict[str, Path] = {}
+    for raw in context_pack_priority_paths(module_root, scope):
+        add_priority_candidate(selected, module_root, raw)
+    return [selected[key] for key in sorted(selected)]
+
+
 def local_candidates(
     module_root: Path,
     package_type: str,
@@ -367,7 +453,19 @@ def build_pack(
     files_dir = package_dir / "module_files"
     files_dir.mkdir(parents=True, exist_ok=True)
 
-    candidates = local_candidates(module_root, package_type, topics)
+    candidates = local_candidates(
+        module_root,
+        package_type,
+        topics,
+    )
+    if package_type == "MODULE_CONTEXT":
+        merged = {
+            path.relative_to(module_root).as_posix(): path
+            for path in candidates
+        }
+        for path in scope_priority_candidates(module_root, scope):
+            merged[path.relative_to(module_root).as_posix()] = path
+        candidates = [merged[key] for key in sorted(merged)]
     copied: list[dict] = []
     skipped: list[dict] = []
     total = 0
