@@ -199,6 +199,28 @@ def insert_digest_image(
     }
 
 
+def ocg_name_from_xref(
+    doc: pymupdf.Document,
+    xref: int,
+    ocgs: dict[int, dict[str, Any]] | None = None,
+) -> str:
+    info = (ocgs or {}).get(int(xref), {})
+    name = str(info.get("name") or "")
+    if name:
+        return name
+
+    try:
+        raw = doc.xref_object(int(xref))
+    except Exception:
+        return ""
+
+    match = re.search(r"/Name\s*\((.*?)\)", raw, re.S)
+    if not match:
+        return ""
+
+    return match.group(1).strip()
+
+
 def marked_content_remove(
     data: bytes,
     property_name: str,
@@ -258,8 +280,11 @@ def strip_authoring_layers(
             oc_items = []
 
         for prop_name, xref, oc_type in oc_items:
-            info = ocgs.get(int(xref), {})
-            layer_name = str(info.get("name") or "")
+            layer_name = ocg_name_from_xref(
+                doc,
+                int(xref),
+                ocgs,
+            )
             if AUTHORING_LAYER_HINTS.search(layer_name):
                 props_to_strip[str(prop_name)] = {
                     "property_name": str(prop_name),
