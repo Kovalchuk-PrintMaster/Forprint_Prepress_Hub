@@ -14,3 +14,9 @@ primary_paths:
 - coordination/graphic_design_lab/execution/
 - coordination/graphic_design_lab/client_workflows/
 - coordination/graphic_design_lab/directions/greeting_cards/
+project_internal_execution_rule:
+  prefer_existing_project_tool: true
+  patch_project_tool_instead_of_reissuing_full_runner: true
+  stable_short_operator_command_after_integration: true
+  chat_contains_execution_intent_not_canonical_implementation: true
+  client_private_paths_and_assets_remain_external: true

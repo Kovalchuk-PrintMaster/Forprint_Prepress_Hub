@@ -9,3 +9,26 @@ before_context_closeout:
 - update_active_case_next_state
 - ensure_assistant_context_surface_points_to_new_knowledge
 success_condition: next_assistant_does_not_need_to_rediscover_the_same_behavior
+project_internal_tooling_policy:
+  canonical_rule: REPEATABLE_EXECUTION_LOGIC_LIVES_IN_PROJECT
+  chat_script_role: BOUNDED_BOOTSTRAP_PATCH_OR_REPAIR_ONLY
+  stable_operator_entrypoints_required: true
+  repeat_execution_from_chat_only: false
+  assistant_behavior:
+  - inspect_existing_project_tool_before_new_logic
+  - patch_or_extend_existing_project_tool_when_behavior_changes
+  - promote_proven_repeatable_chat_logic_into_repository_before_reuse
+  - invoke_repeatable_work_through_stable_make_or_cli_entrypoint
+  - keep_chat_focused_on_intent_evidence_decisions_and_bounded_project_mutation
+  forbidden_patterns:
+  - full_repeatable_renderer_lives_only_in_chat
+  - new_ad_hoc_runner_for_every_revision
+  - duplicate_project_functionality_in_chat_when_project_entrypoint_exists
+  - require_future_assistant_to_reconstruct_execution_from_chat_history
+  operator_contract:
+    implementation_source_of_truth: PROJECT_REPOSITORY
+    preferred_entrypoint_order:
+    - Makefile_target
+    - project_cli
+    - project_script
+    chat_supplied_patch_scripts_are_disposable_after_project_integration: true

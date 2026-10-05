@@ -13,13 +13,18 @@ fresh_assistant_must_know:
 - active_directions
 - active_case_refs_and_next_states
 - authority_boundaries
+- project_internal_tooling_first_execution_rule
+- stable_operator_entrypoints_for_repeatable_work
 fresh_assistant_must_not:
 - invent_workflow_behavior_from_memory
 - generate_reusable_rules_only_in_chat
 - skip_project_update_for_material_new_findings
 - send_creator_result_to_customer_without_review_gate
-acceptance_question: Can a fresh assistant continue an active GDL case from project/context-pack state without reading the
-  previous chat?
+- reimplement_repeatable_project_execution_logic_only_in_chat
+- use_ad_hoc_chat_runner_when_project_entrypoint_exists
+- leave_proven_repeatable_execution_logic_outside_project
+acceptance_question: Can a fresh assistant continue an active GDL case from project/context-pack
+  state without reading the previous chat?
 context_pack_priority_paths:
 - coordination/graphic_design_lab/index.yaml
 - coordination/graphic_design_lab/policies/
@@ -32,3 +37,4 @@ context_pack_priority_paths:
 - coordination/graphic_design_lab/execution/
 - coordination/graphic_design_lab/client_workflows/
 - coordination/graphic_design_lab/directions/greeting_cards/
+canonical_project_first_rule: project_first_working_rule_v0_1.yaml

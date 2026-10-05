@@ -1,4 +1,4 @@
-.PHONY: help env test bootstrap-check governance-check status graphic-design-lab-planning-check graphic-design-lab-contracts-check graphic-design-lab-svg-check gdl-intake-handoff-check gdl-empirical-check gdl-empirical-index gdl-empirical-summary gdl-result-package-check gdl-toolchain-contract-check gdl-toolchain-check gdl-greeting-card-freeze-check
+.PHONY: help env test bootstrap-check governance-check status graphic-design-lab-planning-check graphic-design-lab-contracts-check graphic-design-lab-svg-check gdl-intake-handoff-check gdl-empirical-check gdl-empirical-index gdl-empirical-summary gdl-result-package-check gdl-toolchain-contract-check gdl-toolchain-check gdl-greeting-card-freeze-check gdl-project-first-check gdl-greeting-card-prototype
 
 PYTHON ?= .venv_prepress_hub/bin/python
 
@@ -17,6 +17,8 @@ help:
 	@echo "  make gdl-toolchain-contract-check - validate portable GDL PDF/toolchain contract"
 	@echo "  make gdl-toolchain-check - validate installed GDL PDF/vector/raster host toolchain"
 	@echo "  make gdl-greeting-card-freeze-check - validate canonical recurring greeting-card structural freeze"
+	@echo "  make gdl-greeting-card-prototype - run project-owned recurring greeting-card prototype generator"
+	@echo "  make gdl-project-first-check - validate project-internal-tooling-first execution rule"
 	@echo "  make gdl-empirical-check - validate GDL empirical case semantics and privacy boundaries"
 	@echo "  make gdl-empirical-index - print deterministic GDL empirical evidence discovery index"
 	@echo "  make gdl-empirical-summary - print human-readable GDL empirical evidence summary"
@@ -61,7 +63,20 @@ gdl-toolchain-check: gdl-toolchain-contract-check
 gdl-greeting-card-freeze-check:
 	$(PYTHON) scripts/validation/check_graphic_design_lab_greeting_card_freeze.py
 
-governance-check: bootstrap-check graphic-design-lab-planning-check graphic-design-lab-contracts-check graphic-design-lab-svg-check gdl-intake-handoff-check gdl-result-package-check gdl-toolchain-contract-check gdl-greeting-card-freeze-check gdl-empirical-check test
+gdl-project-first-check:
+	$(PYTHON) scripts/validation/check_graphic_design_lab_project_first.py
+
+GDL_GREETING_CARD_PROTOTYPE_TOOL ?= scripts/graphic_design_lab/greeting_cards/prototype.py
+GDL_GREETING_CARD_CLIENT_ROOT ?= $(GDL_CLIENT_ROOT)
+GDL_GREETING_CARD_SAMPLE_DIR ?= 20.09.26
+GDL_GREETING_CARD_REFERENCE ?= dolinska.pdf
+GDL_GREETING_CARD_OUTPUT ?= tmp/gdl_prototypes/greeting_card_current
+
+gdl-greeting-card-prototype:
+	@test -n "$(GDL_GREETING_CARD_CLIENT_ROOT)" || (echo "Set GDL_CLIENT_ROOT or GDL_GREETING_CARD_CLIENT_ROOT."; exit 2)
+	$(PYTHON) $(GDL_GREETING_CARD_PROTOTYPE_TOOL) --client-root "$(GDL_GREETING_CARD_CLIENT_ROOT)" --sample-dir "$(GDL_GREETING_CARD_SAMPLE_DIR)" --reference "$(GDL_GREETING_CARD_REFERENCE)" --output "$(GDL_GREETING_CARD_OUTPUT)"
+
+governance-check: bootstrap-check graphic-design-lab-planning-check graphic-design-lab-contracts-check graphic-design-lab-svg-check gdl-intake-handoff-check gdl-result-package-check gdl-toolchain-contract-check gdl-greeting-card-freeze-check gdl-project-first-check gdl-empirical-check test
 	@git diff --check
 	@echo "PREPRESS_HUB_GOVERNANCE_CHECK=PASS"
 
