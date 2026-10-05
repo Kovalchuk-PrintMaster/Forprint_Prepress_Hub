@@ -389,32 +389,53 @@ def image_diff_metrics(
         b.convert("RGB"),
     )
     gray = diff.convert("L")
-    threshold = gray.point(lambda p: 255 if p > 3 else 0)
+    total = gray.width * gray.height
 
-    hist = threshold.histogram()
-    changed = int(hist[255])
-    total = threshold.width * threshold.height
-    bbox = threshold.getbbox()
-
+    bands: dict[int, float] = {}
     bbox_mm = None
-    if bbox:
-        x0, y0, x1, y1 = bbox
-        bbox_mm = [
-            round(x0 * width_mm / threshold.width, 3),
-            round(y0 * height_mm / threshold.height, 3),
-            round(x1 * width_mm / threshold.width, 3),
-            round(y1 * height_mm / threshold.height, 3),
-        ]
+
+    for threshold_value in (3, 10, 20, 40):
+        mask = gray.point(
+            lambda p, t=threshold_value: 255 if p > t else 0
+        )
+        hist = mask.histogram()
+        changed = int(hist[255])
+        bands[threshold_value] = (
+            round(changed / total, 8)
+            if total
+            else 0.0
+        )
+
+        if threshold_value == 3:
+            bbox = mask.getbbox()
+            if bbox:
+                x0, y0, x1, y1 = bbox
+                bbox_mm = [
+                    round(x0 * width_mm / mask.width, 3),
+                    round(y0 * height_mm / mask.height, 3),
+                    round(x1 * width_mm / mask.width, 3),
+                    round(y1 * height_mm / mask.height, 3),
+                ]
+
+    histogram = gray.histogram()
+    weighted = sum(
+        value * count
+        for value, count in enumerate(histogram)
+    )
+    mean_abs_rgb_delta = (
+        round(weighted / total, 4)
+        if total
+        else 0.0
+    )
 
     return {
-        "changed_pixel_count": changed,
-        "changed_pixel_ratio": round(
-            changed / total,
-            8,
-        ) if total else 0.0,
+        "changed_pixel_ratio": bands[3],
+        "changed_pixel_ratio_gt10": bands[10],
+        "changed_pixel_ratio_gt20": bands[20],
+        "changed_pixel_ratio_gt40": bands[40],
+        "mean_abs_rgb_delta": mean_abs_rgb_delta,
         "diff_bbox_mm": bbox_mm,
     }
-
 
 def make_contact_sheet(
     reference_paths: list[Path],
@@ -614,80 +635,55 @@ def main() -> None:
         "pages": [],
     }
 
-    # PAGE 1: deterministic raster base + exact text/vector overlay.
-    dst1 = new_matching_page(out, p1)
+    # PAGE 1: preserve unchanged reference content and only normalize
+    # the sender-logo component that already has canonical geometry.
+    page1_doc, page1_meta = clone_page_filtered(
+        src,
+        0,
+        remove_digests={
+            COMMON_DIGESTS["front.sender_logo"],
+        },
+    )
+    page1 = page1_doc[0]
     p1_ops = [
         insert_digest_image(
             src,
             p1,
-            dst1,
-            COMMON_DIGESTS["background.paper"],
-        ),
-        insert_digest_image(
-            src,
-            p1,
-            dst1,
-            COMMON_DIGESTS["frame.ornate"],
-        ),
-        insert_digest_image(
-            src,
-            p1,
-            dst1,
+            page1,
             COMMON_DIGESTS["front.sender_logo"],
             dest_rect=standard_logo_rect,
-        ),
+        )
     ]
-
-    overlay1, overlay1_meta = clone_page_filtered(
-        src,
-        0,
-        remove_digests={
-            COMMON_DIGESTS["background.paper"],
-            COMMON_DIGESTS["frame.ornate"],
-            COMMON_DIGESTS["front.sender_logo"],
-        },
-    )
-    dst1.show_pdf_page(
-        dst1.rect,
-        overlay1,
-        0,
-        overlay=True,
-    )
-    overlay1.close()
+    out.insert_pdf(page1_doc)
+    page1_doc.close()
 
     assembly["pages"].append(
         {
             "physical_page": 1,
             "logical_page": "PAGE_1_FRONT",
             "mode":
-                "DETERMINISTIC_BASE_PLUS_CLEAN_REFERENCE_TEXT_OVERLAY",
+                "PRESERVED_REFERENCE_PAGE_PLUS_CANONICAL_SENDER_LOGO",
             "operations": p1_ops,
-            "overlay_filter": overlay1_meta,
+            "reference_filter": page1_meta,
         }
     )
 
-    # PAGE 2: no full-page import anymore.
-    dst2 = new_matching_page(out, p2)
-    p2_ops = [
-        insert_digest_image(
-            src,
-            p2,
-            dst2,
-            COMMON_DIGESTS["background.paper"],
-        ),
-        insert_digest_image(
-            src,
-            p2,
-            dst2,
-            COMMON_DIGESTS["watermark.emblem"],
-        ),
-    ]
+    # PAGE 2: locked reuse-only page transplant.
+    # Preserve original PDF transparency / blend semantics exactly.
+    page2_doc, page2_meta = clone_page_filtered(
+        src,
+        1,
+        remove_digests=set(),
+    )
+    out.insert_pdf(page2_doc)
+    page2_doc.close()
+
     assembly["pages"].append(
         {
             "physical_page": 2,
             "logical_page": "PAGE_4_BACK",
-            "mode": "DETERMINISTIC_LOCKED_BACK_COMPOSITION",
-            "operations": p2_ops,
+            "mode": "LOCKED_REUSE_ONLY_PAGE_TRANSPLANT",
+            "reference_filter": page2_meta,
         }
     )
 
@@ -739,50 +735,27 @@ def main() -> None:
         }
     )
 
-    # PAGE 4: deterministic raster base + cleaned exact text/vector layer.
-    dst4 = new_matching_page(out, p4)
-    p4_ops = []
-    for digest in (
-        COMMON_DIGESTS["background.paper"],
-        COMMON_DIGESTS["frame.ornate"],
-        COMMON_DIGESTS["watermark.emblem"],
-    ):
-        p4_ops.append(
-            insert_digest_image(
-                src,
-                p4,
-                dst4,
-                digest,
-            )
-        )
-
-    overlay4, overlay4_meta = clone_page_filtered(
+    # PAGE 4: preserve the exact embedded-font/vector/transparency page
+    # until text regeneration becomes executable. Remove only the hidden
+    # page-3 portrait leftover already proven to have zero rendered value.
+    page4_doc, page4_meta = clone_page_filtered(
         src,
         3,
         remove_digests={
-            COMMON_DIGESTS["background.paper"],
-            COMMON_DIGESTS["frame.ornate"],
-            COMMON_DIGESTS["watermark.emblem"],
             portrait_digest,
         },
     )
-    dst4.show_pdf_page(
-        dst4.rect,
-        overlay4,
-        0,
-        overlay=True,
-    )
-    overlay4.close()
+    out.insert_pdf(page4_doc)
+    page4_doc.close()
 
     assembly["pages"].append(
         {
             "physical_page": 4,
             "logical_page": "PAGE_3_INSIDE_GREETING",
             "mode":
-                "DETERMINISTIC_BASE_PLUS_CLEAN_REFERENCE_TEXT_VECTOR_OVERLAY",
+                "PRESERVED_REFERENCE_PAGE_MINUS_HIDDEN_AUTHORING_OBJECT",
             "hidden_page3_portrait_removed": True,
-            "operations": p4_ops,
-            "overlay_filter": overlay4_meta,
+            "reference_filter": page4_meta,
         }
     )
 
@@ -858,6 +831,7 @@ def main() -> None:
         for key in (
             "overlay_filter",
             "portrait_overlay_filter",
+            "reference_filter",
         ):
             for item in page_meta.get(
                 key,
@@ -908,10 +882,12 @@ def main() -> None:
         "",
         "Corrections from v0.1:",
         "",
-        "- authoring-only optional-content guide layers are removed before PDF page overlays are flattened;",
-        "- locked back page is rebuilt from atomic background + emblem assets instead of full-page import;",
-        "- page-3 portrait keeps the source clipping/mask layer while background/frame remain deterministic;",
-        "- source image streams are reused where possible instead of forced RGB PNG conversion.",
+        "- unchanged page content is preserved as native PDF until deterministic regeneration is owned by the project;",
+        "- page 1 changes only the canonically owned sender-logo placement;",
+        "- page 2 uses locked reuse-only PDF page transplant;",
+        "- page 3 remains the first true deterministic compositor proof with preserved portrait clipping/mask;",
+        "- page 4 preserves exact fonts/vector/transparency and removes only the hidden portrait leftover;",
+        "- comparison now reports perceptual thresholds instead of relying on one >3 pixel-delta ratio.",
         "",
         "Page diff ratios:",
         "",
@@ -949,6 +925,14 @@ def main() -> None:
         print(
             f"PAGE{item['physical_page']}_DIFF_RATIO="
             f"{item['changed_pixel_ratio']}"
+        )
+        print(
+            f"PAGE{item['physical_page']}_DIFF_RATIO_GT20="
+            f"{item['changed_pixel_ratio_gt20']}"
+        )
+        print(
+            f"PAGE{item['physical_page']}_MEAN_ABS_DELTA="
+            f"{item['mean_abs_rgb_delta']}"
         )
 
     print(
