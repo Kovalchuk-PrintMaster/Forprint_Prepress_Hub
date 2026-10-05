@@ -361,6 +361,33 @@ def classify_front_family(
     return result
 
 
+def resolved_front_family_sender_logo_geometry(
+    classification: dict[str, Any],
+    skeleton: dict[str, Any],
+) -> tuple[str, list[float]]:
+    """Resolve the canonical sender-logo geometry for a classified front family."""
+    if classification.get("resolved") is not True:
+        raise ValueError("front family must be resolved before compositor dispatch")
+
+    family_id = str(classification.get("family") or "")
+    families = {
+        str(item["id"]): item
+        for item in skeleton["variant_model"]["front"]["semantic_families"]
+    }
+
+    family = families.get(family_id)
+    if family is None:
+        raise ValueError(f"unknown resolved front family: {family_id}")
+
+    bbox = family.get("sender_logo_bbox_mm")
+    if not isinstance(bbox, list) or len(bbox) != 4:
+        raise ValueError(
+            f"front family {family_id} has invalid sender_logo_bbox_mm"
+        )
+
+    return family_id, [float(value) for value in bbox]
+
+
 def expected_front_family_counts(
     skeleton: dict[str, Any],
 ) -> dict[str, int]:
@@ -1258,22 +1285,37 @@ def main() -> None:
 
     portrait_digest = portrait_digest_on_page3(p3)
 
-    front_families = {
-        item["id"]: item
-        for item
-        in skeleton["variant_model"]["front"][
-            "semantic_families"
-        ]
-    }
-    standard = front_families["STANDARD"]
-    standard_logo_rect = rect_from_mm(
-        standard["sender_logo_bbox_mm"]
+    front_family_classification = classify_front_family(
+        src[0],
+        skeleton,
+    )
+    try:
+        (
+            front_family_id,
+            front_family_sender_logo_bbox_mm,
+        ) = resolved_front_family_sender_logo_geometry(
+            front_family_classification,
+            skeleton,
+        )
+    except ValueError as exc:
+        raise SystemExit(
+            f"STOP=front_family_compositor_dispatch:{exc}"
+        ) from exc
+
+    front_family_logo_rect = rect_from_mm(
+        front_family_sender_logo_bbox_mm
     )
 
     out = pymupdf.open()
 
     assembly: dict[str, Any] = {
         "reference_pdf": args.reference,
+        "front_family": front_family_id,
+        "front_family_classification": front_family_classification,
+        "front_sender_logo_bbox_mm": [
+            round(float(value), 3)
+            for value in front_family_sender_logo_bbox_mm
+        ],
         "text_regeneration_performed": False,
         "authoring_noise_filter": True,
         "pages": [],
@@ -1295,7 +1337,7 @@ def main() -> None:
             p1,
             page1,
             COMMON_DIGESTS["front.sender_logo"],
-            dest_rect=standard_logo_rect,
+            dest_rect=front_family_logo_rect,
         )
     ]
     out.insert_pdf(page1_doc)
@@ -1534,7 +1576,7 @@ def main() -> None:
         "Corrections from v0.1:",
         "",
         "- unchanged page content is preserved as native PDF until deterministic regeneration is owned by the project;",
-        "- page 1 changes only the canonically owned sender-logo placement;",
+        "- page 1 changes only the sender-logo placement selected from the resolved front-family canonical geometry;",
         "- page 2 uses locked reuse-only PDF page transplant;",
         "- page 3 remains the first true deterministic compositor proof with preserved portrait clipping/mask;",
         "- page 4 preserves exact fonts/vector/transparency and removes only the hidden portrait leftover;",
