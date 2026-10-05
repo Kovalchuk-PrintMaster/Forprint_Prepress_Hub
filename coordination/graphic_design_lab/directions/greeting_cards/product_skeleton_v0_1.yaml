@@ -102,6 +102,15 @@ variant_model:
         occasion_bbox_mm: [21.5, 191.0, 194.5, 262.5]
         occasion_font_size_pt: 51.5
     family_selection_rule: semantic_visible_layout_change_not_minor_editor_drift
+    classifier:
+      primary_signal: sender_logo_bbox_nearest_canonical_family
+      max_coordinate_delta_mm: 6.0
+      ambiguity_margin_mm: 4.0
+      secondary_evidence:
+        - recipient_branding_zone_presence
+        - bilingual_occasion_text_signal
+      filename_based_classification_allowed: false
+      corpus_validation_expected_from_observed_jobs: true
   greeting_body:
     canonical_font_size_tiers_pt: [22.5, 20.0, 17.0]
     selection_rule: LARGEST_CANONICAL_TIER_THAT_FITS_GEOMETRY_AND_PRESERVES_SENDER_GAP

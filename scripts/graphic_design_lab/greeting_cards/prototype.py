@@ -81,6 +81,521 @@ def rect_to_mm(rect: pymupdf.Rect | None) -> list[float] | None:
     ]
 
 
+
+FRONT_FAMILY_UNRESOLVED = "UNRESOLVED"
+
+
+def bbox_max_delta_mm(
+    observed: list[float],
+    canonical: list[float],
+) -> float:
+    if len(observed) != 4 or len(canonical) != 4:
+        raise ValueError("front-family bbox must contain four coordinates")
+    return max(
+        abs(float(observed[i]) - float(canonical[i]))
+        for i in range(4)
+    )
+
+
+def bbox_mean_delta_mm(
+    observed: list[float],
+    canonical: list[float],
+) -> float:
+    if len(observed) != 4 or len(canonical) != 4:
+        raise ValueError("front-family bbox must contain four coordinates")
+    return sum(
+        abs(float(observed[i]) - float(canonical[i]))
+        for i in range(4)
+    ) / 4.0
+
+
+def rects_intersect_mm(
+    left: list[float],
+    right: list[float],
+) -> bool:
+    return not (
+        left[2] <= right[0]
+        or left[0] >= right[2]
+        or left[3] <= right[1]
+        or left[1] >= right[3]
+    )
+
+
+def classify_front_family_from_bbox(
+    observed_bbox_mm: list[float],
+    skeleton: dict[str, Any],
+) -> dict[str, Any]:
+    front = skeleton["variant_model"]["front"]
+    classifier = front.get("classifier", {})
+
+    max_delta_allowed = float(
+        classifier.get("max_coordinate_delta_mm", 6.0)
+    )
+    ambiguity_margin = float(
+        classifier.get("ambiguity_margin_mm", 4.0)
+    )
+
+    scores = []
+    for family in front["semantic_families"]:
+        canonical_bbox = [
+            float(value)
+            for value in family["sender_logo_bbox_mm"]
+        ]
+        scores.append(
+            {
+                "family": family["id"],
+                "canonical_sender_logo_bbox_mm": canonical_bbox,
+                "max_delta_mm": round(
+                    bbox_max_delta_mm(
+                        observed_bbox_mm,
+                        canonical_bbox,
+                    ),
+                    4,
+                ),
+                "mean_delta_mm": round(
+                    bbox_mean_delta_mm(
+                        observed_bbox_mm,
+                        canonical_bbox,
+                    ),
+                    4,
+                ),
+            }
+        )
+
+    scores.sort(
+        key=lambda item: (
+            item["max_delta_mm"],
+            item["mean_delta_mm"],
+            item["family"],
+        )
+    )
+
+    best = scores[0]
+    second = scores[1] if len(scores) > 1 else None
+    margin = (
+        round(
+            second["max_delta_mm"] - best["max_delta_mm"],
+            4,
+        )
+        if second is not None
+        else None
+    )
+
+    resolved = (
+        best["max_delta_mm"] <= max_delta_allowed
+        and (
+            margin is None
+            or margin >= ambiguity_margin
+        )
+    )
+
+    return {
+        "family": (
+            best["family"]
+            if resolved
+            else FRONT_FAMILY_UNRESOLVED
+        ),
+        "resolved": resolved,
+        "observed_sender_logo_bbox_mm": [
+            round(float(value), 3)
+            for value in observed_bbox_mm
+        ],
+        "best_family": best["family"],
+        "best_max_delta_mm": best["max_delta_mm"],
+        "second_best_margin_mm": margin,
+        "max_coordinate_delta_mm": max_delta_allowed,
+        "ambiguity_margin_mm": ambiguity_margin,
+        "scores": scores,
+    }
+
+
+def page_text_spans(
+    page: pymupdf.Page,
+) -> list[dict[str, Any]]:
+    spans: list[dict[str, Any]] = []
+    data = page.get_text("dict")
+
+    for block in data.get("blocks", []):
+        for line in block.get("lines", []):
+            for span in line.get("spans", []):
+                text = str(span.get("text") or "").strip()
+                bbox = span.get("bbox")
+                if not text or not bbox:
+                    continue
+                spans.append(
+                    {
+                        "text": text,
+                        "bbox_mm": rect_to_mm(
+                            pymupdf.Rect(bbox)
+                        ),
+                    }
+                )
+
+    return spans
+
+
+def semantic_front_evidence(
+    page: pymupdf.Page,
+    skeleton: dict[str, Any],
+) -> dict[str, Any]:
+    front = skeleton["variant_model"]["front"]
+    families = {
+        item["id"]: item
+        for item in front["semantic_families"]
+    }
+
+    overlay = families["RECIPIENT_BRANDING_OVERLAY"]
+    bilingual = families["BILINGUAL_OCCASION"]
+
+    recipient_zone = [
+        float(value)
+        for value in overlay["recipient_branding_zone_mm"]
+    ]
+    occasion_zone = [
+        float(value)
+        for value in bilingual["occasion_bbox_mm"]
+    ]
+
+    spans = page_text_spans(page)
+    recipient_text = [
+        item["text"]
+        for item in spans
+        if item["bbox_mm"] is not None
+        and rects_intersect_mm(
+            item["bbox_mm"],
+            recipient_zone,
+        )
+    ]
+    occasion_text = " ".join(
+        item["text"]
+        for item in spans
+        if item["bbox_mm"] is not None
+        and rects_intersect_mm(
+            item["bbox_mm"],
+            occasion_zone,
+        )
+    )
+
+    common = set(COMMON_DIGESTS.values())
+    extra_image_digests = sorted(
+        {
+            item["digest_hex"]
+            for item in page_image_info(page)
+            if item["digest_hex"] not in common
+        }
+    )
+
+    has_cyrillic = bool(
+        re.search(
+            r"[А-Яа-яІіЇїЄєҐґ]",
+            occasion_text,
+        )
+    )
+    has_latin = bool(
+        re.search(
+            r"[A-Za-z]",
+            occasion_text,
+        )
+    )
+
+    return {
+        "recipient_branding_text_count": len(
+            recipient_text
+        ),
+        "recipient_branding_text_preview": (
+            recipient_text[:3]
+        ),
+        "extra_page1_image_count": len(
+            extra_image_digests
+        ),
+        "extra_page1_image_digests": (
+            extra_image_digests
+        ),
+        "occasion_has_cyrillic": has_cyrillic,
+        "occasion_has_latin": has_latin,
+        "bilingual_occasion_signal": (
+            has_cyrillic and has_latin
+        ),
+    }
+
+
+def classify_front_family(
+    page: pymupdf.Page,
+    skeleton: dict[str, Any],
+) -> dict[str, Any]:
+    logo = find_image(
+        page,
+        COMMON_DIGESTS["front.sender_logo"],
+        required=False,
+    )
+
+    if logo is None:
+        return {
+            "family": FRONT_FAMILY_UNRESOLVED,
+            "resolved": False,
+            "reason": "sender_logo_digest_missing",
+            "semantic_evidence": semantic_front_evidence(
+                page,
+                skeleton,
+            ),
+        }
+
+    observed_bbox = rect_to_mm(
+        logo["bbox_rect"]
+    )
+    assert observed_bbox is not None
+
+    result = classify_front_family_from_bbox(
+        observed_bbox,
+        skeleton,
+    )
+    result["semantic_evidence"] = semantic_front_evidence(
+        page,
+        skeleton,
+    )
+    result["reason"] = (
+        "nearest_canonical_sender_logo_geometry"
+        if result["resolved"]
+        else "geometry_threshold_or_ambiguity"
+    )
+    return result
+
+
+def expected_front_family_counts(
+    skeleton: dict[str, Any],
+) -> dict[str, int]:
+    return {
+        item["id"]: int(item["observed_jobs"])
+        for item
+        in skeleton["variant_model"]["front"][
+            "semantic_families"
+        ]
+    }
+
+
+def run_corpus_validation(
+    *,
+    client_root: Path,
+    sample_dir: str,
+    output: Path,
+    skeleton: dict[str, Any],
+) -> None:
+    corpus_dir = client_root / sample_dir
+    pdfs = sorted(corpus_dir.glob("*.pdf"))
+
+    expected_counts = expected_front_family_counts(
+        skeleton
+    )
+    expected_total = sum(expected_counts.values())
+
+    results: list[dict[str, Any]] = []
+    observed_counts = {
+        key: 0
+        for key in expected_counts
+    }
+    unresolved = []
+
+    for pdf_path in pdfs:
+        item: dict[str, Any] = {
+            "file_name": pdf_path.name,
+        }
+
+        try:
+            doc = pymupdf.open(pdf_path)
+            item["page_count"] = doc.page_count
+
+            if doc.page_count != 4:
+                item["family"] = FRONT_FAMILY_UNRESOLVED
+                item["resolved"] = False
+                item["reason"] = (
+                    "unexpected_page_count"
+                )
+            else:
+                classification = classify_front_family(
+                    doc[0],
+                    skeleton,
+                )
+                item.update(classification)
+
+            doc.close()
+        except Exception as exc:
+            item["family"] = FRONT_FAMILY_UNRESOLVED
+            item["resolved"] = False
+            item["reason"] = (
+                f"classification_error:{type(exc).__name__}"
+            )
+            item["error"] = str(exc)
+
+        family = item["family"]
+        if family in observed_counts:
+            observed_counts[family] += 1
+        else:
+            unresolved.append(pdf_path.name)
+
+        results.append(item)
+
+    count_match = (
+        observed_counts == expected_counts
+    )
+    corpus_size_match = (
+        len(pdfs) == expected_total
+    )
+    all_resolved = (
+        len(unresolved) == 0
+        and all(
+            item.get("resolved") is True
+            for item in results
+        )
+    )
+
+    status = (
+        "PASS"
+        if (
+            count_match
+            and corpus_size_match
+            and all_resolved
+        )
+        else "FAIL"
+    )
+
+    output.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+    report_json = (
+        output
+        / "front_family_corpus_report_v0_1.json"
+    )
+    report_md = (
+        output
+        / "front_family_corpus_report_v0_1.md"
+    )
+
+    report = {
+        "schema_version":
+            "gdl_greeting_card_front_family_corpus_validation_v0_1",
+        "status": status,
+        "source_location":
+            "EXTERNAL_PRIVATE_CLIENT_WORKSPACE",
+        "source_modified": False,
+        "sample_dir": sample_dir,
+        "expected_pdf_count": expected_total,
+        "observed_pdf_count": len(pdfs),
+        "expected_counts": expected_counts,
+        "observed_counts": observed_counts,
+        "all_resolved": all_resolved,
+        "count_match": count_match,
+        "corpus_size_match": corpus_size_match,
+        "results": results,
+        "boundaries": {
+            "client_mutation": False,
+            "git_mutation": False,
+            "blueprint_mutation": False,
+            "filename_based_classification": False,
+        },
+    }
+
+    report_json.write_text(
+        json.dumps(
+            report,
+            ensure_ascii=False,
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+
+    lines = [
+        "# Greeting Card Front-Family Corpus Validation v0.1",
+        "",
+        f"Status: `{status}`",
+        "",
+        f"Expected PDFs: `{expected_total}`",
+        f"Observed PDFs: `{len(pdfs)}`",
+        "",
+        "## Counts",
+        "",
+    ]
+    for family in sorted(expected_counts):
+        lines.append(
+            f"- {family}: "
+            f"expected `{expected_counts[family]}`, "
+            f"observed `{observed_counts[family]}`"
+        )
+
+    lines += [
+        "",
+        "## Files",
+        "",
+    ]
+    for item in results:
+        lines.append(
+            f"- `{item['file_name']}` -> "
+            f"`{item['family']}`"
+        )
+
+    report_md.write_text(
+        "\n".join(lines) + "\n",
+        encoding="utf-8",
+    )
+
+    print()
+    print("=" * 100)
+    print("FRONT FAMILY CORPUS VALIDATION")
+    print("=" * 100)
+    print(f"CORPUS_PDF_COUNT={len(pdfs)}")
+    print(f"EXPECTED_PDF_COUNT={expected_total}")
+
+    for family in sorted(expected_counts):
+        print(
+            f"FAMILY_COUNT_{family}="
+            f"{observed_counts[family]}"
+        )
+        print(
+            f"FAMILY_EXPECTED_{family}="
+            f"{expected_counts[family]}"
+        )
+
+    for item in results:
+        print(
+            f"FRONT_FAMILY={item['family']}"
+            f"	FILE={item['file_name']}"
+        )
+
+    print(
+        f"REPORT_JSON={report_json.relative_to(REPO)}"
+    )
+    print(
+        f"REPORT_MD={report_md.relative_to(REPO)}"
+    )
+    print(
+        f"ALL_RESOLVED="
+        f"{str(all_resolved).lower()}"
+    )
+    print(
+        f"COUNT_MATCH="
+        f"{str(count_match).lower()}"
+    )
+    print(
+        f"CORPUS_SIZE_MATCH="
+        f"{str(corpus_size_match).lower()}"
+    )
+    print(
+        "FILENAME_BASED_CLASSIFICATION=false"
+    )
+    print("CLIENT_MUTATION=false")
+    print("GIT_MUTATION=false")
+    print("BLUEPRINT_MUTATION=false")
+
+    if status != "PASS":
+        raise SystemExit(
+            "STOP=front_family_corpus_validation_failed"
+        )
+
+    print(
+        "GDL_GREETING_CARD_FRONT_FAMILY_CORPUS_VALIDATION=PASS"
+    )
+
+
 def page_image_info(page: pymupdf.Page) -> list[dict[str, Any]]:
     items = []
     for info in page.get_image_info(hashes=True, xrefs=True):
@@ -634,6 +1149,11 @@ def run_external_checks(pdf_path: Path) -> dict[str, Any]:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
+    ap.add_argument(
+        "--mode",
+        choices=("prototype", "corpus-validate"),
+        default="prototype",
+    )
     ap.add_argument("--client-root", required=True)
     ap.add_argument("--sample-dir", default="20.09.26")
     ap.add_argument("--reference", default="dolinska.pdf")
@@ -679,15 +1199,6 @@ def main() -> None:
         )
 
     client_root = Path(args.client_root).resolve()
-    source_pdf = (
-        client_root
-        / args.sample_dir
-        / args.reference
-    )
-    if not source_pdf.is_file():
-        raise SystemExit(
-            f"STOP=reference_pdf_missing:{source_pdf}"
-        )
 
     output = Path(args.output)
     if not output.is_absolute():
@@ -698,6 +1209,25 @@ def main() -> None:
     except ValueError:
         raise SystemExit(
             "STOP=output_must_be_inside_prepress_repo"
+        )
+
+    if args.mode == "corpus-validate":
+        run_corpus_validation(
+            client_root=client_root,
+            sample_dir=args.sample_dir,
+            output=output,
+            skeleton=skeleton,
+        )
+        return
+
+    source_pdf = (
+        client_root
+        / args.sample_dir
+        / args.reference
+    )
+    if not source_pdf.is_file():
+        raise SystemExit(
+            f"STOP=reference_pdf_missing:{source_pdf}"
         )
 
     output.mkdir(parents=True, exist_ok=True)

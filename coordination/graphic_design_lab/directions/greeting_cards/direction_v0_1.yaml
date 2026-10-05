@@ -26,3 +26,10 @@ operator_entrypoints:
     implementation_source_of_truth: PROJECT_REPOSITORY
     chat_script_is_runtime_source: false
     private_workspace_binding: GDL_CLIENT_ROOT_environment_or_cli_argument
+  corpus_validation:
+    make_target: gdl-greeting-card-corpus-validate
+    project_script: scripts/graphic_design_lab/greeting_cards/prototype.py
+    mode: corpus-validate
+    implementation_source_of_truth: PROJECT_REPOSITORY
+    filename_based_classification: false
+    private_workspace_binding: GDL_CLIENT_ROOT_environment_or_cli_argument
