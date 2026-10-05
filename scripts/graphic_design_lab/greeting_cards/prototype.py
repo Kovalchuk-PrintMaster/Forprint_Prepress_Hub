@@ -5,6 +5,7 @@ import argparse
 import json
 import re
 import subprocess
+import tempfile
 from pathlib import Path
 from typing import Any
 
@@ -522,8 +523,64 @@ def make_contact_sheet(
     sheet.save(out_path, format="PNG")
 
 
+def normalize_image_soft_mask_colorspaces(
+    doc: pymupdf.Document,
+) -> list[int]:
+    """Normalize image soft-mask color spaces for strict PDF renderers.
+
+    PyMuPDF can create an image /SMask whose ColorSpace is an indirect
+    grayscale ICCBased object. PyMuPDF renders it, while Acrobat / Poppler
+    may reject it as bad image parameters. Normalize image soft masks to
+    /DeviceGray without changing their pixel streams.
+    """
+    smask_xrefs: set[int] = set()
+
+    for xref in range(1, doc.xref_length()):
+        try:
+            obj = doc.xref_object(xref)
+        except Exception:
+            continue
+
+        if "/SMask" not in obj:
+            continue
+
+        for match in re.finditer(
+            r"/SMask\s+(\d+)\s+0\s+R",
+            obj,
+        ):
+            smask_xrefs.add(int(match.group(1)))
+
+    normalized: list[int] = []
+
+    for smask_xref in sorted(smask_xrefs):
+        try:
+            obj = doc.xref_object(smask_xref)
+        except Exception:
+            continue
+
+        if "/Subtype /Image" not in obj:
+            continue
+
+        kind, value = doc.xref_get_key(
+            smask_xref,
+            "ColorSpace",
+        )
+
+        if kind == "name" and value == "/DeviceGray":
+            continue
+
+        doc.xref_set_key(
+            smask_xref,
+            "ColorSpace",
+            "/DeviceGray",
+        )
+        normalized.append(smask_xref)
+
+    return normalized
+
+
 def run_external_checks(pdf_path: Path) -> dict[str, Any]:
-    checks = {}
+    checks: dict[str, Any] = {}
 
     for name, command in (
         ("qpdf", ["qpdf", "--check", str(pdf_path)]),
@@ -538,6 +595,38 @@ def run_external_checks(pdf_path: Path) -> dict[str, Any]:
         checks[name] = {
             "exit_code": cp.returncode,
             "output": cp.stdout.strip(),
+        }
+
+    with tempfile.TemporaryDirectory(
+        prefix="gdl_pdf_compat_",
+        dir=str(pdf_path.parent),
+    ) as tmpdir:
+        prefix = Path(tmpdir) / "page"
+        cp = subprocess.run(
+            [
+                "pdftoppm",
+                "-png",
+                "-r",
+                "24",
+                str(pdf_path),
+                str(prefix),
+            ],
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+        )
+        output = cp.stdout.strip()
+        syntax_error = bool(
+            re.search(
+                r"(?:Syntax Error|Error:)",
+                output,
+                re.I,
+            )
+        )
+        checks["pdftoppm"] = {
+            "exit_code": cp.returncode,
+            "output": output,
+            "syntax_error": syntax_error,
         }
 
     return checks
@@ -794,6 +883,13 @@ def main() -> None:
         }
     )
 
+    normalized_smask_xrefs = (
+        normalize_image_soft_mask_colorspaces(out)
+    )
+    assembly["soft_mask_devicegray_normalized_xrefs"] = (
+        normalized_smask_xrefs
+    )
+
     out.save(
         prototype_pdf,
         garbage=4,
@@ -931,6 +1027,10 @@ def main() -> None:
 
     qpdf_ok = checks["qpdf"]["exit_code"] == 0
     pdfinfo_ok = checks["pdfinfo"]["exit_code"] == 0
+    pdftoppm_ok = (
+        checks["pdftoppm"]["exit_code"] == 0
+        and checks["pdftoppm"]["syntax_error"] is False
+    )
 
     print()
     print("=" * 100)
@@ -966,6 +1066,13 @@ def main() -> None:
     print(
         f"PDFINFO_CHECK={'PASS' if pdfinfo_ok else 'FAIL'}"
     )
+    print(
+        f"PDFTOPPM_CHECK={'PASS' if pdftoppm_ok else 'FAIL'}"
+    )
+    print(
+        "SMASK_DEVICEGRAY_NORMALIZED_COUNT="
+        + str(len(normalized_smask_xrefs))
+    )
     print("TEXT_REGENERATION_PERFORMED=false")
     print("FONT_SUBSTITUTION_PERFORMED=false")
     print("VISUAL_REVIEW_REQUIRED=true")
@@ -974,9 +1081,9 @@ def main() -> None:
     print("GIT_MUTATION=false")
     print("BLUEPRINT_MUTATION=false")
 
-    if not qpdf_ok or not pdfinfo_ok:
+    if not qpdf_ok or not pdfinfo_ok or not pdftoppm_ok:
         raise SystemExit(
-            "STOP=prototype_pdf_structural_check_failed"
+            "STOP=prototype_pdf_cross_renderer_check_failed"
         )
 
     print(
