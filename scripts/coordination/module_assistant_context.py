@@ -54,6 +54,7 @@ ALWAYS_LOCAL = [
     "coordination/status/next_questions_for_blueprint.md",
     "coordination/prompts/index.yaml",
     "coordination/reports/index.yaml",
+    "coordination/graphic_design_lab/continuity/project_first_working_rule_v0_1.yaml",
 ]
 
 OPTIONAL_LOCAL_GLOBS = [
