@@ -28,3 +28,21 @@ def test_stable_greeting_card_operator_entrypoint_exists():
     makefile=(ROOT/'Makefile').read_text(encoding='utf-8')
     assert 'gdl-greeting-card-prototype:' in makefile
     assert 'GDL_CLIENT_ROOT' in makefile
+
+
+def test_repository_first_operator_execution_model_is_explicit():
+    path = ROOT/'coordination/graphic_design_lab/continuity/project_first_working_rule_v0_1.yaml'
+    policy = yaml.safe_load(path.read_text(encoding='utf-8'))['project_internal_tooling_policy']
+    model = policy['operator_execution_model']
+    assert model['target_state'] == 'PROJECT_EXECUTES_REPEATABLE_WORK_CHAT_SUPPLIES_INTENT_DESIGN_AND_REVIEW'
+    assert model['chat_operational_logic_minimized'] is True
+    assert model['normal_operator_action'] == 'SHORT_STABLE_PROJECT_COMMAND'
+    assert model['long_repeatable_manual_shell_sequences_preferred'] is False
+    assert model['evidence_and_reports_generated_by_project'] is True
+    assert model['new_chat_functionality_should_be_integrated_into_project_before_repeat_use'] is True
+    closeout = model['project_owned_closeout']
+    assert closeout['explicit_operator_authorization_required'] is True
+    assert closeout['inspect_exact_diff_before_git_mutation'] is True
+    assert closeout['exact_path_stage_only'] is True
+    assert closeout['broad_git_add_forbidden'] is True
+    assert closeout['may_commit_push_and_verify_when_explicitly_requested'] is True

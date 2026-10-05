@@ -15,6 +15,9 @@ fresh_assistant_must_know:
 - authority_boundaries
 - project_internal_tooling_first_execution_rule
 - stable_operator_entrypoints_for_repeatable_work
+- repository_first_operator_execution_model
+- short_project_command_as_normal_repeatable_operator_interface
+- project_owned_explicit_closeout_pipeline
 fresh_assistant_must_not:
 - invent_workflow_behavior_from_memory
 - generate_reusable_rules_only_in_chat
@@ -23,6 +26,9 @@ fresh_assistant_must_not:
 - reimplement_repeatable_project_execution_logic_only_in_chat
 - use_ad_hoc_chat_runner_when_project_entrypoint_exists
 - leave_proven_repeatable_execution_logic_outside_project
+- keep_repeatable_operational_logic_in_chat_after_validation
+- return_long_manual_shell_sequences_when_a_project_entrypoint_can_own_the_work
+- duplicate_project_closeout_logic_in_chat_when_a_supported_closeout_entrypoint_exists
 acceptance_question: Can a fresh assistant continue an active GDL case from project/context-pack
   state without reading the previous chat?
 context_pack_priority_paths:

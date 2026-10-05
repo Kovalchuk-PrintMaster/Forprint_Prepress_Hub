@@ -14,6 +14,25 @@ project_internal_tooling_policy:
   chat_script_role: BOUNDED_BOOTSTRAP_PATCH_OR_REPAIR_ONLY
   stable_operator_entrypoints_required: true
   repeat_execution_from_chat_only: false
+  operator_execution_model:
+    target_state: PROJECT_EXECUTES_REPEATABLE_WORK_CHAT_SUPPLIES_INTENT_DESIGN_AND_REVIEW
+    chat_operational_logic_minimized: true
+    normal_operator_action: SHORT_STABLE_PROJECT_COMMAND
+    long_repeatable_manual_shell_sequences_preferred: false
+    evidence_and_reports_generated_by_project: true
+    new_chat_functionality_should_be_integrated_into_project_before_repeat_use: true
+    preferred_interaction:
+    - run_project_command
+    - inspect_project_generated_report
+    - approve_rework_or_explicit_closeout
+    project_owned_closeout:
+      explicit_operator_authorization_required: true
+      inspect_exact_diff_before_git_mutation: true
+      protected_or_unwanted_paths_require_human_review: true
+      exact_path_stage_only: true
+      broad_git_add_forbidden: true
+      may_commit_push_and_verify_when_explicitly_requested: true
+      origin_sync_verification_required_after_push: true
   assistant_behavior:
   - inspect_existing_project_tool_before_new_logic
   - patch_or_extend_existing_project_tool_when_behavior_changes

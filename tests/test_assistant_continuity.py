@@ -125,3 +125,16 @@ def test_generated_assistant_packages_embed_strict_blueprint_read_only_policy(
         normalized_readme = " ".join(readme.split())
         assert "must not create, edit, stage, commit, push, apply, release" in normalized_readme
         assert "Blueprint-side processing and confirmation" in normalized_readme
+
+
+def test_graphic_design_lab_topic_auto_resolves_context_scope():
+    import importlib.util
+    import sys
+    script_path = ROOT / 'scripts/coordination/module_assistant_context.py'
+    spec = importlib.util.spec_from_file_location('prepress_context_scope_test', script_path)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    assert module.effective_scope_for_topics('bootstrap', ['graphic_design_lab']) == 'graphic_design_lab'
+    assert module.effective_scope_for_topics('bootstrap', ['another_topic']) == 'bootstrap'

@@ -347,6 +347,15 @@ def add_priority_candidate(
             selected[candidate.relative_to(module_root).as_posix()] = candidate
 
 
+def effective_scope_for_topics(
+    scope: str,
+    topics: list[str],
+) -> str:
+    if scope == "bootstrap" and "graphic_design_lab" in topics:
+        return "graphic_design_lab"
+    return scope
+
+
 def scope_priority_candidates(
     module_root: Path,
     scope: str,
@@ -454,6 +463,8 @@ def build_pack(
     files_dir = package_dir / "module_files"
     files_dir.mkdir(parents=True, exist_ok=True)
 
+    effective_scope = effective_scope_for_topics(scope, topics)
+
     candidates = local_candidates(
         module_root,
         package_type,
@@ -464,7 +475,9 @@ def build_pack(
             path.relative_to(module_root).as_posix(): path
             for path in candidates
         }
-        for path in scope_priority_candidates(module_root, scope):
+        for path in scope_priority_candidates(
+            module_root, effective_scope
+        ):
             merged[path.relative_to(module_root).as_posix()] = path
         candidates = [merged[key] for key in sorted(merged)]
     copied: list[dict] = []
@@ -517,7 +530,8 @@ def build_pack(
         "script_id": SCRIPT_ID,
         "package_type": package_type,
         "target_module_or_portfolio_scope": module_id,
-        "scope": scope,
+        "scope": effective_scope,
+        "requested_scope": scope,
         "topics": topics,
         "purpose": (
             "Fresh-assistant module onboarding"
@@ -566,7 +580,8 @@ Package type: `{package_type}`
 Target module: `{module_id}`
 Module HEAD: `{head}`
 Blueprint HEAD observed: `{check['blueprint']['head']}`
-Scope: `{scope}`
+Scope: `{effective_scope}`
+Requested scope: `{scope}`
 Topics: `{', '.join(topics) if topics else 'none'}`
 
 ## System Blueprint access boundary

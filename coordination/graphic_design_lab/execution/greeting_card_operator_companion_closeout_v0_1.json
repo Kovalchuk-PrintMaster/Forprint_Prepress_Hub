@@ -1,0 +1,51 @@
+{
+  "schema_version": "forprint_project_closeout_manifest_v0_1",
+  "workstream_id": "gdl_greeting_card_operator_companion_v022b",
+  "expected_head": "8ffecdabefddb522ce3d939c8ae0cdb2ad87770d",
+  "commit_message": "feat(gdl): add generic Illustrator operator companion",
+  "visual_confirmation": "PASS",
+  "verified_counts": {
+    "focused_companion_tests": 11,
+    "full_governance_tests": 145,
+    "closeout_tests": 5,
+    "full_governance_tests_expected": 150
+  },
+  "write_set": [
+    "Makefile",
+    "coordination/graphic_design_lab/continuity/assistant_context_contract_v0_1.yaml",
+    "coordination/graphic_design_lab/continuity/project_first_working_rule_v0_1.yaml",
+    "coordination/graphic_design_lab/execution/index.yaml",
+    "coordination/graphic_design_lab/execution/greeting_card_operator_companion_closeout_v0_1.json",
+    "scripts/coordination/module_assistant_context.py",
+    "scripts/coordination/project_closeout.py",
+    "scripts/graphic_design_lab/greeting_cards/illustrator_operator_companion_v0_1.jsx",
+    "scripts/validation/check_graphic_design_lab_project_first.py",
+    "tests/coordination/test_project_closeout_v0_1.py",
+    "tests/graphic_design_lab/test_greeting_card_illustrator_operator_companion_v0_1.py",
+    "tests/graphic_design_lab/test_project_internal_tooling_first_v0_1.py",
+    "tests/test_assistant_continuity.py"
+  ],
+  "review_commands": [
+    [
+      ".venv_prepress_hub/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "tests/coordination/test_project_closeout_v0_1.py"
+    ],
+    [
+      "make",
+      "gdl-greeting-card-illustrator-companion-check"
+    ],
+    [
+      "make",
+      "gdl-project-first-check"
+    ],
+    [
+      "make",
+      "governance-check"
+    ]
+  ]
+}

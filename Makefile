@@ -20,6 +20,8 @@ help:
 	@echo "  make gdl-greeting-card-prototype - run project-owned recurring greeting-card prototype generator"
 	@echo "  make gdl-greeting-card-corpus-validate - classify and validate all recurring greeting-card front families"
 	@echo "  make gdl-project-first-check - validate project-internal-tooling-first execution rule"
+	@echo "  make gdl-closeout-review - review exact GDL closeout write-set"
+	@echo "  make gdl-closeout-apply CONFIRM=YES - exact-stage, commit, push and verify reviewed slice"
 	@echo "  make gdl-empirical-check - validate GDL empirical case semantics and privacy boundaries"
 	@echo "  make gdl-empirical-index - print deterministic GDL empirical evidence discovery index"
 	@echo "  make gdl-empirical-summary - print human-readable GDL empirical evidence summary"
@@ -187,3 +189,20 @@ gdl-empirical-index:
 
 gdl-empirical-summary:
 	$(PYTHON) $(GDL_EMPIRICAL_TOOL) summary
+
+.PHONY: gdl-greeting-card-illustrator-companion-check
+gdl-greeting-card-illustrator-companion-check:
+	.venv_prepress_hub/bin/python -m pytest -q -p no:cacheprovider tests/graphic_design_lab/test_greeting_card_illustrator_operator_companion_v0_1.py
+# --- Project-owned explicit closeout ---
+
+GDL_CLOSEOUT_TOOL ?= scripts/coordination/project_closeout.py
+GDL_CLOSEOUT_MANIFEST ?= coordination/graphic_design_lab/execution/greeting_card_operator_companion_closeout_v0_1.json
+
+.PHONY: gdl-closeout-review gdl-closeout-apply
+
+gdl-closeout-review:
+	$(PYTHON) $(GDL_CLOSEOUT_TOOL) review --manifest "$(GDL_CLOSEOUT_MANIFEST)"
+
+gdl-closeout-apply:
+	@test "$(CONFIRM)" = "YES" || (echo "Explicit confirmation required: CONFIRM=YES"; exit 2)
+	$(PYTHON) $(GDL_CLOSEOUT_TOOL) apply --manifest "$(GDL_CLOSEOUT_MANIFEST)" --confirm "$(CONFIRM)"
