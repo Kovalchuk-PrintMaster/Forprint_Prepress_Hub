@@ -31,7 +31,7 @@ local_execution:
   cursor: continuity/current_execution_cursor_v0_1.yaml
   current_primary_task: GDL-TASK-GREETING-CARD-E2E-001
   current_direction: greeting_cards
-  current_step: GC-E2E-02
+  current_step: GC-E2E-03
   current_execution_plan: directions/greeting_cards/end_to_end_execution_plan_v0_1.yaml
   blueprint_work_front_binding: false
   blueprint_access: READ_ONLY_STRICT

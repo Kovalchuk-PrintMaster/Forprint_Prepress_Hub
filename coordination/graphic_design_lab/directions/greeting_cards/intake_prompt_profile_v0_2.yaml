@@ -1,0 +1,69 @@
+schema_version: gdl_greeting_card_intake_prompt_profile_v0_2
+direction_id: greeting_cards
+status: ACTIVE_EMPIRICAL_PROMPT_PROFILE
+role: GDL_INTAKE_ANALYST
+
+extends:
+  previous_profile: intake_prompt_profile_v0_1.yaml
+  disposition: EXTEND
+  current_loader: prompts/GDL-INTAKE-GREETING-CARDS-v002.md
+  previous_loader: prompts/GDL-INTAKE-GREETING-CARDS-v001.md
+
+purpose: >
+  Produce both request-level Guided Intake and per-recipient normalized batch
+  bindings while preserving ambiguity and keeping image transformation outside Intake.
+
+input_contract: intake_package_contract_v0_2.yaml
+output_guided_intake_schema: forprint_guided_intake_v0_1
+output_normalized_batch_schema: gdl_greeting_card_normalized_batch_v0_1
+
+reuse_contracts:
+  - contracts/graphic_design_lab/guided_intake_v0_1.yaml
+  - coordination/graphic_design_lab/execution/batch_intake_contract_v0_1.yaml
+  - coordination/graphic_design_lab/client_workflows/entity_alias_registry_schema_v0_1.yaml
+  - coordination/graphic_design_lab/client_workflows/asset_registry_schema_v0_1.yaml
+  - normalized_batch_contract_v0_1.yaml
+
+matching_policy:
+  explicit_customer_or_operator_assignment: CONFIRMED_ALLOWED
+  previously_confirmed_binding: CONFIRMED_ALLOWED
+  unique_exact_alias_registry: CONFIRMED_ALLOWED
+  filename_or_text_similarity_only: PROPOSED_MAXIMUM
+  multiple_plausible_candidates: UNRESOLVED_OR_PROPOSED
+  silent_identity_inference: FORBIDDEN
+  numeric_confidence_score: FORBIDDEN
+
+job_binding_roles:
+  - recipient_entity
+  - greeting_text
+  - portrait
+  - recipient_branding
+  - signature
+  - sender_variant
+
+single_recipient_policy:
+  use_same_normalized_batch_schema: true
+  jobs_count: 1
+
+asset_quality_observation:
+  enabled: true
+  purpose: PREPARE_LATER_GC_E2E_03
+  intake_must_not: [modify_images, claim_creator_task_finalized, execute_provider]
+
+return_package:
+  required:
+    - intake_result.yaml
+    - source_inventory.yaml
+    - normalized_batch.yaml
+    - intake_summary.md
+
+prompt_evidence:
+  material_run_must_be_recorded: true
+  role: INTAKE
+  prompt_type: GREETING_CARD_INTAKE
+  lifecycle_initial_state: ACTIVE_EXPERIMENT
+
+authority:
+  activates_runtime: false
+  activates_provider_execution: false
+  activates_production_write: false

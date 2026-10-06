@@ -1,0 +1,154 @@
+schema_version: gdl_greeting_card_batch_matching_fixture_v0_1
+fixture_id: sanitized_greeting_card_batch_matching_v0_1
+sanitized: true
+
+entity_registry:
+  entities:
+    - entity_id: entity_recipient_alpha
+      entity_type: recipient
+      canonical_name: Recipient Alpha
+      exact_aliases: [Alpha Recipient]
+    - entity_id: entity_recipient_beta
+      entity_type: recipient
+      canonical_name: Recipient Beta
+      exact_aliases: [Beta Recipient]
+
+source_inventory:
+  assets:
+    - asset_id: asset_portrait_alpha
+      kind: raster
+      logical_role: candidate_portrait
+      provenance:
+        source_class: customer_supplied
+    - asset_id: asset_brand_alpha
+      kind: brand
+      logical_role: recipient_branding
+      provenance:
+        source_class: customer_supplied
+    - asset_id: asset_portrait_beta_1
+      kind: raster
+      logical_role: candidate_portrait
+      provenance:
+        source_class: customer_supplied
+    - asset_id: asset_portrait_beta_2
+      kind: raster
+      logical_role: candidate_portrait
+      provenance:
+        source_class: customer_supplied
+    - asset_id: asset_signature_primary
+      kind: raster
+      logical_role: signature
+      provenance:
+        source_class: previously_confirmed
+  references: []
+
+normalized_batch:
+  schema_version: gdl_greeting_card_normalized_batch_v0_1
+  batch_id: sanitized_batch_001
+  request_id: sanitized_request_001
+  product_playbook_id: recurring_greeting_card_v0_1
+  product_type: greeting_card
+  jobs:
+    - job_id: job_alpha
+      raw_recipient_name: Recipient Alpha
+      candidate_entity_id: entity_recipient_alpha
+      occasion: birthday
+      greeting_text_source: sanitized://text/alpha.txt
+      sender_variant: SINGLE_PRIMARY
+      supplied_assets:
+        - asset_portrait_alpha
+        - asset_brand_alpha
+        - asset_signature_primary
+      special_requests: []
+      uncertainties: []
+      bindings:
+        recipient_entity:
+          state: CONFIRMED
+          basis: operator_assignment
+          entity_id: entity_recipient_alpha
+          human_confirmation_required: false
+        greeting_text:
+          state: CONFIRMED
+          basis: customer_assignment
+          text: "Вітаємо з днем народження!"
+          source_ref: sanitized://text/alpha.txt
+          human_confirmation_required: false
+        portrait:
+          state: CONFIRMED
+          basis: operator_assignment
+          source_id: asset_portrait_alpha
+          human_confirmation_required: false
+        recipient_branding:
+          state: CONFIRMED
+          basis: operator_assignment
+          source_id: asset_brand_alpha
+          human_confirmation_required: false
+        signature:
+          state: CONFIRMED
+          basis: previously_confirmed
+          source_id: asset_signature_primary
+          human_confirmation_required: false
+        sender_variant:
+          state: CONFIRMED
+          basis: previously_confirmed
+          value: SINGLE_PRIMARY
+          human_confirmation_required: false
+
+    - job_id: job_beta
+      raw_recipient_name: Recipient Beta
+      candidate_entity_id: null
+      occasion: birthday
+      greeting_text_source: sanitized://text/beta.txt
+      sender_variant: SINGLE_PRIMARY
+      supplied_assets:
+        - asset_portrait_beta_1
+        - asset_portrait_beta_2
+        - asset_signature_primary
+      special_requests: []
+      uncertainties:
+        - field: recipient_entity
+          reason: multiple plausible identity signals
+          human_confirmation_required: true
+        - field: portrait
+          reason: two candidate portraits remain plausible
+          human_confirmation_required: true
+        - field: recipient_branding
+          reason: no recipient branding assignment supplied
+          human_confirmation_required: true
+      bindings:
+        recipient_entity:
+          state: UNRESOLVED
+          basis: ambiguous_alias
+          entity_id: null
+          human_confirmation_required: true
+        greeting_text:
+          state: CONFIRMED
+          basis: customer_assignment
+          text: "Щиро вітаємо!"
+          source_ref: sanitized://text/beta.txt
+          human_confirmation_required: false
+        portrait:
+          state: PROPOSED
+          basis: filename_or_text_similarity
+          source_id: asset_portrait_beta_1
+          human_confirmation_required: true
+        recipient_branding:
+          state: UNRESOLVED
+          basis: no_assignment
+          source_id: null
+          human_confirmation_required: true
+        signature:
+          state: CONFIRMED
+          basis: previously_confirmed
+          source_id: asset_signature_primary
+          human_confirmation_required: false
+        sender_variant:
+          state: CONFIRMED
+          basis: previously_confirmed
+          value: SINGLE_PRIMARY
+          human_confirmation_required: false
+
+expected:
+  job_count: 2
+  fully_confirmed_job: job_alpha
+  ambiguity_preserved_job: job_beta

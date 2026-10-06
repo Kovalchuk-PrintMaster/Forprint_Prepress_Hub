@@ -1,0 +1,85 @@
+schema_version: gdl_greeting_card_intake_package_contract_v0_2
+document_type: GDL_DIRECTION_INTAKE_PACKAGE_CONTRACT
+direction_id: greeting_cards
+status: ACTIVE_EMPIRICAL_CONTRACT
+scope: GRAPHIC_DESIGN_LAB_ONLY
+
+extends:
+  previous_contract: intake_package_contract_v0_1.yaml
+  disposition: EXTEND
+  reason: >
+    GC-E2E-02 adds an explicit normalized batch with per-recipient semantic
+    bindings while preserving the GC-E2E-01 package boundary and provenance.
+
+reuse:
+  guided_intake_contract:
+    path: contracts/graphic_design_lab/guided_intake_v0_1.yaml
+    disposition: REUSE
+  generic_batch_contract:
+    path: coordination/graphic_design_lab/execution/batch_intake_contract_v0_1.yaml
+    disposition: REUSE
+  normalized_batch_contract:
+    path: normalized_batch_contract_v0_1.yaml
+    disposition: DIRECTION_SPECIFIC_REFINEMENT
+  entity_registry_schema:
+    path: coordination/graphic_design_lab/client_workflows/entity_alias_registry_schema_v0_1.yaml
+    disposition: REUSE
+  asset_registry_schema:
+    path: coordination/graphic_design_lab/client_workflows/asset_registry_schema_v0_1.yaml
+    disposition: REUSE
+  existing_guided_intake_normalizer:
+    path: app/graphic_design_lab/intake.py
+    disposition: REUSE_UNCHANGED_IN_GC_E2E_02
+  normalized_batch_validator:
+    path: app/graphic_design_lab/greeting_card_batch.py
+    disposition: NEW_DIRECTION_SPECIFIC_VALIDATOR
+
+operator_dispatch_package:
+  required: [canonical_intake_loader, primary_material_bundle]
+  optional: [operator_context_note, prior_case_reference]
+  primary_material_bundle:
+    preferred_transport: ZIP_OR_EQUIVALENT_ATTACHMENTS
+    operator_manual_restructuring_required: false
+    filenames_are_hints_not_authority: true
+
+intake_return_package:
+  transport: ZIP_OR_EQUIVALENT_MULTI_FILE_RETURN
+  required_artifacts:
+    - path: intake_result.yaml
+      contract: forprint_guided_intake_v0_1
+      role: request_level_normalization
+    - path: source_inventory.yaml
+      role: asset_and_reference_identity_manifest
+    - path: normalized_batch.yaml
+      role: per_recipient_semantic_binding_surface
+      contract_ref: normalized_batch_contract_v0_1.yaml
+    - path: intake_summary.md
+      role: concise_human_review_surface
+  optional_artifacts:
+    - path: unresolved_questions.md
+      when: material_human_confirmation_is_required
+    - path: creator_candidate_assessments.yaml
+      when: visual_assets_require_later_GC_E2E_03_assessment
+      authority: DRAFT_ONLY_NOT_CREATOR_HANDOFF
+
+quality_gate:
+  pass_requires:
+    - required_known_customer_facts_are_preserved
+    - source_inventory_is_complete_for_supplied_relevant_materials
+    - normalized_batch_has_one_or_more_jobs
+    - every_job_has_explicit_semantic_bindings
+    - ambiguous_bindings_remain_PROPOSED_or_UNRESOLVED
+    - unresolved_items_are_machine_visible
+  fail_if:
+    - raw_customer_chat_is_treated_as_constructor_input
+    - customer_facts_are_invented
+    - filename_similarity_is_used_as_sole_CONFIRMED_basis
+    - Intake_modifies_images
+    - Creator_provider_execution_is_claimed
+
+authority:
+  activates_gdl_runtime: false
+  activates_provider_execution: false
+  activates_production_write: false
+  mutates_blueprint: false
+  mutates_parent_prepress_roadmap: false

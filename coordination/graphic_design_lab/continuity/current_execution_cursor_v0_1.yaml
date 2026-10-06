@@ -56,18 +56,19 @@ active_tasks:
     completed_steps:
       - GC-E2E-00
       - GC-E2E-01
+      - GC-E2E-02
 
-    current_step: GC-E2E-02
+    current_step: GC-E2E-03
 
     current_checkpoint:
-      id: INTAKE_PARSING_AND_PERSON_TEXT_ASSET_MATCHING
+      id: PER_PHOTO_ASSESSMENT_AND_CREATOR_PACKAGE
       state: ACTIVE
 
     next_action: >
-      Reconcile the existing deterministic Guided Intake normalizer and sanitized
-      recurring greeting-card fixture against the new Intake package/loader, then
-      implement the smallest project-owned parsing and person-text-asset matching
-      slice without moving Creator image transformation into Intake.
+      Reconcile normalized batch bindings, Creator task boundary and existing
+      Creator Handoff/Result Package contracts, then define per-photo assessment
+      and the smallest self-sufficient Creator package without moving full-card
+      composition into Creator.
 
     completion_criterion: >
       Prove the full greeting-card chain from primary customer materials

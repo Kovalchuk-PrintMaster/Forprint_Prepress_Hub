@@ -1,9 +1,14 @@
 schema_version: gdl_greeting_cards_direction_index_v0_1
 direction_id: greeting_cards
 status: STRUCTURAL_MODEL_FROZEN_EXECUTION_NOT_READY
-intake_package_contract: intake_package_contract_v0_1.yaml
-intake_prompt_profile: intake_prompt_profile_v0_1.yaml
-loader: prompts/GDL-INTAKE-GREETING-CARDS-v001.md
+intake_package_contract: intake_package_contract_v0_2.yaml
+intake_prompt_profile: intake_prompt_profile_v0_2.yaml
+normalized_batch_contract: normalized_batch_contract_v0_1.yaml
+loader: prompts/GDL-INTAKE-GREETING-CARDS-v002.md
+previous_intake_version:
+  package_contract: intake_package_contract_v0_1.yaml
+  prompt_profile: intake_prompt_profile_v0_1.yaml
+  loader: prompts/GDL-INTAKE-GREETING-CARDS-v001.md
 documents:
 - direction_v0_1.yaml
 - reusable_skeleton_draft_v0_1.yaml
@@ -17,5 +22,8 @@ documents:
 - end_to_end_execution_plan_v0_1.yaml
 - intake_package_contract_v0_1.yaml
 - intake_prompt_profile_v0_1.yaml
+- normalized_batch_contract_v0_1.yaml
+- intake_package_contract_v0_2.yaml
+- intake_prompt_profile_v0_2.yaml
 canonical_structural_model: product_skeleton_v0_1.yaml
 structural_design_freeze: structural_design_freeze_v0_1.yaml

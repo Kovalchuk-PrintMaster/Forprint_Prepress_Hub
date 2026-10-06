@@ -75,21 +75,26 @@ def test_prompt_profile_is_registered_for_greeting_cards():
 
     assert "greeting_cards" in rows
     greeting = rows["greeting_cards"]
-    assert greeting["profile"].endswith("intake_prompt_profile_v0_1.yaml")
-    assert greeting["loader"].endswith("GDL-INTAKE-GREETING-CARDS-v001.md")
+    assert greeting["profile"].endswith("intake_prompt_profile_v0_2.yaml")
+    assert greeting["loader"].endswith("GDL-INTAKE-GREETING-CARDS-v002.md")
+    assert greeting["previous_profile"].endswith(
+        "intake_prompt_profile_v0_1.yaml"
+    )
+    assert greeting["previous_loader"].endswith(
+        "GDL-INTAKE-GREETING-CARDS-v001.md"
+    )
 
 
-def test_gc_e2e_01_closed_and_cursor_advanced_to_02():
+def test_gc_e2e_01_remains_closed_after_later_cursor_advances():
     cursor = load_yaml(CURSOR)
     task = cursor["active_tasks"][0]
 
-    assert task["completed_steps"] == ["GC-E2E-00", "GC-E2E-01"]
-    assert task["current_step"] == "GC-E2E-02"
+    assert task["completed_steps"][:2] == ["GC-E2E-00", "GC-E2E-01"]
+    assert task["current_step"] not in {"GC-E2E-00", "GC-E2E-01"}
 
     plan = load_yaml(PLAN)
     steps = {item["id"]: item for item in plan["steps"]}
     assert steps["GC-E2E-01"]["state"] == "COMPLETED_LOCAL"
-    assert steps["GC-E2E-02"]["state"] == "ACTIVE"
 
 
 def test_gc_e2e_08_job_runner_note_remains_present():

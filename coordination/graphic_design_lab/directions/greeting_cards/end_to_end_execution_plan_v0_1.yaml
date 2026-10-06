@@ -108,7 +108,7 @@ steps:
 
     title: Intake parsing and person-text-asset matching
 
-    state: ACTIVE
+    state: COMPLETED_LOCAL
 
     objective: >
       Normalize customer materials and resolve person, greeting, portrait,
@@ -125,7 +125,7 @@ steps:
 
     title: Per-photo assessment and Creator package
 
-    state: PLANNED
+    state: ACTIVE
 
     objective: >
       Assess each image and create bounded Creator instructions only where

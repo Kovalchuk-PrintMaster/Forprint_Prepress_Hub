@@ -1,0 +1,89 @@
+schema_version: gdl_greeting_card_normalized_batch_contract_v0_1
+document_type: GDL_GREETING_CARD_NORMALIZED_BATCH_CONTRACT
+status: ACTIVE_EMPIRICAL_CONTRACT
+scope: GRAPHIC_DESIGN_LAB_ONLY
+instance_schema_version: gdl_greeting_card_normalized_batch_v0_1
+
+purpose: >
+  Refine the existing generic NORMALIZED_BATCH contract for recurring
+  greeting-card Intake so every recipient job carries explicit person, text,
+  portrait, branding, signature and sender-variant bindings without guessing.
+
+reuse:
+  generic_batch_contract:
+    path: coordination/graphic_design_lab/execution/batch_intake_contract_v0_1.yaml
+    disposition: REUSE_AND_REFINE
+  entity_registry_schema:
+    path: coordination/graphic_design_lab/client_workflows/entity_alias_registry_schema_v0_1.yaml
+    disposition: REUSE
+  asset_registry_schema:
+    path: coordination/graphic_design_lab/client_workflows/asset_registry_schema_v0_1.yaml
+    disposition: REUSE
+  guided_intake:
+    path: contracts/graphic_design_lab/guided_intake_v0_1.yaml
+    disposition: REUSE_AS_REQUEST_LEVEL_NORMALIZATION
+  raw_customer_parser:
+    disposition: NOT_CREATED
+    reason: human_assisted_Intake_owns_semantic_interpretation
+
+cardinality:
+  jobs_minimum: 1
+  single_recipient_request_representation: ONE_ITEM_JOBS_LIST
+  separate_single_job_schema_forbidden: true
+
+generic_job_fields_preserved:
+  - job_id
+  - raw_recipient_name
+  - candidate_entity_id
+  - occasion
+  - greeting_text_source
+  - sender_variant
+  - supplied_assets
+  - special_requests
+  - uncertainties
+
+greeting_card_job_extension:
+  required: [bindings]
+  binding_roles:
+    - recipient_entity
+    - greeting_text
+    - portrait
+    - recipient_branding
+    - signature
+    - sender_variant
+
+binding_states: [CONFIRMED, PROPOSED, UNRESOLVED]
+confirmed_binding_bases:
+  - customer_assignment
+  - operator_assignment
+  - previously_confirmed
+  - unique_exact_alias_registry
+
+rules:
+  - filename_or_text_similarity_may_not_create_CONFIRMED
+  - numeric_confidence_scoring_is_forbidden
+  - CONFIRMED_requires_deterministic_basis_and_no_human_confirmation
+  - PROPOSED_requires_human_confirmation
+  - UNRESOLVED_requires_human_confirmation
+  - every_referenced_asset_must_exist_in_source_inventory
+  - every_referenced_asset_must_be_listed_in_job_supplied_assets
+  - candidate_entity_id_must_match_recipient_entity_binding
+  - greeting_text_source_must_match_greeting_text_binding
+  - sender_variant_must_match_sender_variant_binding
+  - ambiguous_jobs_must_list_uncertainties
+  - Intake_does_not_modify_images
+  - Intake_does_not_select_final_Creator_scope
+
+skeleton_binding_map:
+  portrait: inside_image.portrait
+  recipient_branding: front.recipient_branding
+  greeting_text: inside_text.greeting
+  sender_variant: inside_text.sender_block
+  signature: inside_text.signature
+
+authority:
+  activates_gdl_runtime: false
+  activates_provider_execution: false
+  activates_production_write: false
+  mutates_blueprint: false
+  mutates_parent_prepress_roadmap: false
