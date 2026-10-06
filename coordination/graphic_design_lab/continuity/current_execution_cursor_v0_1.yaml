@@ -57,18 +57,19 @@ active_tasks:
       - GC-E2E-00
       - GC-E2E-01
       - GC-E2E-02
+      - GC-E2E-03
 
-    current_step: GC-E2E-03
+    current_step: GC-E2E-04
 
     current_checkpoint:
-      id: PER_PHOTO_ASSESSMENT_AND_CREATOR_PACKAGE
+      id: CREATOR_EXECUTION
       state: ACTIVE
 
     next_action: >
-      Reconcile normalized batch bindings, Creator task boundary and existing
-      Creator Handoff/Result Package contracts, then define per-photo assessment
-      and the smallest self-sufficient Creator package without moving full-card
-      composition into Creator.
+      Execute only bounded Creator tasks emitted by GC-E2E-03, preserve source
+      asset identity and task traceability, and receive results through the
+      existing Creator Result Package boundary without granting Creator
+      full greeting-card composition authority.
 
     completion_criterion: >
       Prove the full greeting-card chain from primary customer materials

@@ -125,7 +125,7 @@ steps:
 
     title: Per-photo assessment and Creator package
 
-    state: ACTIVE
+    state: COMPLETED_LOCAL
 
     objective: >
       Assess each image and create bounded Creator instructions only where
@@ -150,7 +150,7 @@ steps:
 
     title: Creator execution
 
-    state: PLANNED
+    state: ACTIVE
 
     objective: >
       Execute bounded visual tasks without making Creator responsible for

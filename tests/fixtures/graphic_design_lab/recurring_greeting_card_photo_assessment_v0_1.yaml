@@ -1,0 +1,127 @@
+schema_version: gdl_greeting_card_photo_assessment_fixture_v0_1
+fixture_id: sanitized_recurring_greeting_card_photo_assessment_v0_1
+sanitized: true
+
+photo_assessment_package:
+  schema_version: gdl_greeting_card_photo_assessment_package_v0_1
+  package_id: sanitized_photo_assessment_package_001
+  normalized_batch_ref: sanitized://normalized_batch/sanitized_batch_001.yaml
+  creator_execution_authorized: false
+  provider_execution_required: false
+
+  source_inventory:
+    - asset_id: asset_portrait_ready
+      source_ref: sanitized://assets/portrait_ready.jpg
+      kind: raster
+    - asset_id: asset_portrait_geometry
+      source_ref: sanitized://assets/portrait_geometry.jpg
+      kind: raster
+    - asset_id: asset_portrait_repair
+      source_ref: sanitized://assets/portrait_repair.jpg
+      kind: raster
+    - asset_id: asset_portrait_ambiguous
+      source_ref: sanitized://assets/portrait_ambiguous.jpg
+      kind: raster
+
+  assessments:
+    - assessment_id: assessment_ready
+      job_id: job_ready
+      asset_id: asset_portrait_ready
+      portrait_binding_state: CONFIRMED
+      assessment_state: PASS_THROUGH
+      reasons: [source_already_suitable]
+      deterministic_operations: []
+      creator_operations: []
+      human_confirmation_required: false
+      creator_task: null
+
+    - assessment_id: assessment_geometry
+      job_id: job_geometry
+      asset_id: asset_portrait_geometry
+      portrait_binding_state: CONFIRMED
+      assessment_state: DETERMINISTIC_TEMPLATE_NORMALIZATION
+      reasons: [canonical_crop_and_mask_only]
+      deterministic_operations:
+        - normalize_orientation
+        - crop_to_canonical_frame
+        - apply_template_mask
+        - resolution_check
+      creator_operations: []
+      human_confirmation_required: false
+      creator_task: null
+
+    - assessment_id: assessment_repair
+      job_id: job_repair
+      asset_id: asset_portrait_repair
+      portrait_binding_state: CONFIRMED
+      assessment_state: CREATOR_TRANSFORMATION_REQUIRED
+      reasons: [background_cleanup_and_quality_recovery_required]
+      deterministic_operations: []
+      creator_operations:
+        - recover_detail
+        - normalize_contrast
+        - normalize_natural_skin_color
+        - remove_background
+      human_confirmation_required: false
+      creator_task:
+        task_id: creator_portrait_job_repair_v001
+        job_id: job_repair
+        assessment_id: assessment_repair
+        source_asset:
+          asset_id: asset_portrait_repair
+          source_ref: sanitized://assets/portrait_repair.jpg
+        target_role: inside_image.portrait
+        requested_operations:
+          - recover_detail
+          - normalize_contrast
+          - normalize_natural_skin_color
+          - remove_background
+        directed_appearance_edits: []
+        explicit_appearance_request_ref: null
+        preservation:
+          likeness: REQUIRED
+          realistic_appearance: REQUIRED
+          identity_change: FORBIDDEN
+        forbidden_changes:
+          - document_geometry
+          - canonical_page_mapping
+          - locked_back_page
+          - canonical_text_slots
+          - canonical_z_order
+          - production_export_rules
+          - greeting_text
+          - recipient_identity
+        output:
+          output_type: RESTORED_RASTER_ASSET
+          return_asset_must_trace_to_source: true
+          heavy_artifact_in_git: false
+          preferred_background: transparent_when_cutout_is_required
+          target_resolution: sufficient_for_canonical_placement_without_false_detail_claims
+        traceability:
+          job_id: job_repair
+          assessment_id: assessment_repair
+          source_asset_id: asset_portrait_repair
+        creator_execution_authorized: false
+        provider_execution_required: false
+
+    - assessment_id: assessment_ambiguous
+      job_id: job_ambiguous
+      asset_id: asset_portrait_ambiguous
+      portrait_binding_state: PROPOSED
+      assessment_state: HUMAN_REVIEW_REQUIRED
+      reasons: [portrait_identity_binding_not_confirmed]
+      deterministic_operations: []
+      creator_operations: []
+      human_confirmation_required: true
+      creator_task: null
+
+expected:
+  assessment_states:
+    - PASS_THROUGH
+    - DETERMINISTIC_TEMPLATE_NORMALIZATION
+    - CREATOR_TRANSFORMATION_REQUIRED
+    - HUMAN_REVIEW_REQUIRED
+  creator_task_count: 1
+  ambiguous_binding_creator_task_count: 0
+  generic_intake_modified: false
+  provider_execution_performed: false

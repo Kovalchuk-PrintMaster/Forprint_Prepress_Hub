@@ -1,0 +1,65 @@
+schema_version: gdl_greeting_card_creator_portrait_task_contract_v0_1
+document_type: GDL_GREETING_CARD_CREATOR_PORTRAIT_TASK_CONTRACT
+status: ACTIVE_EMPIRICAL_CONTRACT
+scope: GRAPHIC_DESIGN_LAB_ONLY
+
+purpose: >
+  Define a self-sufficient machine-readable Creator task for one confirmed
+  greeting-card portrait without granting Creator authority over complete
+  document composition.
+
+inherits_boundaries:
+  - coordination/graphic_design_lab/execution/creator_task_boundary_v0_1.yaml
+  - contracts/graphic_design_lab/creator_handoff_v0_1.yaml
+  - coordination/graphic_design_lab/directions/greeting_cards/product_skeleton_v0_1.yaml
+
+required_fields:
+  - task_id
+  - job_id
+  - assessment_id
+  - source_asset
+  - target_role
+  - requested_operations
+  - directed_appearance_edits
+  - explicit_appearance_request_ref
+  - preservation
+  - forbidden_changes
+  - output
+  - traceability
+  - creator_execution_authorized
+  - provider_execution_required
+
+target_role: inside_image.portrait
+
+source_asset:
+  required_fields: [asset_id, source_ref]
+  rule: identity_must_match_assessment_and_source_inventory
+
+preservation:
+  likeness: REQUIRED
+  realistic_appearance: REQUIRED
+  identity_change: FORBIDDEN
+
+forbidden_changes_required:
+  - document_geometry
+  - canonical_page_mapping
+  - locked_back_page
+  - canonical_text_slots
+  - canonical_z_order
+  - production_export_rules
+  - greeting_text
+  - recipient_identity
+
+allowed_output_types:
+  - NORMALIZED_PORTRAIT_ASSET
+  - RESTORED_RASTER_ASSET
+
+output_rules:
+  return_asset_must_trace_to_source: true
+  heavy_artifact_in_git: false
+  result_package_boundary: contracts/graphic_design_lab/creator_result_package_v0_1.yaml
+
+execution_authority:
+  creator_execution_authorized: false
+  provider_execution_required: false
+  execution_begins_only_in: GC-E2E-04

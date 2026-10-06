@@ -1,0 +1,99 @@
+schema_version: gdl_greeting_card_per_photo_assessment_contract_v0_1
+document_type: GDL_GREETING_CARD_PER_PHOTO_ASSESSMENT_CONTRACT
+status: ACTIVE_EMPIRICAL_CONTRACT
+scope: GRAPHIC_DESIGN_LAB_ONLY
+
+purpose: >
+  Assess each bound greeting-card portrait independently and route only the
+  smallest unresolved visual unit to Creator when a visual transformation is
+  actually required.
+
+reuse:
+  creator_task_boundary:
+    path: coordination/graphic_design_lab/execution/creator_task_boundary_v0_1.yaml
+    disposition: REUSE
+  creator_handoff_contract:
+    path: contracts/graphic_design_lab/creator_handoff_v0_1.yaml
+    disposition: REUSE_AS_ENVELOPE_AND_AUTHORITY_BOUNDARY
+  creator_result_package_contract:
+    path: contracts/graphic_design_lab/creator_result_package_v0_1.yaml
+    disposition: REUSE_AS_GC_E2E_04_RETURN_BOUNDARY
+  asset_comparison_contract:
+    path: coordination/graphic_design_lab/execution/asset_comparison_contract_v0_1.yaml
+    disposition: REUSE
+  product_skeleton:
+    path: coordination/graphic_design_lab/directions/greeting_cards/product_skeleton_v0_1.yaml
+    disposition: REUSE
+  generic_intake_implementation:
+    path: app/graphic_design_lab/intake.py
+    disposition: UNCHANGED
+
+input:
+  normalized_batch_schema: gdl_greeting_card_normalized_batch_v0_1
+  required_portrait_binding_states: [CONFIRMED, PROPOSED, UNRESOLVED]
+
+assessment_states:
+  - PASS_THROUGH
+  - DETERMINISTIC_TEMPLATE_NORMALIZATION
+  - CREATOR_TRANSFORMATION_REQUIRED
+  - HUMAN_REVIEW_REQUIRED
+
+routing_rules:
+  - PROPOSED_or_UNRESOLVED_portrait_binding_routes_to_HUMAN_REVIEW_REQUIRED
+  - ambiguous_portrait_binding_must_not_create_creator_task
+  - confirmed_suitable_portrait_may_PASS_THROUGH
+  - confirmed_geometry_only_work_may_use_DETERMINISTIC_TEMPLATE_NORMALIZATION
+  - confirmed_visual_repair_or_cutout_may_use_CREATOR_TRANSFORMATION_REQUIRED
+  - Creator_receives_smallest_unresolved_visual_unit_only
+  - full_card_composition_is_forbidden_in_GC_E2E_03
+
+project_deterministic_operations:
+  - normalize_orientation
+  - crop_to_canonical_frame
+  - scale_without_content_synthesis
+  - apply_template_mask
+  - resolution_check
+
+creator_operations:
+  - recover_detail
+  - normalize_contrast
+  - normalize_natural_skin_color
+  - remove_background
+  - cleanup
+  - tonal_repair
+  - sharpness_or_quality_recovery
+  - canvas_extension
+
+directed_appearance_edits:
+  allowed_only_with_explicit_request: true
+  examples:
+    - skin_smoothing
+    - face_reshaping
+    - age_change
+    - body_reshaping
+    - beautification
+
+hard_invariants:
+  - likeness_preservation_is_mandatory
+  - realistic_appearance_preservation_is_mandatory
+  - recipient_identity_change_is_forbidden
+  - document_geometry_is_outside_Creator_authority
+  - greeting_text_is_outside_Creator_authority
+  - canonical_page_mapping_is_outside_Creator_authority
+  - canonical_z_order_is_outside_Creator_authority
+  - production_export_rules_are_outside_Creator_authority
+  - numeric_confidence_scoring_is_forbidden
+  - raw_or_heavy_customer_assets_are_not_committed_to_git
+
+output:
+  package_schema_version: gdl_greeting_card_photo_assessment_package_v0_1
+  creator_execution_authorized: false
+  provider_execution_required: false
+  execution_step: GC-E2E-04
+
+authority:
+  activates_gdl_runtime: false
+  activates_provider_execution: false
+  activates_production_write: false
+  mutates_blueprint: false
+  mutates_parent_prepress_roadmap: false

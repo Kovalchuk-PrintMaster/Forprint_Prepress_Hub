@@ -25,5 +25,7 @@ documents:
 - normalized_batch_contract_v0_1.yaml
 - intake_package_contract_v0_2.yaml
 - intake_prompt_profile_v0_2.yaml
+- per_photo_assessment_contract_v0_1.yaml
+- creator_portrait_task_contract_v0_1.yaml
 canonical_structural_model: product_skeleton_v0_1.yaml
 structural_design_freeze: structural_design_freeze_v0_1.yaml

@@ -166,21 +166,20 @@ def test_v002_loader_is_current_and_v001_is_preserved():
     )
 
 
-def test_gc_e2e_02_closed_and_cursor_advanced_to_03():
+def test_gc_e2e_02_remains_closed_after_later_cursor_advances():
     cursor = load_yaml(CURSOR)
     task = cursor["active_tasks"][0]
-    plan = load_yaml(PLAN)
-    steps = {item["id"]: item for item in plan["steps"]}
 
-    assert task["completed_steps"] == [
+    assert task["completed_steps"][:3] == [
         "GC-E2E-00",
         "GC-E2E-01",
         "GC-E2E-02",
     ]
-    assert task["current_step"] == "GC-E2E-03"
-    assert steps["GC-E2E-02"]["state"] == "COMPLETED_LOCAL"
-    assert steps["GC-E2E-03"]["state"] == "ACTIVE"
+    assert task["current_step"] not in {"GC-E2E-00", "GC-E2E-01", "GC-E2E-02"}
 
+    plan = load_yaml(PLAN)
+    steps = {item["id"]: item for item in plan["steps"]}
+    assert steps["GC-E2E-02"]["state"] == "COMPLETED_LOCAL"
 
 def test_gc_e2e_08_job_runner_gate_remains_untouched():
     plan = load_yaml(PLAN)

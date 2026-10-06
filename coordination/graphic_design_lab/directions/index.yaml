@@ -14,5 +14,5 @@ directions:
   status: ACTIVE_END_TO_END_EXECUTION_PILOT
   path: directions/greeting_cards
   current_execution_plan: greeting_cards/end_to_end_execution_plan_v0_1.yaml
-  current_step: GC-E2E-03
-  next_action: define_per_photo_assessment_and_creator_package
+  current_step: GC-E2E-04
+  next_action: execute_bounded_creator_tasks
