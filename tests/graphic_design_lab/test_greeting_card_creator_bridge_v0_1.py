@@ -127,26 +127,32 @@ def test_provider_runtime_and_full_card_authority_remain_disabled():
         assert f"bridge.authority.{field}:must_be_false" in errors(bad)
 
 
-def test_gc_e2e_04_remains_active_after_04a_and_real_result_is_next_checkpoint():
+def test_gc_e2e_04_closes_after_real_result_and_review_loop_becomes_active():
     cursor = load(CURSOR)
     task = cursor["active_tasks"][0]
-    assert task["current_step"] == "GC-E2E-04"
+    assert task["current_step"] == "GC-E2E-05"
     assert task["completed_steps"] == [
         "GC-E2E-00",
         "GC-E2E-01",
         "GC-E2E-02",
         "GC-E2E-03",
+        "GC-E2E-04",
     ]
-    assert task["completed_subcheckpoints"] == ["GC-E2E-04A"]
-    assert task["current_checkpoint"]["id"] == "REAL_CREATOR_RESULT_REQUIRED"
+    assert task["completed_subcheckpoints"] == ["GC-E2E-04A", "GC-E2E-04B"]
+    assert task["current_checkpoint"]["id"] == "CREATOR_REVIEW_AND_CORRECTION_LOOP"
     assert task["current_checkpoint"]["state"] == "ACTIVE"
 
     plan = load(PLAN)
     steps = {item["id"]: item for item in plan["steps"]}
-    assert steps["GC-E2E-04"]["state"] == "ACTIVE"
+    assert steps["GC-E2E-04"]["state"] == "COMPLETED_LOCAL"
+    assert steps["GC-E2E-05"]["state"] == "ACTIVE"
     checkpoints = {
         item["id"]: item
         for item in steps["GC-E2E-04"]["execution_checkpoints"]
     }
     assert checkpoints["GC-E2E-04A"]["state"] == "COMPLETED_LOCAL"
-    assert checkpoints["GC-E2E-04B"]["state"] == "ACTIVE"
+    assert checkpoints["GC-E2E-04B"]["state"] == "COMPLETED_LOCAL"
+    assert checkpoints["GC-E2E-04B"]["creator_execution_observed"] is True
+    assert checkpoints["GC-E2E-04B"]["provider_execution_performed"] is False
+    assert checkpoints["GC-E2E-04B"]["private_creator_artifact_in_git"] is False
+    assert checkpoints["GC-E2E-04B"]["live_result_package_in_git"] is False

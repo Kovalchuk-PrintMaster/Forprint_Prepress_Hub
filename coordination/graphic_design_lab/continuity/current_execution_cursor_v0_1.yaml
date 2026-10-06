@@ -58,21 +58,23 @@ active_tasks:
       - GC-E2E-01
       - GC-E2E-02
       - GC-E2E-03
+      - GC-E2E-04
 
-    current_step: GC-E2E-04
+    current_step: GC-E2E-05
 
     completed_subcheckpoints:
       - GC-E2E-04A
+      - GC-E2E-04B
 
     current_checkpoint:
-      id: REAL_CREATOR_RESULT_REQUIRED
+      id: CREATOR_REVIEW_AND_CORRECTION_LOOP
       state: ACTIVE
 
     next_action: >
-      Dispatch exactly one confirmed bounded portrait task through the prepared
-      HUMAN_COPY_PASTE_BRIDGE, attach the actual external Creator result, and
-      validate task, prompt, source-asset and returned-artifact traceability
-      through the existing Creator Result Package boundary before closing GC-E2E-04.
+      Review the accepted Creator portrait result against the bounded request.
+      Preserve revision history, record the internal review outcome, and create
+      a correction package only for a failed or explicitly blocked visual asset
+      before advancing to the accepted Constructor Bundle.
 
     completion_criterion: >
       Prove the full greeting-card chain from primary customer materials

@@ -150,7 +150,7 @@ steps:
 
     title: Creator execution
 
-    state: ACTIVE
+    state: COMPLETED_LOCAL
 
     objective: >
       Execute bounded visual tasks without making Creator responsible for
@@ -168,14 +168,19 @@ steps:
         evidence: SANITIZED_REHEARSAL_ONLY
       - id: GC-E2E-04B
         title: Real bounded Creator result
-        state: ACTIVE
+        state: COMPLETED_LOCAL
         completion_requires_actual_creator_result: true
+        evidence: EXTERNAL_PRIVATE_CREATOR_RESULT_VALIDATED
+        creator_execution_observed: true
+        provider_execution_performed: false
+        private_creator_artifact_in_git: false
+        live_result_package_in_git: false
 
   - id: GC-E2E-05
 
     title: Intake review and Creator correction loop
 
-    state: PLANNED
+    state: ACTIVE
 
     objective: >
       Review Creator outputs against requested transformations. Failed assets
