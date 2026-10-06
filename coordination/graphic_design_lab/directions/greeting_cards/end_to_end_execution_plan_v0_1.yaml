@@ -160,6 +160,17 @@ steps:
       - creator_result_package_received
       - returned_assets_trace_to_requests
 
+    execution_checkpoints:
+      - id: GC-E2E-04A
+        title: Creator dispatch and readback bridge
+        state: COMPLETED_LOCAL
+        closes_parent_step: false
+        evidence: SANITIZED_REHEARSAL_ONLY
+      - id: GC-E2E-04B
+        title: Real bounded Creator result
+        state: ACTIVE
+        completion_requires_actual_creator_result: true
+
   - id: GC-E2E-05
 
     title: Intake review and Creator correction loop

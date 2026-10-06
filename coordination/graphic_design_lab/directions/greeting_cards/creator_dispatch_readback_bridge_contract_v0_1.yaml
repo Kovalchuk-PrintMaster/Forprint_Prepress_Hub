@@ -1,0 +1,73 @@
+schema_version: gdl_greeting_card_creator_dispatch_readback_bridge_contract_v0_1
+document_type: GDL_GREETING_CARD_CREATOR_DISPATCH_READBACK_BRIDGE_CONTRACT
+status: ACTIVE_EMPIRICAL_CONTRACT
+scope: GRAPHIC_DESIGN_LAB_ONLY
+
+purpose: >
+  Bridge one bounded greeting-card portrait task through the current human
+  copy/paste execution boundary, preserve exact prompt and task evidence, and
+  validate an externally attached Creator Result Package without claiming
+  automated provider execution.
+
+reuses:
+  creator_task:
+    path: coordination/graphic_design_lab/directions/greeting_cards/creator_portrait_task_contract_v0_1.yaml
+    disposition: REUSE
+  creator_result_package:
+    path: contracts/graphic_design_lab/creator_result_package_v0_1.yaml
+    disposition: REUSE
+  prompt_run_record:
+    path: coordination/graphic_design_lab/prompt_evidence/schemas/prompt_run_record_v0_1.yaml
+    disposition: REUSE_AND_REFINE_FOR_DISPATCH
+  workflow_runner:
+    path: coordination/graphic_design_lab/workflow/runner_contract_v0_1.yaml
+    disposition: REUSE_HUMAN_COPY_PASTE_BRIDGE
+  state_machine:
+    path: coordination/graphic_design_lab/workflow/state_machine_v0_1.yaml
+    disposition: REUSE
+
+instance_schema_version: gdl_greeting_card_creator_bridge_package_v0_1
+execution_mode: HUMAN_COPY_PASTE_BRIDGE
+
+evidence_classes:
+  - SANITIZED_REHEARSAL_ONLY
+  - LIVE_OPERATOR_BRIDGE
+
+dispatch_states:
+  - PREPARED_FOR_HUMAN_DISPATCH
+  - DISPATCHED_AWAITING_RESULT
+  - REHEARSAL_RESULT_ATTACHED
+  - LIVE_RESULT_ATTACHED
+
+hard_rules:
+  - creator_task_identity_must_be_preserved
+  - exact_prompt_hash_must_be_recorded
+  - provider_execution_must_remain_false
+  - runtime_initialization_must_remain_false
+  - production_write_must_remain_false
+  - returned_artifact_must_trace_to_task_and_source_asset
+  - heavy_creator_artifact_must_remain_external_to_git
+  - sanitized_rehearsal_must_not_complete_GC_E2E_04
+  - live_completion_requires_actual_creator_result_attachment
+  - live_completion_requires_creator_execution_observed
+  - complete_greeting_card_composition_is_outside_bridge_authority
+
+prompt:
+  project_owned_loader: prompts/GDL-CREATOR-PORTRAIT-v001.md
+  sha256: b03e74b82af2f361b8ed20f78aa70cf623c21d1d68f8356fc3d56170a767ddf8
+  role: CREATOR
+  format: HYBRID
+
+gc_e2e_04a:
+  checkpoint_id: GC-E2E-04A
+  result: DISPATCH_READBACK_BRIDGE_VERIFIED
+  closes_gc_e2e_04: false
+  next_checkpoint: REAL_CREATOR_RESULT_REQUIRED
+
+authority:
+  selects_provider: false
+  authorizes_automated_provider_execution: false
+  initializes_runtime: false
+  enables_production_write: false
+  mutates_blueprint: false
+  mutates_parent_prepress_roadmap: false

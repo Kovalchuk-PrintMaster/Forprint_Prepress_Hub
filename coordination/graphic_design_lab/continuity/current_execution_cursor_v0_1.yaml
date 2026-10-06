@@ -61,15 +61,18 @@ active_tasks:
 
     current_step: GC-E2E-04
 
+    completed_subcheckpoints:
+      - GC-E2E-04A
+
     current_checkpoint:
-      id: CREATOR_EXECUTION
+      id: REAL_CREATOR_RESULT_REQUIRED
       state: ACTIVE
 
     next_action: >
-      Execute only bounded Creator tasks emitted by GC-E2E-03, preserve source
-      asset identity and task traceability, and receive results through the
-      existing Creator Result Package boundary without granting Creator
-      full greeting-card composition authority.
+      Dispatch exactly one confirmed bounded portrait task through the prepared
+      HUMAN_COPY_PASTE_BRIDGE, attach the actual external Creator result, and
+      validate task, prompt, source-asset and returned-artifact traceability
+      through the existing Creator Result Package boundary before closing GC-E2E-04.
 
     completion_criterion: >
       Prove the full greeting-card chain from primary customer materials
