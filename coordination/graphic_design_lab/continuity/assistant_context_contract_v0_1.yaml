@@ -44,3 +44,20 @@ context_pack_priority_paths:
 - coordination/graphic_design_lab/client_workflows/
 - coordination/graphic_design_lab/directions/greeting_cards/
 canonical_project_first_rule: project_first_working_rule_v0_1.yaml
+first_read_order:
+- coordination/graphic_design_lab/continuity/current_execution_cursor_v0_1.yaml
+- coordination/graphic_design_lab/directions/greeting_cards/end_to_end_execution_plan_v0_1.yaml
+- coordination/graphic_design_lab/continuity/project_first_working_rule_v0_1.yaml
+
+local_execution_resume_gate:
+  substantial_work_requires_active_task_binding: true
+  substantial_work_requires_execution_plan_step: true
+  if_no_active_task: STOP_AND_RECONCILE_LOCAL_EXECUTION_STATE
+  if_current_task_blocked: USE_ONLY_EXPLICITLY_REGISTERED_FALLBACK_TASK
+  do_not_infer_new_task_from_chat_history: true
+
+local_authority_boundary:
+  gdl_local_cursor_is_blueprint_work_front: false
+  blueprint_mutation_from_gdl: false
+  parent_prepress_roadmap_mutation_from_gdl: false
+  blueprint_access: READ_ONLY_STRICT

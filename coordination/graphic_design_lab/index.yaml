@@ -27,3 +27,11 @@ canonical_internal_review_loop: workflow/internal_review_loop_v0_1.yaml
 canonical_design_lock: workflow/design_lock_v0_1.yaml
 canonical_execution_philosophy: execution/execution_philosophy_v0_1.yaml
 canonical_client_workflow_architecture: client_workflows/client_workspace_architecture_v0_1.yaml
+local_execution:
+  cursor: continuity/current_execution_cursor_v0_1.yaml
+  current_primary_task: GDL-TASK-GREETING-CARD-E2E-001
+  current_direction: greeting_cards
+  current_step: GC-E2E-01
+  current_execution_plan: directions/greeting_cards/end_to_end_execution_plan_v0_1.yaml
+  blueprint_work_front_binding: false
+  blueprint_access: READ_ONLY_STRICT

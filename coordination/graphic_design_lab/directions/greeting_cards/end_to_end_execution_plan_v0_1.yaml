@@ -1,0 +1,361 @@
+schema_version: gdl_greeting_card_end_to_end_execution_plan_v0_1
+document_type: GDL_DIRECTION_EXECUTION_PLAN
+
+direction_id: greeting_cards
+
+status: ACTIVE_EMPIRICAL_EXECUTION_PLAN
+
+scope: GRAPHIC_DESIGN_LAB_ONLY
+
+relationship_to_existing_plan:
+  existing_plan: first_batch_test_plan_v0_1.yaml
+  disposition: ADAPT
+  supersedes_existing_plan: false
+  role: >
+    Refine the earlier high-level first-batch sequence into the concrete
+    current greeting-card execution chain while preserving the earlier
+    plan as provenance and reusable planning evidence.
+
+target_outcome: >
+  Starting from primary customer materials, complete a repeatable
+  human-assisted Intake -> Creator -> review -> accepted constructor bundle
+  -> constructor -> preview/QC -> final-output chain that produces editable
+  artwork, print PDF and machine-readable execution evidence.
+
+authority_boundary:
+  blueprint_is_read_only: true
+  blueprint_work_front_is_not_local_execution_authority: true
+  parent_prepress_runtime_activation: false
+  parent_prepress_roadmap_mutation: false
+  production_write_activation: false
+  this_plan_is_not_blueprint_roadmap: true
+  this_plan_is_not_prepress_module_roadmap: true
+
+execution_principles:
+  - RECONCILE_CURRENT_STATE_BEFORE_MATERIAL_STEP
+  - REUSE_EXTEND_ADAPT_BEFORE_NEW
+  - PROJECT_OWNED_KNOWLEDGE_NOT_CHAT_ONLY
+  - INTAKE_NORMALIZES_BEFORE_CONSTRUCTOR
+  - CREATOR_RECEIVES_SMALLEST_UNRESOLVED_VISUAL_UNIT
+  - CREATOR_OUTPUT_REQUIRES_INTERNAL_REVIEW
+  - CONSTRUCTOR_RECEIVES_ACCEPTED_PREPARED_BUNDLE
+  - DETERMINISTIC_COMPOSITION_AFTER_DESIGN_FREEZE
+  - PREVIEW_AND_FINAL_DERIVE_FROM_SAME_EDITABLE_SOURCE
+  - EMPIRICAL_RESULTS_FEED_PROMPT_EVIDENCE
+
+input_model:
+
+  primary_customer_materials:
+    role: INTAKE_INPUT
+    direct_constructor_input: false
+
+  intake_package:
+    canonical_project_instruction_required: true
+    source_archive_or_material_package_allowed: true
+
+  accepted_constructor_bundle:
+    role: CONSTRUCTOR_INPUT
+
+    description: >
+      Reviewed normalized machine-readable package containing exact bindings,
+      structured text and accepted visual assets. The constructor must not
+      repeat Intake interpretation or guess customer intent.
+
+steps:
+
+  - id: GC-E2E-00
+
+    title: Execution governance and continuity reconciliation
+
+    state: COMPLETED_LOCAL
+
+    objective: >
+      Establish the GDL-local execution cursor, bind the end-to-end greeting
+      card chain to a durable execution plan and keep Blueprint and parent
+      Prepress authority boundaries explicit.
+
+    exit_criteria:
+      - current_execution_cursor_exists
+      - end_to_end_plan_exists
+      - fresh_assistant_reads_cursor_first
+      - no_blueprint_mutation
+      - no_parent_prepress_roadmap_mutation
+
+  - id: GC-E2E-01
+
+    title: Intake package and canonical Intake prompt
+
+    state: ACTIVE
+
+    objective: >
+      Reconcile and define the package a human hands to the Intake assistant
+      and the project-owned machine instruction defining exactly what Intake
+      must return.
+
+    reuse_first_refs:
+      - coordination/graphic_design_lab/directions/greeting_cards/
+      - coordination/graphic_design_lab/client_workflows/
+      - coordination/graphic_design_lab/execution/
+      - coordination/graphic_design_lab/prompt_evidence/
+
+    exit_criteria:
+      - intake_input_package_contract_is_explicit
+      - intake_output_package_contract_is_explicit
+      - intake_prompt_is_project_owned_or_project_referenced
+      - prompt_run_can_be_recorded_in_prompt_evidence
+
+  - id: GC-E2E-02
+
+    title: Intake parsing and person-text-asset matching
+
+    state: PLANNED
+
+    objective: >
+      Normalize customer materials and resolve person, greeting, portrait,
+      branding and signature relationships while preserving ambiguity
+      explicitly instead of guessing.
+
+    exit_criteria:
+      - structured_text_outputs
+      - asset_inventory
+      - person_text_asset_bindings
+      - unresolved_items_are_explicit
+
+  - id: GC-E2E-03
+
+    title: Per-photo assessment and Creator package
+
+    state: PLANNED
+
+    objective: >
+      Assess each image and create bounded Creator instructions only where
+      visual transformation is actually required.
+
+    assessment_examples:
+      - background_removal
+      - cleanup
+      - tonal_repair
+      - sharpness_or_quality_recovery
+      - crop_or_extension
+      - likeness_preservation
+      - output_resolution
+
+    exit_criteria:
+      - per_asset_assessment_exists
+      - creator_scope_is_bounded
+      - creator_machine_instruction_is_self_sufficient
+      - creator_asset_bundle_is_self_sufficient
+
+  - id: GC-E2E-04
+
+    title: Creator execution
+
+    state: PLANNED
+
+    objective: >
+      Execute bounded visual tasks without making Creator responsible for
+      complete greeting-card document composition.
+
+    exit_criteria:
+      - creator_result_package_received
+      - returned_assets_trace_to_requests
+
+  - id: GC-E2E-05
+
+    title: Intake review and Creator correction loop
+
+    state: PLANNED
+
+    objective: >
+      Review Creator outputs against requested transformations. Failed assets
+      create a bounded correction package and return through Creator until
+      accepted or explicitly blocked.
+
+    exit_criteria:
+      - every_required_creator_asset_passed_or_blocked
+      - revision_history_preserved
+      - internal_review_outcome_recorded
+
+  - id: GC-E2E-06
+
+    title: Accepted Constructor Bundle
+
+    state: PLANNED
+
+    objective: >
+      Build the complete normalized package that the constructor can consume
+      without re-performing Intake or guessing semantic relationships.
+
+    bundle_must_include:
+      - structured_greeting_data
+      - exact_person_text_asset_bindings
+      - accepted_visual_assets
+      - branding_selection
+      - signature_selection
+      - template_or_semantic_family_hints_when_resolved
+      - provenance_manifest
+
+    exit_criteria:
+      - accepted_constructor_bundle_validates
+      - constructor_required_fields_have_no_unresolved_ambiguity
+      - intake_review_state_is_PASS
+
+  - id: GC-E2E-07
+
+    title: SMB/local one-click launcher
+
+    state: PLANNED
+
+    objective: >
+      Provide a simple operator launcher located with or near the accepted
+      bundle. It detects its own location and invokes the stable server-side
+      project entrypoint with the exact current bundle path.
+
+    exit_criteria:
+      - normal_operator_flow_needs_no_manual_linux_path_entry
+      - launcher_passes_exact_bundle_path
+      - server_entrypoint_is_project_owned
+
+  - id: GC-E2E-08
+
+    title: Constructor bundle ingest and validation
+
+    state: PLANNED_WITH_MANDATORY_REUSE_RECONCILIATION
+
+    objective: >
+      Validate and ingest ACCEPTED_CONSTRUCTOR_BUNDLE as constructor input.
+      Do not re-introduce raw-customer-material interpretation at this layer.
+
+    mandatory_job_runner_reuse_checkpoint:
+
+      status:
+        MUST_BE_RESOLVED_BEFORE_GC_E2E_08_IMPLEMENTATION
+
+      reason: >
+        An experimental job_runner.py was created and validated before the
+        constructor input boundary was fully clarified. It may already contain
+        useful filesystem, identity, idempotency and reporting mechanisms.
+
+      inspect_first:
+        - scripts/graphic_design_lab/greeting_cards/job_runner.py
+        - tests/graphic_design_lab/test_greeting_card_job_runner_v0_1.py
+
+      required_disposition:
+        exactly_one_of:
+          - REUSE
+          - EXTEND
+          - ADAPT
+          - REPLACE
+          - NEW
+
+      current_disposition:
+        UNRESOLVED_REQUIRES_GC_E2E_08_RECONCILIATION
+
+      candidate_reusable_parts:
+        - file_or_bundle_inventory
+        - sha256_identity
+        - source_non_mutation_check
+        - idempotent_job_identity
+        - machine_workspace_pattern
+        - machine_report_pattern
+
+      behavior_requiring_reconciliation:
+        - raw_customer_material_as_direct_constructor_contract
+        - heuristic_role_inference_already_resolved_by_Intake
+
+      do_not_discard_silently: true
+
+      do_not_create_replacement_before_inspection: true
+
+      do_not_commit_as_canonical_raw_intake_runner_without_reconciliation: true
+
+    exit_criteria:
+      - accepted_bundle_schema_validated
+      - job_runner_candidate_reconciled
+      - reuse_disposition_recorded
+      - constructor_workspace_created_without_source_mutation
+
+  - id: GC-E2E-09
+
+    title: Deterministic composition and Illustrator document worker
+
+    state: PLANNED
+
+    objective: >
+      Resolve canonical greeting-card skeleton and semantic family, bind
+      normalized content and assets, and build/update the editable Illustrator
+      document while preserving required fonts, layers and object semantics.
+
+    exit_criteria:
+      - editable_document_generated_or_updated
+      - semantic_bindings_applied
+      - normal_case_requires_no_manual_content_rebinding
+
+  - id: GC-E2E-10
+
+    title: Preview, QC and correction
+
+    state: PLANNED
+
+    objective: >
+      Generate preview from the same editable source, run structural/content
+      validation and support bounded correction without full redesign.
+
+    exit_criteria:
+      - preview_generated
+      - content_mapping_checks_pass
+      - visual_review_pass_or_bounded_revision_generated
+
+  - id: GC-E2E-11
+
+    title: Editable and print-PDF export
+
+    state: PLANNED
+
+    objective: >
+      Produce editable artifact, preview, print-oriented PDF and machine report
+      into a clear result folder without claiming broader Prepress production
+      runtime activation.
+
+    output_roles:
+      - editable
+      - preview
+      - print_pdf
+      - machine_report
+
+    exit_criteria:
+      - expected_outputs_exist
+      - output_provenance_recorded
+      - pilot_print_preflight_passes
+
+  - id: GC-E2E-12
+
+    title: Empirical evidence, prompt ranking and chain closeout
+
+    state: PLANNED
+
+    objective: >
+      Record Intake/Creator prompt runs, review outcomes, revisions, failures
+      and reusable findings through the existing prompt-evidence lifecycle.
+      Promote or degrade prompt variants only from accumulated case evidence.
+
+    reuse_first_refs:
+      - coordination/graphic_design_lab/prompt_evidence/
+
+    exit_criteria:
+      - material_prompt_runs_recorded
+      - observed_failures_recorded
+      - manual_interventions_recorded
+      - reusable_findings_integrated
+      - next_case_can_resume_without_chat_reconstruction
+
+completion_definition:
+
+  operator_target: >
+    The operator can hand primary materials to Intake, pass Creator packages
+    without explanatory chat, accept the reviewed constructor bundle, launch
+    construction with one local action and receive a clear result folder with
+    editable artwork, preview, print PDF and machine report.
+
+  autonomous_runtime_claimed: false
+  production_runtime_claimed: false

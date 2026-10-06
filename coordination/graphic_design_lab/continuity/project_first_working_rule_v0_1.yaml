@@ -51,3 +51,30 @@ project_internal_tooling_policy:
     - project_cli
     - project_script
     chat_supplied_patch_scripts_are_disposable_after_project_integration: true
+local_execution_cursor_policy:
+  scope: GRAPHIC_DESIGN_LAB_ONLY
+
+  cursor:
+    continuity/current_execution_cursor_v0_1.yaml
+
+  max_active_tasks: 3
+
+  work_admission:
+    active_task_binding_required: true
+    execution_plan_step_required: true
+    started_substantial_work_must_be_registered: true
+    chat_only_active_task_forbidden: true
+
+  blocked_work:
+    keep_visible: true
+    fallback_requires_explicit_registration: true
+
+  roadmap_reconciliation:
+    live_state_check_before_material_step: true
+    reuse_extend_adapt_before_new: true
+    material_execution_path_change_requires_plan_update_first: true
+
+  authority_boundary:
+    blueprint_write_forbidden: true
+    blueprint_work_front_is_not_gdl_local_cursor: true
+    parent_prepress_roadmap_write_from_gdl_forbidden: true

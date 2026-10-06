@@ -11,6 +11,8 @@ directions:
   current_evidence_backed_subprofile: dated_planner_v0_1
   source_evidence: NOTEBOOK-QUALITY-EVIDENCE-001
 - direction_id: greeting_cards
-  status: PILOT_SCAFFOLD_AWAITING_TEMPLATE_INSPECTION
+  status: ACTIVE_END_TO_END_EXECUTION_PILOT
   path: directions/greeting_cards
-  next_action: inspect_real_template_and_first_customer_batch
+  current_execution_plan: greeting_cards/end_to_end_execution_plan_v0_1.yaml
+  current_step: GC-E2E-01
+  next_action: materialize_intake_package_and_canonical_intake_prompt

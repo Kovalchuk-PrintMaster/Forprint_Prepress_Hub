@@ -1,0 +1,107 @@
+schema_version: gdl_local_execution_cursor_v0_1
+document_type: GDL_LOCAL_EXECUTION_CURSOR
+status: ACTIVE
+
+scope: GRAPHIC_DESIGN_LAB_ONLY
+
+purpose: >
+  Keep the laboratory small-step execution state explicit so a fresh assistant
+  can resume active practical work without reconstructing it from chat history
+  and without confusing GDL-local work with Blueprint execution contours.
+
+authority:
+  strategic_architecture_owner: FORPRINT_SYSTEM_BLUEPRINT
+  parent_module: forprint_prepress_hub
+  local_execution_surface: graphic_design_lab
+  blueprint_access: READ_ONLY_STRICT
+  blueprint_mutation: false
+  parent_prepress_roadmap_mutation: false
+  blueprint_work_front_is_local_cursor: false
+
+operating_rules:
+  active_task_limit: 3
+
+  substantial_work_requires_active_task_binding: true
+  substantial_work_requires_execution_plan_step: true
+
+  started_substantial_work_must_be_registered: true
+
+  blocked_task_must_remain_visible: true
+  blocked_task_may_not_silently_disappear: true
+
+  fallback_task_allowed_only_when_registered: true
+
+  reconcile_live_state_before_material_step: true
+
+  reuse_extend_adapt_before_new: true
+
+  material_execution_path_change_requires_plan_update_first: true
+
+  chat_only_active_task_state_forbidden: true
+
+active_tasks:
+  - task_id: GDL-TASK-GREETING-CARD-E2E-001
+
+    title: Recurring Greeting Card — End-to-End Execution Chain
+
+    priority: P0
+    state: ACTIVE
+
+    direction_id: greeting_cards
+
+    execution_plan_ref: >
+      coordination/graphic_design_lab/directions/greeting_cards/
+      end_to_end_execution_plan_v0_1.yaml
+
+    completed_steps:
+      - GC-E2E-00
+
+    current_step: GC-E2E-01
+
+    current_checkpoint:
+      id: INTAKE_PACKAGE_AND_CANONICAL_INTAKE_PROMPT
+      state: ACTIVE
+
+    next_action: >
+      Reconcile existing Product Playbook, Guided Intake, Creator Handoff,
+      client workflow and prompt-evidence surfaces and materialize the
+      greeting-card Intake input/output package plus the first project-owned
+      Intake prompt without creating duplicate mechanisms.
+
+    completion_criterion: >
+      Prove the full greeting-card chain from primary customer materials
+      through Intake, bounded Creator execution and review, accepted
+      constructor bundle, local launcher, deterministic construction,
+      preview/QC and final editable plus print-PDF output with
+      machine-readable evidence.
+
+    blockers: []
+    fallback_task_ids: []
+
+inactive_or_blocked_tasks: []
+
+last_reconciliation:
+  disposition: ADAPT
+
+  reason: >
+    Human owner clarified that primary customer materials are first processed
+    by an Intake/Creator/review chain. The server-side constructor must consume
+    an accepted prepared constructor bundle rather than unreviewed raw
+    customer material.
+
+  preserved_experimental_candidate:
+    path: scripts/graphic_design_lab/greeting_cards/job_runner.py
+    test_path: >
+      tests/graphic_design_lab/
+      test_greeting_card_job_runner_v0_1.py
+
+    current_role:
+      EXPERIMENTAL_UNCOMMITTED_JOB_RUNNER_CANDIDATE
+
+    required_future_reconciliation_step:
+      GC-E2E-08
+
+    disposition:
+      UNRESOLVED_REQUIRES_GC_E2E_08_RECONCILIATION
+
+    do_not_discard_silently: true
