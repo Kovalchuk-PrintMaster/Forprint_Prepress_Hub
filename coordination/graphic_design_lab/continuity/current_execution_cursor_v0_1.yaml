@@ -55,18 +55,19 @@ active_tasks:
 
     completed_steps:
       - GC-E2E-00
+      - GC-E2E-01
 
-    current_step: GC-E2E-01
+    current_step: GC-E2E-02
 
     current_checkpoint:
-      id: INTAKE_PACKAGE_AND_CANONICAL_INTAKE_PROMPT
+      id: INTAKE_PARSING_AND_PERSON_TEXT_ASSET_MATCHING
       state: ACTIVE
 
     next_action: >
-      Reconcile existing Product Playbook, Guided Intake, Creator Handoff,
-      client workflow and prompt-evidence surfaces and materialize the
-      greeting-card Intake input/output package plus the first project-owned
-      Intake prompt without creating duplicate mechanisms.
+      Reconcile the existing deterministic Guided Intake normalizer and sanitized
+      recurring greeting-card fixture against the new Intake package/loader, then
+      implement the smallest project-owned parsing and person-text-asset matching
+      slice without moving Creator image transformation into Intake.
 
     completion_criterion: >
       Prove the full greeting-card chain from primary customer materials

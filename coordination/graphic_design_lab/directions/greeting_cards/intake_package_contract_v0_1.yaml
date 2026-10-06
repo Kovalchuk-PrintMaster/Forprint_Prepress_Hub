@@ -1,0 +1,110 @@
+schema_version: gdl_greeting_card_intake_package_contract_v0_1
+document_type: GDL_DIRECTION_INTAKE_PACKAGE_CONTRACT
+direction_id: greeting_cards
+status: ACTIVE_EMPIRICAL_CONTRACT
+scope: GRAPHIC_DESIGN_LAB_ONLY
+
+purpose: >
+  Define the operator-to-Intake and Intake-to-project package boundary for the
+  recurring greeting-card workflow without duplicating the existing Product
+  Playbook, Guided Intake, Asset Reference or Creator Handoff contracts.
+
+reuse:
+  product_playbook:
+    path: config/graphic_design_lab/product_playbooks/recurring_greeting_card_v0_1.yaml
+    schema: forprint_product_playbook_v0_1
+    disposition: REUSE
+  guided_intake_contract:
+    path: contracts/graphic_design_lab/guided_intake_v0_1.yaml
+    schema: forprint_guided_intake_v0_1
+    disposition: REUSE
+  asset_reference_contract:
+    path: contracts/graphic_design_lab/asset_reference_v0_1.yaml
+    disposition: REUSE
+  creator_handoff_contract:
+    path: contracts/graphic_design_lab/creator_handoff_v0_1.yaml
+    disposition: REUSE_LATER_GC_E2E_03
+  existing_normalizer:
+    path: app/graphic_design_lab/intake.py
+    disposition: REUSE_EXTEND_ONLY_IF_REQUIRED
+
+operator_dispatch_package:
+  required:
+    - canonical_intake_loader
+    - primary_material_bundle
+  optional:
+    - operator_context_note
+    - prior_case_reference
+  primary_material_bundle:
+    preferred_transport: ZIP_OR_EQUIVALENT_ATTACHMENTS
+    may_contain:
+      - customer_dialogue_export
+      - greeting_text_source
+      - recipient_portraits
+      - logos_or_branding
+      - signature_assets
+      - prior_greeting_card_reference
+      - other_customer_supplied_files
+    operator_manual_restructuring_required: false
+    filenames_are_hints_not_authority: true
+  rules:
+    - do_not_require_operator_to_write_yaml_before_Intake
+    - do_not_require_operator_to_rename_customer_files_for_the_system
+    - preserve_original_materials
+    - do_not_treat_filename_similarity_as_confirmed_identity
+
+intake_return_package:
+  transport: ZIP_OR_EQUIVALENT_MULTI_FILE_RETURN
+  required_artifacts:
+    - path: intake_result.yaml
+      contract: forprint_guided_intake_v0_1
+      role: canonical_normalized_intake_candidate
+    - path: source_inventory.yaml
+      role: asset_and_reference_identity_manifest
+      contract_ref: contracts/graphic_design_lab/asset_reference_v0_1.yaml
+    - path: intake_summary.md
+      role: concise_human_review_surface
+  optional_artifacts:
+    - path: unresolved_questions.md
+      when: material_human_confirmation_is_required
+    - path: creator_candidate_assessments.yaml
+      when: visual_assets_require_later_GC_E2E_03_assessment
+      authority: DRAFT_ONLY_NOT_CREATOR_HANDOFF
+  packaging_rules:
+    - customer_assets_remain_external_to_git
+    - heavy_assets_must_not_be_added_to_repository
+    - real_customer_PII_must_not_be_added_to_repository
+    - package_must_preserve_source_refs_and_provenance
+    - ambiguous_bindings_must_remain_PROPOSED_or_UNRESOLVED
+
+intake_result_requirements:
+  product_playbook_id: recurring_greeting_card_v0_1
+  product_type: greeting_card
+  mapping_states:
+    - CONFIRMED
+    - PROPOSED
+    - UNRESOLVED
+  numeric_confidence_scoring: FORBIDDEN
+  silent_ambiguity_resolution: FORBIDDEN
+  creator_execution_authorized: false
+  provider_execution_required: false
+
+quality_gate:
+  pass_requires:
+    - required_known_customer_facts_are_preserved
+    - person_text_asset_relationships_are_explicit_or_unresolved
+    - no_ambiguous_mapping_is_silently_confirmed
+    - source_inventory_is_complete_for_supplied_relevant_materials
+    - guided_intake_candidate_is_machine_readable
+  fail_if:
+    - final_design_is_generated_by_Intake
+    - customer_facts_are_invented
+    - filenames_are_used_as_sole_confirmation_basis
+    - Creator_provider_execution_is_claimed
+
+authority:
+  activates_gdl_runtime: false
+  activates_provider_execution: false
+  activates_production_write: false
+  mutates_blueprint: false
+  mutates_parent_prepress_roadmap: false

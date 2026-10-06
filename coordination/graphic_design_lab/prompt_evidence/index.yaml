@@ -14,3 +14,8 @@ direction_prompt_profiles:
   creator_request_profile: ../directions/notebooks/creator_request_profile_v0_1.yaml
   loader: ../directions/notebooks/prompts/GDL-INTAKE-NOTEBOOKS-v001.md
   evidence: ../directions/notebooks/empirical_evidence/NOTEBOOK-QUALITY-EVIDENCE-001.yaml
+- direction_id: greeting_cards
+  profile: ../directions/greeting_cards/intake_prompt_profile_v0_1.yaml
+  loader: ../directions/greeting_cards/prompts/GDL-INTAKE-GREETING-CARDS-v001.md
+  lifecycle_state: ACTIVE_EXPERIMENT
+  package_contract: ../directions/greeting_cards/intake_package_contract_v0_1.yaml

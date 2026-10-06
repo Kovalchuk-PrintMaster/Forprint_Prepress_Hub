@@ -85,7 +85,7 @@ steps:
 
     title: Intake package and canonical Intake prompt
 
-    state: ACTIVE
+    state: COMPLETED_LOCAL
 
     objective: >
       Reconcile and define the package a human hands to the Intake assistant
@@ -108,7 +108,7 @@ steps:
 
     title: Intake parsing and person-text-asset matching
 
-    state: PLANNED
+    state: ACTIVE
 
     objective: >
       Normalize customer materials and resolve person, greeting, portrait,

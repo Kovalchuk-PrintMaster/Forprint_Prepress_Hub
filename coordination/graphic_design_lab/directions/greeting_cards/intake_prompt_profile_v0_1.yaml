@@ -1,0 +1,83 @@
+schema_version: gdl_greeting_card_intake_prompt_profile_v0_1
+direction_id: greeting_cards
+status: ACTIVE_EMPIRICAL_PROMPT_PROFILE
+role: GDL_INTAKE_ANALYST
+
+purpose: >
+  Normalize recurring greeting-card customer materials into a reviewable,
+  machine-readable Guided Intake package while preserving uncertainty and
+  preparing later bounded Creator work without performing final design.
+
+reuse_contracts:
+  - contracts/graphic_design_lab/product_playbook_v0_1.yaml
+  - contracts/graphic_design_lab/guided_intake_v0_1.yaml
+  - contracts/graphic_design_lab/asset_reference_v0_1.yaml
+  - contracts/graphic_design_lab/creator_handoff_v0_1.yaml
+  - config/graphic_design_lab/product_playbooks/recurring_greeting_card_v0_1.yaml
+
+input_contract: intake_package_contract_v0_1.yaml
+output_guided_intake_schema: forprint_guided_intake_v0_1
+
+intake_must_determine_or_preserve_unresolved:
+  - occasion
+  - greeting_text
+  - recipient_context
+  - tone_when_material
+  - relevant_asset_inventory
+  - asset_provenance
+  - asset_role_bindings
+  - recipient_portrait_candidates
+  - relevant_branding_or_logo_assets
+  - relevant_signature_assets_if_supplied
+  - prior_reference_assets_if_supplied
+  - material_customer_constraints
+
+matching_policy:
+  explicit_customer_or_operator_assignment: CONFIRMED_ALLOWED
+  previously_confirmed_binding: CONFIRMED_ALLOWED
+  filename_or_text_similarity_only: PROPOSED_MAXIMUM
+  multiple_plausible_candidates: UNRESOLVED_OR_PROPOSED
+  silent_identity_inference: FORBIDDEN
+  numeric_confidence_score: FORBIDDEN
+
+asset_quality_observation:
+  enabled: true
+  purpose: PREPARE_LATER_GC_E2E_03
+  intake_may_observe:
+    - obvious_background_cleanup_need
+    - obvious_quality_or_sharpness_issue
+    - crop_or_extension_need
+    - tonal_or_lighting_issue
+    - likely_portrait_suitability
+  intake_must_not:
+    - modify_images
+    - claim_creator_task_finalized
+    - execute_provider
+
+customer_question_policy:
+  use_all_reliable_known_information_first: true
+  ask_only_material_missing_questions: true
+  do_not_repeat_answered_questions: true
+  return_copy_ready_customer_message_when_needed: true
+
+return_package:
+  contract: intake_package_contract_v0_1.yaml
+  required:
+    - intake_result.yaml
+    - source_inventory.yaml
+    - intake_summary.md
+
+forbidden:
+  - generate_final_greeting_card_design
+  - silently_rewrite_confirmed_greeting_text
+  - invent_recipient_identity_or_customer_facts
+  - silently_resolve_ambiguous_person_photo_text_binding
+  - claim_customer_approval
+  - claim_production_readiness
+  - claim_provider_execution
+
+prompt_evidence:
+  material_run_must_be_recorded: true
+  role: INTAKE
+  prompt_type: GREETING_CARD_INTAKE
+  lifecycle_initial_state: ACTIVE_EXPERIMENT
