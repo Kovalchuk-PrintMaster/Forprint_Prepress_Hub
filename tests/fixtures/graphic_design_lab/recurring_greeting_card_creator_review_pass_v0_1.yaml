@@ -1,0 +1,130 @@
+schema_version: gdl_greeting_card_creator_review_fixture_v0_1
+case_id: sanitized_case_review_pass
+review_id: sanitized_portrait_review_pass_v001
+reviewer_source: HUMAN_OPERATOR_REVIEW
+review_note: Sanitized bounded portrait result accepted after internal review.
+
+creator_task:
+  task_id: sanitized_creator_task_review_001
+  job_id: sanitized_job_review_001
+  assessment_id: sanitized_assessment_review_001
+  source_asset:
+    asset_id: sanitized_source_portrait_001
+    source_ref: sanitized://assets/source_portrait.jpg
+  target_role: inside_image.portrait
+  requested_operations:
+    - recover_detail
+    - normalize_contrast
+    - normalize_natural_skin_color
+    - remove_background
+  preservation:
+    likeness: REQUIRED
+    realistic_appearance: REQUIRED
+    identity_change: FORBIDDEN
+  forbidden_changes:
+    - document_geometry
+    - canonical_page_mapping
+    - locked_back_page
+    - canonical_text_slots
+    - canonical_z_order
+    - production_export_rules
+    - greeting_text
+    - recipient_identity
+  output:
+    output_type: RESTORED_RASTER_ASSET
+    return_asset_must_trace_to_source: true
+    heavy_artifact_in_git: false
+  traceability:
+    job_id: sanitized_job_review_001
+    assessment_id: sanitized_assessment_review_001
+    source_asset_id: sanitized_source_portrait_001
+  creator_execution_authorized: false
+  provider_execution_required: false
+
+creator_result_package_raw:
+  schema_version: forprint_creator_result_package_v0_1
+  package_id: sanitized-review-package-001
+  result_id: sanitized-review-result-001
+  revision: 1
+  source:
+    creator_handoff:
+      handoff_id: sanitized-human-bridge-001
+      schema_version: forprint_creator_handoff_v0_1
+      revision: 1
+    creator_prompt:
+      prompt_id: sanitized-creator-prompt-001
+      prompt_version: v001
+      prompt_sha256: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    greeting_card_task_traceability:
+      task_id: sanitized_creator_task_review_001
+      job_id: sanitized_job_review_001
+      assessment_id: sanitized_assessment_review_001
+      source_asset_id: sanitized_source_portrait_001
+  expected_result:
+    target: BOUNDED_PORTRAIT_TRANSFORMATION
+    required_artifact_roles:
+      - restored_portrait
+    required_identity_fields:
+      - source_asset_id
+    expected_content_mode: BOUNDED_SOURCE_ASSET_TRANSFORMATION
+  observed_result:
+    result_state: COMPLETE
+    requirements_coverage: COMPLETE
+    source_content_used: CUSTOMER_AUTHORIZED
+    known_deviations: []
+    unresolved_items: []
+    missing_confirmations: []
+  artifacts:
+    - artifact_ref: sanitized-restored-portrait-r001
+      role: restored_portrait
+      external_ref:
+        storage_role: external_private_workspace
+        artifact_ref: sanitized://results/restored_portrait.png
+        sha256: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+      media_type: image/png
+      availability: AVAILABLE
+      suitability:
+        - INTERNAL_REVIEW
+      repository_contains_heavy_artifact: false
+  content_fidelity:
+    status: PASS
+    source_authority: creator_task
+    factual_check_required: true
+    checked_against_authorized_source: true
+    invented_facts_detected: false
+    required_content_present: true
+    known_deviations: []
+  readiness:
+    technical_validity: VALID
+    internal_review: REVIEWABLE
+    customer_forwarding: BLOCKED
+    design_approval: NOT_RECORDED
+    production_readiness: NOT_READY
+  outcomes:
+    operator_acceptance: ACCEPTED
+    customer_acceptance: NOT_RECORDED
+    customer_explicit_satisfaction: NOT_OBSERVED
+  privacy:
+    pii_allowed_in_git: false
+    pii_present_in_package: false
+    heavy_artifacts_in_git: false
+  authority:
+    provider_execution_required: false
+    provider_execution_performed: false
+    gdl_runtime_initialized: false
+    production_write_enabled: false
+    automatic_customer_messaging: false
+    automatic_design_approval: false
+  provenance:
+    algorithm: sha256_canonical_json_v0_1
+    sha256: ""
+
+portrait_checks:
+  requested_operations_satisfied: PASS
+  likeness_preserved: PASS
+  realistic_appearance_preserved: PASS
+  forbidden_changes_absent: PASS
+  artifact_cleanliness: PASS
+  constructor_asset_usable: PASS
+
+expected_outcome: PASS

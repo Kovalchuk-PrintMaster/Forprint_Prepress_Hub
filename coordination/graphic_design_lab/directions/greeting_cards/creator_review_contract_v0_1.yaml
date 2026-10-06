@@ -1,0 +1,87 @@
+schema_version: gdl_greeting_card_creator_review_contract_v0_1
+status: ACTIVE_EMPIRICAL_CONTRACT
+direction_id: greeting_cards
+purpose: >
+  Adapt the existing generic internal-review loop and global review gate to one
+  bounded greeting-card Creator portrait result without creating a parallel
+  review framework.
+
+generic_reuse:
+  internal_review_loop:
+    path: coordination/graphic_design_lab/workflow/internal_review_loop_v0_1.yaml
+    disposition: REUSE
+  global_review_gate:
+    path: coordination/graphic_design_lab/review/global_review_gate_v0_1.yaml
+    disposition: REUSE
+  creator_result_package:
+    path: contracts/graphic_design_lab/creator_result_package_v0_1.yaml
+    disposition: REUSE
+  revision_patch:
+    path: contracts/graphic_design_lab/revision_patch_v0_1.yaml
+    disposition: REUSE_FOR_FAIL_PATH_IN_GC_E2E_05B
+  asset_comparison:
+    path: coordination/graphic_design_lab/execution/asset_comparison_contract_v0_1.yaml
+    disposition: REUSE_FOR_LINEAGE_ONLY
+
+review_subject:
+  target_role: inside_image.portrait
+  required_result_role: restored_portrait
+  smallest_visual_unit_only: true
+
+required_portrait_checks:
+  - requested_operations_satisfied
+  - likeness_preserved
+  - realistic_appearance_preserved
+  - forbidden_changes_absent
+  - artifact_cleanliness
+  - constructor_asset_usable
+
+portrait_check_states: [PASS, FAIL, BLOCKED]
+review_outcomes: [PASS, FAIL, BLOCKED]
+
+outcome_rules:
+  PASS:
+    structural_gate: PASS
+    every_required_portrait_check: PASS
+    accepted_artifact_required: true
+    correction_required: false
+    accepted_for_constructor_bundle: true
+  FAIL:
+    correction_required: true
+    accepted_for_constructor_bundle: false
+    next_generic_transition: INTERNAL_REVIEW_to_CORRECTION_REQUIRED
+  BLOCKED:
+    correction_required: false
+    accepted_for_constructor_bundle: false
+    human_resolution_required: true
+
+revision_history:
+  required: true
+  minimum_entries: 1
+  record_fields:
+    - result_id
+    - revision
+    - provenance_sha256
+    - review_outcome
+
+privacy:
+  heavy_creator_artifact_in_git: false
+  live_creator_result_package_in_git: false
+  live_review_record_in_git: false
+  tracked_fixtures_must_be_sanitized: true
+
+authority:
+  provider_execution_performed: false
+  gdl_runtime_initialized: false
+  production_write_enabled: false
+  automatic_customer_messaging: false
+  automatic_design_approval: false
+
+rules:
+  - REVIEWABLE_is_not_review_PASS
+  - operator_acceptance_does_not_replace_machine_readable_review_record
+  - FAIL_must_not_expand_original_creator_scope
+  - correction_generation_is_deferred_to_GC_E2E_05B
+  - PASS_accepts_only_the_bounded_visual_asset_for_constructor_bundle
+  - review_does_not_authorize_customer_forwarding
+  - numeric_confidence_scoring_is_forbidden

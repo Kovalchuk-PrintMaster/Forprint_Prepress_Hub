@@ -192,6 +192,25 @@ steps:
       - revision_history_preserved
       - internal_review_outcome_recorded
 
+    execution_checkpoints:
+      - id: GC-E2E-05A
+        title: Real Creator result internal review
+        state: COMPLETED_LOCAL
+        closes_parent_step: false
+        evidence: EXTERNAL_PRIVATE_CREATOR_RESULT_REVIEWED
+        live_review_record_in_git: false
+        accepted_for_constructor_bundle: true
+        customer_forwarding_allowed: false
+      - id: GC-E2E-05B
+        title: Bounded correction-loop proof
+        state: ACTIVE
+        completion_requires:
+          - sanitized_fail_path
+          - machine_readable_bounded_correction_patch
+          - corrected_revision_re_review
+          - revision_history_preserved
+          - no_creator_scope_expansion
+
   - id: GC-E2E-06
 
     title: Accepted Constructor Bundle

@@ -65,16 +65,17 @@ active_tasks:
     completed_subcheckpoints:
       - GC-E2E-04A
       - GC-E2E-04B
+      - GC-E2E-05A
 
     current_checkpoint:
       id: CREATOR_REVIEW_AND_CORRECTION_LOOP
       state: ACTIVE
 
     next_action: >
-      Review the accepted Creator portrait result against the bounded request.
-      Preserve revision history, record the internal review outcome, and create
-      a correction package only for a failed or explicitly blocked visual asset
-      before advancing to the accepted Constructor Bundle.
+      Prove the FAIL path with a sanitized bounded portrait result: emit an
+      exact machine-readable correction patch, preserve revision lineage, and
+      re-review the corrected revision without expanding the original Creator
+      scope before closing GC-E2E-05.
 
     completion_criterion: >
       Prove the full greeting-card chain from primary customer materials

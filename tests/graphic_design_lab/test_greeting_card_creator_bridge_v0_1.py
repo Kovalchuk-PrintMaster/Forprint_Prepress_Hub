@@ -138,7 +138,8 @@ def test_gc_e2e_04_closes_after_real_result_and_review_loop_becomes_active():
         "GC-E2E-03",
         "GC-E2E-04",
     ]
-    assert task["completed_subcheckpoints"] == ["GC-E2E-04A", "GC-E2E-04B"]
+    assert "GC-E2E-04A" in task["completed_subcheckpoints"]
+    assert "GC-E2E-04B" in task["completed_subcheckpoints"]
     assert task["current_checkpoint"]["id"] == "CREATOR_REVIEW_AND_CORRECTION_LOOP"
     assert task["current_checkpoint"]["state"] == "ACTIVE"
 
