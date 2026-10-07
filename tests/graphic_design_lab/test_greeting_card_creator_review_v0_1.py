@@ -196,10 +196,11 @@ def test_greeting_card_index_registers_review_contract():
     assert "creator_review_contract_v0_1.yaml" in index["documents"]
 
 
-def test_gc_e2e_05a_is_complete_but_parent_05_remains_active():
+def test_gc_e2e_05a_remains_recorded_after_parent_closeout():
     plan = load_yaml(PLAN)
     steps = {item["id"]: item for item in plan["steps"]}
-    assert steps["GC-E2E-05"]["state"] == "ACTIVE"
+    assert steps["GC-E2E-05"]["state"] == "COMPLETED_LOCAL"
+    assert steps["GC-E2E-06"]["state"] == "ACTIVE"
 
     checkpoints = {
         item["id"]: item
@@ -207,12 +208,10 @@ def test_gc_e2e_05a_is_complete_but_parent_05_remains_active():
     }
     assert checkpoints["GC-E2E-05A"]["state"] == "COMPLETED_LOCAL"
     assert checkpoints["GC-E2E-05A"]["closes_parent_step"] is False
-    assert checkpoints["GC-E2E-05B"]["state"] == "ACTIVE"
+    assert checkpoints["GC-E2E-05B"]["state"] == "COMPLETED_LOCAL"
 
     cursor = load_yaml(CURSOR)
     task = cursor["active_tasks"][0]
-    assert task["current_step"] == "GC-E2E-05"
     assert "GC-E2E-05A" in task["completed_subcheckpoints"]
-    assert task["current_checkpoint"]["id"] == (
-        "CREATOR_REVIEW_AND_CORRECTION_LOOP"
-    )
+    assert "GC-E2E-05B" in task["completed_subcheckpoints"]
+    assert task["current_step"] == "GC-E2E-06"

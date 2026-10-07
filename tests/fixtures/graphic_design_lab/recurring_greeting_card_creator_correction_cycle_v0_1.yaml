@@ -1,0 +1,35 @@
+schema_version: gdl_greeting_card_creator_correction_cycle_fixture_v0_1
+case_id: sanitized_case_correction_cycle
+base_pass_fixture_ref: recurring_greeting_card_creator_review_pass_v0_1.yaml
+
+failed_review:
+  review_id: sanitized_portrait_review_fail_v001
+  failed_checks:
+    artifact_cleanliness: FAIL
+  expected_outcome: FAIL
+
+correction:
+  revision_id: sanitized-review-result-002
+  parent_revision_id: sanitized-review-result-001
+  expected_target_object_id: inside_image.portrait
+  expected_operation: REPLACE_CONTENT
+  expected_failed_checks:
+    - artifact_cleanliness
+
+corrected_result:
+  result_id: sanitized-review-result-002
+  revision: 2
+  artifact_ref: sanitized-restored-portrait-r002
+  external_artifact_ref: sanitized://results/restored_portrait_r002.png
+  external_artifact_sha256: cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+  review_id: sanitized_portrait_review_pass_v002
+  expected_outcome: PASS
+
+expected_cycle:
+  state: PASS_AFTER_CORRECTION
+  revision_history_outcomes:
+    - FAIL
+    - PASS
+  accepted_for_constructor_bundle: true
+  customer_forwarding_allowed: false
+  no_creator_scope_expansion: true

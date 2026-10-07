@@ -56,7 +56,7 @@ def test_cursor_is_gdl_local_and_blueprint_read_only():
     ] is True
 
 
-def test_greeting_card_cursor_advances_to_gc_e2e_05():
+def test_greeting_card_cursor_advances_to_gc_e2e_06():
     cursor = load_yaml(CURSOR)
 
     task = cursor["active_tasks"][0]
@@ -72,8 +72,9 @@ def test_greeting_card_cursor_advances_to_gc_e2e_05():
         "GC-E2E-02",
         "GC-E2E-03",
         "GC-E2E-04",
+        "GC-E2E-05",
     ]
-    assert task["current_step"] == "GC-E2E-05"
+    assert task["current_step"] == "GC-E2E-06"
 
     plan = load_yaml(PLAN)
 
@@ -113,6 +114,10 @@ def test_greeting_card_cursor_advances_to_gc_e2e_05():
     )
     assert (
         steps["GC-E2E-05"]["state"]
+        == "COMPLETED_LOCAL"
+    )
+    assert (
+        steps["GC-E2E-06"]["state"]
         == "ACTIVE"
     )
 

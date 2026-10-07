@@ -59,23 +59,25 @@ active_tasks:
       - GC-E2E-02
       - GC-E2E-03
       - GC-E2E-04
+      - GC-E2E-05
 
-    current_step: GC-E2E-05
+    current_step: GC-E2E-06
 
     completed_subcheckpoints:
       - GC-E2E-04A
       - GC-E2E-04B
       - GC-E2E-05A
+      - GC-E2E-05B
 
     current_checkpoint:
-      id: CREATOR_REVIEW_AND_CORRECTION_LOOP
+      id: ACCEPTED_CONSTRUCTOR_BUNDLE_REQUIRED
       state: ACTIVE
 
     next_action: >
-      Prove the FAIL path with a sanitized bounded portrait result: emit an
-      exact machine-readable correction patch, preserve revision lineage, and
-      re-review the corrected revision without expanding the original Creator
-      scope before closing GC-E2E-05.
+      Build the accepted Constructor Bundle from reviewed structured greeting
+      data, exact person-text-asset bindings, accepted visual assets, branding
+      and signature selections, semantic-family hints and provenance without
+      re-running Intake or guessing unresolved relationships.
 
     completion_criterion: >
       Prove the full greeting-card chain from primary customer materials

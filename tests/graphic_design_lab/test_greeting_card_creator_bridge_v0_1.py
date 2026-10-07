@@ -127,26 +127,16 @@ def test_provider_runtime_and_full_card_authority_remain_disabled():
         assert f"bridge.authority.{field}:must_be_false" in errors(bad)
 
 
-def test_gc_e2e_04_closes_after_real_result_and_review_loop_becomes_active():
+def test_gc_e2e_04_remains_closed_after_later_progress():
     cursor = load(CURSOR)
     task = cursor["active_tasks"][0]
-    assert task["current_step"] == "GC-E2E-05"
-    assert task["completed_steps"] == [
-        "GC-E2E-00",
-        "GC-E2E-01",
-        "GC-E2E-02",
-        "GC-E2E-03",
-        "GC-E2E-04",
-    ]
+    assert "GC-E2E-04" in task["completed_steps"]
     assert "GC-E2E-04A" in task["completed_subcheckpoints"]
     assert "GC-E2E-04B" in task["completed_subcheckpoints"]
-    assert task["current_checkpoint"]["id"] == "CREATOR_REVIEW_AND_CORRECTION_LOOP"
-    assert task["current_checkpoint"]["state"] == "ACTIVE"
 
     plan = load(PLAN)
     steps = {item["id"]: item for item in plan["steps"]}
     assert steps["GC-E2E-04"]["state"] == "COMPLETED_LOCAL"
-    assert steps["GC-E2E-05"]["state"] == "ACTIVE"
     checkpoints = {
         item["id"]: item
         for item in steps["GC-E2E-04"]["execution_checkpoints"]

@@ -1,0 +1,65 @@
+schema_version: gdl_greeting_card_creator_correction_contract_v0_1
+status: ACTIVE_EMPIRICAL_CONTRACT
+direction_id: greeting_cards
+purpose: >
+  Reuse the generic revision patch contract for a bounded greeting-card
+  portrait correction after internal-review FAIL, then require a corrected
+  revision to pass the existing greeting-card Creator review adapter.
+
+generic_reuse:
+  revision_patch:
+    path: contracts/graphic_design_lab/revision_patch_v0_1.yaml
+    disposition: REUSE
+  internal_review_loop:
+    path: coordination/graphic_design_lab/workflow/internal_review_loop_v0_1.yaml
+    disposition: REUSE
+  global_review_gate:
+    path: coordination/graphic_design_lab/review/global_review_gate_v0_1.yaml
+    disposition: REUSE
+  creator_review:
+    path: creator_review_contract_v0_1.yaml
+    disposition: REUSE
+
+stable_object_binding:
+  authority: product_skeleton_v0_1.yaml
+  target_object_id: inside_image.portrait
+  target_role: inside_image.portrait
+  operation: REPLACE_CONTENT
+
+fail_path:
+  requires_review_outcome: FAIL
+  requires_correction_required: true
+  accepted_artifact_before_correction: false
+  machine_readable_patch_required: true
+
+scope_boundary:
+  requested_operations_must_equal_original_creator_task: true
+  forbidden_changes_must_equal_original_creator_task: true
+  scope_expansion: false
+  full_regeneration: false
+  unrelated_object_changes: false
+
+corrected_revision:
+  revision_increment: exactly_one
+  task_traceability_must_match_parent: true
+  re_review_required: true
+  required_final_outcome: PASS
+  revision_history_required: true
+
+completion:
+  state: PASS_AFTER_CORRECTION
+  accepted_for_constructor_bundle: true
+  customer_forwarding_allowed: false
+
+privacy:
+  tracked_fixture_is_sanitized: true
+  heavy_creator_artifact_in_git: false
+  live_creator_result_package_in_git: false
+  live_review_record_in_git: false
+
+authority:
+  provider_execution_performed: false
+  gdl_runtime_initialized: false
+  production_write_enabled: false
+  automatic_customer_messaging: false
+  automatic_design_approval: false

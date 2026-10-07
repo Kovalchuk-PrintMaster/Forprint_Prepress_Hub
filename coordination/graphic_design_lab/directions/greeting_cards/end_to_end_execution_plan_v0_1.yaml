@@ -180,7 +180,7 @@ steps:
 
     title: Intake review and Creator correction loop
 
-    state: ACTIVE
+    state: COMPLETED_LOCAL
 
     objective: >
       Review Creator outputs against requested transformations. Failed assets
@@ -203,7 +203,12 @@ steps:
         customer_forwarding_allowed: false
       - id: GC-E2E-05B
         title: Bounded correction-loop proof
-        state: ACTIVE
+        state: COMPLETED_LOCAL
+        closes_parent_step: true
+        evidence: SANITIZED_FAIL_CORRECTION_REVISION_PASS
+        no_creator_scope_expansion: true
+        stable_target_object_id: inside_image.portrait
+        correction_operation: REPLACE_CONTENT
         completion_requires:
           - sanitized_fail_path
           - machine_readable_bounded_correction_patch
@@ -215,7 +220,7 @@ steps:
 
     title: Accepted Constructor Bundle
 
-    state: PLANNED
+    state: ACTIVE
 
     objective: >
       Build the complete normalized package that the constructor can consume
