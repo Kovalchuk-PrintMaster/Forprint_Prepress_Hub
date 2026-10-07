@@ -92,7 +92,11 @@ try {
 finally {
     $ErrorActionPreference = $PreviousErrorActionPreference
 }
-$Output | Tee-Object -FilePath $LogPath -Append | ForEach-Object { Write-Host $_ }
+$Output | ForEach-Object {
+    $Line = [string]$_
+    Write-Host $Line
+    $Line | Add-Content -Encoding UTF8 -LiteralPath $LogPath
+}
 
 if ($ExitCode -ne 0) {
     "FORPRINT_GDL_GC_E2E_07_WINDOWS_LAUNCH=FAIL" |

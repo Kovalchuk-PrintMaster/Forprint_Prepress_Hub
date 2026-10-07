@@ -106,6 +106,8 @@ def test_windows_launcher_is_location_aware_and_ssh_alias_based():
     assert '$ErrorActionPreference = "Continue"' in source
     assert "$PreviousErrorActionPreference" in source
     assert "finally {" in source
+    assert "Tee-Object -FilePath" not in source
+    assert '$Line | Add-Content -Encoding UTF8 -LiteralPath $LogPath' in source
     assert "gdl-greeting-card-smb-launch" in source
     assert "/srv/smb/In_Progress/data" not in source
     assert "accepted_constructor_bundle.yaml" in source
