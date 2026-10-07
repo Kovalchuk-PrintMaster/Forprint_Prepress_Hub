@@ -1,0 +1,46 @@
+schema_version: gdl_greeting_card_signature_variant_catalog_v0_1
+catalog_id: recurring_greeting_card_signature_variants_v0_1
+status: ACTIVE_EMPIRICAL_CATALOG
+extensibility: OPEN_CATALOG
+
+purpose: >
+  Store the currently confirmed signature/sender-block configurations as an
+  extensible data matrix rather than a closed code enum. The current three
+  variants are the known matrix today, not a permanent schema limit.
+
+selection_model:
+  primary_key: variant_id
+  sender_variant_role: layout_semantics_not_signatory_identity
+  duplicate_sender_variant_across_future_rows_allowed: true
+  exact_variant_selection_required_for_constructor_bundle: true
+
+variants:
+  - variant_id: GRIGO
+    sender_variant: SINGLE_PRIMARY
+    signature_component_count: 1
+    coupled_object_ids:
+      - inside_text.sender_block
+      - inside_text.signature
+
+  - variant_id: HERASYMENKO
+    sender_variant: SINGLE_SECONDARY
+    signature_component_count: 1
+    coupled_object_ids:
+      - inside_text.sender_block
+      - inside_text.signature
+
+  - variant_id: DUAL_GRIGO_HERASYMENKO
+    sender_variant: DUAL_SENDER
+    signature_component_count: 2
+    coupled_object_ids:
+      - inside_text.sender_block
+      - inside_text.signature
+
+rules:
+  - current_three_variants_are_empirical_matrix_not_schema_limit
+  - exact_signature_variant_id_is_selected_per_job
+  - exact_signature_asset_is_bound_per_job
+  - sender_block_and_signature_asset_are_one_semantic_configuration
+  - sender_variant_does_not_uniquely_identify_signatory_configuration
+  - unknown_variant_id_requires_catalog_extension_or_human_resolution
+  - silent_fallback_to_another_signature_configuration_is_forbidden

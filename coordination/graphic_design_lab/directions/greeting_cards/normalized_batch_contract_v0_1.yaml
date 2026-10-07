@@ -53,6 +53,30 @@ greeting_card_job_extension:
     - sender_variant
 
 binding_states: [CONFIRMED, PROPOSED, UNRESOLVED]
+
+optional_binding_presence:
+  recipient_branding:
+    presence_states: [PRESENT, ABSENT]
+    presence_field_optional_for_backward_compatibility: true
+    confirmed_absence:
+      state: CONFIRMED
+      presence: ABSENT
+      source_id: null
+      human_confirmation_required: false
+      meaning: no_recipient_branding_is_required_for_this_job
+    rules:
+      - confirmed_absence_is_not_UNRESOLVED
+      - PRESENT_requires_source_id
+      - ABSENT_forbids_source_id
+
+signature_binding_extension:
+  variant_id_field: variant_id
+  catalog_ref: signature_variant_catalog_v0_1.yaml
+  intake_field_required: false
+  constructor_ready_requires_variant_id: true
+  sender_variant_is_layout_semantics_not_identity: true
+  future_catalog_rows_may_reuse_sender_variant: true
+  silent_variant_inference_from_sender_variant_forbidden: true
 confirmed_binding_bases:
   - customer_assignment
   - operator_assignment
@@ -73,6 +97,7 @@ rules:
   - ambiguous_jobs_must_list_uncertainties
   - Intake_does_not_modify_images
   - Intake_does_not_select_final_Creator_scope
+  - optional_recipient_branding_may_be_explicitly_CONFIRMED_ABSENT
 
 skeleton_binding_map:
   portrait: inside_image.portrait

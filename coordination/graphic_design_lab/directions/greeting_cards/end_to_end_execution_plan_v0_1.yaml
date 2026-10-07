@@ -240,6 +240,26 @@ steps:
       - constructor_required_fields_have_no_unresolved_ambiguity
       - intake_review_state_is_PASS
 
+    execution_checkpoints:
+      - id: GC-E2E-06A
+        title: Constructor input semantic reconciliation
+        state: COMPLETED_LOCAL
+        closes_parent_step: false
+        evidence:
+          confirmed_absent_recipient_branding_supported: true
+          signature_variant_matrix_extensible: true
+          signature_sender_block_coupling_modeled: true
+      - id: GC-E2E-06B
+        title: Accepted Constructor Bundle materialization
+        state: ACTIVE
+        completion_requires:
+          - reviewed_normalized_bundle
+          - exact_confirmed_bindings_only
+          - accepted_visual_assets
+          - explicit_branding_presence_or_absence
+          - explicit_signature_configuration
+          - deterministic_provenance_manifest
+
   - id: GC-E2E-07
 
     title: SMB/local one-click launcher

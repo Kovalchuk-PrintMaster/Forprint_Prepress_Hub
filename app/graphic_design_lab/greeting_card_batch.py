@@ -286,12 +286,38 @@ def validate_greeting_card_normalized_batch(
                 continue
 
             source_id = binding.get("source_id")
+            confirmed_absent = (
+                role == "recipient_branding"
+                and binding.get("presence") == "ABSENT"
+            )
+
+            if role == "recipient_branding":
+                presence = binding.get("presence")
+                if presence not in {None, "PRESENT", "ABSENT"}:
+                    errors.append(
+                        f"{binding_prefix}.presence:unsupported"
+                    )
+                if presence == "PRESENT" and not source_id:
+                    errors.append(
+                        f"{binding_prefix}:present_requires_source"
+                    )
+                if presence == "ABSENT" and source_id is not None:
+                    errors.append(
+                        f"{binding_prefix}:absent_forbids_source"
+                    )
+
             _validate_state(
                 binding,
                 prefix=binding_prefix,
-                target_present=bool(source_id),
+                target_present=bool(source_id) or confirmed_absent,
                 errors=errors,
             )
+
+            if confirmed_absent and binding.get("state") != "CONFIRMED":
+                errors.append(
+                    f"{binding_prefix}:absence_must_be_CONFIRMED"
+                )
+
             if source_id is not None:
                 if source_id not in asset_ids:
                     errors.append(

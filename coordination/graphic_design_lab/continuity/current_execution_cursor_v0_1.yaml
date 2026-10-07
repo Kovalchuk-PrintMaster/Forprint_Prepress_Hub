@@ -68,16 +68,18 @@ active_tasks:
       - GC-E2E-04B
       - GC-E2E-05A
       - GC-E2E-05B
+      - GC-E2E-06A
 
     current_checkpoint:
       id: ACCEPTED_CONSTRUCTOR_BUNDLE_REQUIRED
       state: ACTIVE
 
     next_action: >
-      Build the accepted Constructor Bundle from reviewed structured greeting
-      data, exact person-text-asset bindings, accepted visual assets, branding
-      and signature selections, semantic-family hints and provenance without
-      re-running Intake or guessing unresolved relationships.
+      Materialize GC-E2E-06B Accepted Constructor Bundle using only confirmed
+      normalized bindings, accepted visual assets, explicit recipient-branding
+      presence or confirmed absence, the extensible signature configuration
+      matrix, optional resolved semantic-family hints and deterministic
+      provenance without re-running Intake or guessing unresolved intent.
 
     completion_criterion: >
       Prove the full greeting-card chain from primary customer materials
