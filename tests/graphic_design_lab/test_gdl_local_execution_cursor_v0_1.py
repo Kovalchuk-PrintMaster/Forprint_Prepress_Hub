@@ -56,7 +56,7 @@ def test_cursor_is_gdl_local_and_blueprint_read_only():
     ] is True
 
 
-def test_greeting_card_cursor_advances_to_gc_e2e_08_reconciliation():
+def test_greeting_card_cursor_advances_to_gc_e2e_08_constructor_ingest():
     cursor = load_yaml(CURSOR)
 
     task = cursor["active_tasks"][0]
@@ -123,19 +123,19 @@ def test_greeting_card_cursor_advances_to_gc_e2e_08_reconciliation():
     )
     assert (
         steps["GC-E2E-07"]["state"]
-        == "BLOCKED_BY_GC_E2E_08_RECONCILIATION"
+        == "BLOCKED_BY_GC_E2E_08"
     )
     assert steps["GC-E2E-07"]["blocked_by"] == ["GC-E2E-08"]
     assert steps["GC-E2E-08"]["state"] == "ACTIVE"
     assert steps["GC-E2E-08"]["active_phase"] == (
-        "JOB_RUNNER_REUSE_RECONCILIATION_ONLY"
+        "CONSTRUCTOR_BUNDLE_INGEST_IMPLEMENTATION"
     )
     assert task["current_checkpoint"]["id"] == (
-        "JOB_RUNNER_REUSE_RECONCILIATION_REQUIRED"
+        "CONSTRUCTOR_BUNDLE_INGEST_IMPLEMENTATION"
     )
 
 
-def test_gc_e2e_08_requires_job_runner_reuse_reconciliation():
+def test_gc_e2e_08_records_resolved_job_runner_reconciliation():
     plan = load_yaml(PLAN)
 
     steps = {
@@ -145,14 +145,15 @@ def test_gc_e2e_08_requires_job_runner_reuse_reconciliation():
 
     assert steps["GC-E2E-08"]["state"] == "ACTIVE"
     assert steps["GC-E2E-08"]["active_phase"] == (
-        "JOB_RUNNER_REUSE_RECONCILIATION_ONLY"
+        "CONSTRUCTOR_BUNDLE_INGEST_IMPLEMENTATION"
     )
 
     checkpoint = steps["GC-E2E-08"][
         "mandatory_job_runner_reuse_checkpoint"
     ]
 
-    assert checkpoint["phase"] == "ACTIVE_RECONCILIATION"
+    assert checkpoint["status"] == "RESOLVED"
+    assert checkpoint["phase"] == "COMPLETED_RECONCILIATION"
     assert checkpoint["do_not_discard_silently"] is True
 
     assert checkpoint[
@@ -163,9 +164,18 @@ def test_gc_e2e_08_requires_job_runner_reuse_reconciliation():
         "do_not_commit_as_canonical_raw_intake_runner_without_reconciliation"
     ] is True
 
-    assert checkpoint["current_disposition"] == (
-        "UNRESOLVED_REQUIRES_GC_E2E_08_RECONCILIATION"
-    )
+    assert checkpoint["current_disposition"] == "ADAPT"
+    assert checkpoint["inspection_evidence"]["inspection_completed"] is True
+    assert checkpoint["inspection_evidence"][
+        "replacement_created_before_inspection"
+    ] is False
+    assert checkpoint["reconciliation_result"]["disposition"] == "ADAPT"
+    assert checkpoint["reconciliation_result"][
+        "constructor_input_contract"
+    ] == "ACCEPTED_CONSTRUCTOR_BUNDLE"
+    assert checkpoint["reconciliation_result"][
+        "raw_customer_material_interpretation_forbidden"
+    ] is True
 
     assert (
         "scripts/graphic_design_lab/greeting_cards/job_runner.py"

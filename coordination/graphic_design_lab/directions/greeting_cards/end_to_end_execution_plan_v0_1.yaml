@@ -276,17 +276,16 @@ steps:
 
     title: SMB/local one-click launcher
 
-    state: BLOCKED_BY_GC_E2E_08_RECONCILIATION
+    state: BLOCKED_BY_GC_E2E_08
 
     blocked_by:
       - GC-E2E-08
 
     blocking_reason: >
       The launcher requires a stable project-owned server entrypoint that
-      consumes ACCEPTED_CONSTRUCTOR_BUNDLE. No such committed entrypoint is
-      currently demonstrated. GC-E2E-08 must first reconcile the preserved
-      experimental job-runner candidate and establish the constructor ingest
-      boundary.
+      consumes ACCEPTED_CONSTRUCTOR_BUNDLE. GC-E2E-08 reconciliation is
+      complete, but the reconciled runner must still be adapted and validated
+      as that constructor-bundle entrypoint before the launcher can depend on it.
 
     objective: >
       Provide a simple operator launcher located with or near the accepted
@@ -303,7 +302,7 @@ steps:
     title: Constructor bundle ingest and validation
 
     state: ACTIVE
-    active_phase: JOB_RUNNER_REUSE_RECONCILIATION_ONLY
+    active_phase: CONSTRUCTOR_BUNDLE_INGEST_IMPLEMENTATION
 
     objective: >
       Validate and ingest ACCEPTED_CONSTRUCTOR_BUNDLE as constructor input.
@@ -312,10 +311,10 @@ steps:
     mandatory_job_runner_reuse_checkpoint:
 
       status:
-        MUST_BE_RESOLVED_BEFORE_GC_E2E_08_IMPLEMENTATION
+        RESOLVED
 
       phase:
-        ACTIVE_RECONCILIATION
+        COMPLETED_RECONCILIATION
 
       reason: >
         An experimental job_runner.py was created and validated before the
@@ -335,7 +334,15 @@ steps:
           - NEW
 
       current_disposition:
-        UNRESOLVED_REQUIRES_GC_E2E_08_RECONCILIATION
+        ADAPT
+
+      inspection_evidence:
+        inspection_completed: true
+        replacement_created_before_inspection: false
+        experimental_candidate_modified_during_reconciliation: false
+        runner_sha256: d8c99e444eedc4f4756a4e4d620bc1a753dc81c4b076582d89be144c4a697141
+        runner_test_sha256: 95e370f359c248af88238773e2e2e9f4cc0c5326df7cffde4a57eb4d80856889
+        makefile_sha256: c0cbda2ce389fb1021f8833efc4597ff5ee16d772d0e78225d09e7bc15ea6ed8
 
       candidate_reusable_parts:
         - file_or_bundle_inventory
@@ -348,6 +355,25 @@ steps:
       behavior_requiring_reconciliation:
         - raw_customer_material_as_direct_constructor_contract
         - heuristic_role_inference_already_resolved_by_Intake
+
+      reconciliation_result:
+        disposition: ADAPT
+        preserve:
+          - sha256_identity
+          - atomic_machine_writes
+          - source_non_mutation_check
+          - idempotent_job_identity
+          - machine_workspace_pattern
+          - machine_report_pattern
+        remove_from_constructor_boundary:
+          - raw_folder_discovery
+          - raw_pdf_image_text_semantic_inspection
+          - candidate_role_heuristics
+          - raw_to_normalized_batch_synthesis
+          - ambiguity_resolution
+          - raw_intake_execution_plan_generation
+        constructor_input_contract: ACCEPTED_CONSTRUCTOR_BUNDLE
+        raw_customer_material_interpretation_forbidden: true
 
       do_not_discard_silently: true
 

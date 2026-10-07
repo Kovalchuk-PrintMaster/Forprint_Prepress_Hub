@@ -181,7 +181,7 @@ def test_gc_e2e_02_remains_closed_after_later_cursor_advances():
     steps = {item["id"]: item for item in plan["steps"]}
     assert steps["GC-E2E-02"]["state"] == "COMPLETED_LOCAL"
 
-def test_gc_e2e_08_job_runner_gate_remains_untouched():
+def test_gc_e2e_08_job_runner_reconciliation_is_recorded():
     plan = load_yaml(PLAN)
     steps = {item["id"]: item for item in plan["steps"]}
 
@@ -190,6 +190,6 @@ def test_gc_e2e_08_job_runner_gate_remains_untouched():
     ]
 
     assert checkpoint["do_not_discard_silently"] is True
-    assert checkpoint["current_disposition"] == (
-        "UNRESOLVED_REQUIRES_GC_E2E_08_RECONCILIATION"
-    )
+    assert checkpoint["current_disposition"] == "ADAPT"
+    assert checkpoint["status"] == "RESOLVED"
+    assert checkpoint["reconciliation_result"]["disposition"] == "ADAPT"

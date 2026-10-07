@@ -491,7 +491,7 @@ def test_gc_e2e_06_remains_closed_while_08_unblocks_07():
 
     assert steps["GC-E2E-06"]["state"] == "COMPLETED_LOCAL"
     assert steps["GC-E2E-07"]["state"] == (
-        "BLOCKED_BY_GC_E2E_08_RECONCILIATION"
+        "BLOCKED_BY_GC_E2E_08"
     )
     assert steps["GC-E2E-08"]["state"] == "ACTIVE"
 
@@ -510,5 +510,5 @@ def test_gc_e2e_06_remains_closed_while_08_unblocks_07():
     assert "GC-E2E-06B" in task["completed_subcheckpoints"]
     assert task["current_step"] == "GC-E2E-08"
     assert task["current_checkpoint"]["id"] == (
-        "JOB_RUNNER_REUSE_RECONCILIATION_REQUIRED"
+        "CONSTRUCTOR_BUNDLE_INGEST_IMPLEMENTATION"
     )

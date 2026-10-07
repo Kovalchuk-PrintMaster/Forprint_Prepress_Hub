@@ -73,17 +73,17 @@ active_tasks:
       - GC-E2E-06B
 
     current_checkpoint:
-      id: JOB_RUNNER_REUSE_RECONCILIATION_REQUIRED
+      id: CONSTRUCTOR_BUNDLE_INGEST_IMPLEMENTATION
       state: ACTIVE
 
     next_action: >
-      Execute only the mandatory GC-E2E-08 reuse reconciliation. Inspect the
-      preserved experimental job_runner.py and its test first, record exactly
-      one disposition from REUSE, EXTEND, ADAPT, REPLACE or NEW, and do not
-      create a replacement before that inspection. The reconciliation must
-      preserve useful filesystem, identity, idempotency and reporting behavior
-      while removing any raw-customer-material constructor contract or heuristic
-      role inference already resolved by Intake.
+      Adapt the reconciled project-owned job runner to accept only
+      ACCEPTED_CONSTRUCTOR_BUNDLE as constructor input. Preserve its proven
+      SHA-256 identity, atomic machine writes, source non-mutation,
+      idempotent job identity, workspace and reporting mechanics. Remove raw
+      folder discovery, raw-material semantic inspection, candidate-role
+      heuristics and raw-to-normalized-batch synthesis from the constructor
+      boundary.
 
     completion_criterion: >
       Prove the full greeting-card chain from primary customer materials
@@ -115,10 +115,18 @@ last_reconciliation:
     current_role:
       EXPERIMENTAL_UNCOMMITTED_JOB_RUNNER_CANDIDATE
 
-    required_future_reconciliation_step:
+    reconciliation_step:
       GC-E2E-08
 
+    reconciliation_completed: true
+
     disposition:
-      UNRESOLVED_REQUIRES_GC_E2E_08_RECONCILIATION
+      ADAPT
+
+    inspection_evidence:
+      runner_sha256: d8c99e444eedc4f4756a4e4d620bc1a753dc81c4b076582d89be144c4a697141
+      runner_test_sha256: 95e370f359c248af88238773e2e2e9f4cc0c5326df7cffde4a57eb4d80856889
+      makefile_sha256: c0cbda2ce389fb1021f8833efc4597ff5ee16d772d0e78225d09e7bc15ea6ed8
+      experimental_candidate_modified_during_reconciliation: false
 
     do_not_discard_silently: true
