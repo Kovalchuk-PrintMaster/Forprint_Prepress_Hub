@@ -276,7 +276,17 @@ steps:
 
     title: SMB/local one-click launcher
 
-    state: ACTIVE
+    state: BLOCKED_BY_GC_E2E_08_RECONCILIATION
+
+    blocked_by:
+      - GC-E2E-08
+
+    blocking_reason: >
+      The launcher requires a stable project-owned server entrypoint that
+      consumes ACCEPTED_CONSTRUCTOR_BUNDLE. No such committed entrypoint is
+      currently demonstrated. GC-E2E-08 must first reconcile the preserved
+      experimental job-runner candidate and establish the constructor ingest
+      boundary.
 
     objective: >
       Provide a simple operator launcher located with or near the accepted
@@ -292,7 +302,8 @@ steps:
 
     title: Constructor bundle ingest and validation
 
-    state: PLANNED_WITH_MANDATORY_REUSE_RECONCILIATION
+    state: ACTIVE
+    active_phase: JOB_RUNNER_REUSE_RECONCILIATION_ONLY
 
     objective: >
       Validate and ingest ACCEPTED_CONSTRUCTOR_BUNDLE as constructor input.
@@ -302,6 +313,9 @@ steps:
 
       status:
         MUST_BE_RESOLVED_BEFORE_GC_E2E_08_IMPLEMENTATION
+
+      phase:
+        ACTIVE_RECONCILIATION
 
       reason: >
         An experimental job_runner.py was created and validated before the

@@ -56,7 +56,7 @@ def test_cursor_is_gdl_local_and_blueprint_read_only():
     ] is True
 
 
-def test_greeting_card_cursor_advances_to_gc_e2e_07():
+def test_greeting_card_cursor_advances_to_gc_e2e_08_reconciliation():
     cursor = load_yaml(CURSOR)
 
     task = cursor["active_tasks"][0]
@@ -75,7 +75,7 @@ def test_greeting_card_cursor_advances_to_gc_e2e_07():
         "GC-E2E-05",
         "GC-E2E-06",
     ]
-    assert task["current_step"] == "GC-E2E-07"
+    assert task["current_step"] == "GC-E2E-08"
 
     plan = load_yaml(PLAN)
 
@@ -123,7 +123,15 @@ def test_greeting_card_cursor_advances_to_gc_e2e_07():
     )
     assert (
         steps["GC-E2E-07"]["state"]
-        == "ACTIVE"
+        == "BLOCKED_BY_GC_E2E_08_RECONCILIATION"
+    )
+    assert steps["GC-E2E-07"]["blocked_by"] == ["GC-E2E-08"]
+    assert steps["GC-E2E-08"]["state"] == "ACTIVE"
+    assert steps["GC-E2E-08"]["active_phase"] == (
+        "JOB_RUNNER_REUSE_RECONCILIATION_ONLY"
+    )
+    assert task["current_checkpoint"]["id"] == (
+        "JOB_RUNNER_REUSE_RECONCILIATION_REQUIRED"
     )
 
 
@@ -135,10 +143,16 @@ def test_gc_e2e_08_requires_job_runner_reuse_reconciliation():
         for item in plan["steps"]
     }
 
+    assert steps["GC-E2E-08"]["state"] == "ACTIVE"
+    assert steps["GC-E2E-08"]["active_phase"] == (
+        "JOB_RUNNER_REUSE_RECONCILIATION_ONLY"
+    )
+
     checkpoint = steps["GC-E2E-08"][
         "mandatory_job_runner_reuse_checkpoint"
     ]
 
+    assert checkpoint["phase"] == "ACTIVE_RECONCILIATION"
     assert checkpoint["do_not_discard_silently"] is True
 
     assert checkpoint[

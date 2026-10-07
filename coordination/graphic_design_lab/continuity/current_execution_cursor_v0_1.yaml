@@ -62,7 +62,7 @@ active_tasks:
       - GC-E2E-05
       - GC-E2E-06
 
-    current_step: GC-E2E-07
+    current_step: GC-E2E-08
 
     completed_subcheckpoints:
       - GC-E2E-04A
@@ -73,14 +73,17 @@ active_tasks:
       - GC-E2E-06B
 
     current_checkpoint:
-      id: SMB_LOCAL_ONE_CLICK_LAUNCHER_REQUIRED
+      id: JOB_RUNNER_REUSE_RECONCILIATION_REQUIRED
       state: ACTIVE
 
     next_action: >
-      Build GC-E2E-07 operator launcher located with or near the accepted
-      Constructor Bundle. It must detect its own location and invoke the stable
-      server-side project entrypoint with the exact bundle path without manual
-      Linux path entry or constructor-side reinterpretation.
+      Execute only the mandatory GC-E2E-08 reuse reconciliation. Inspect the
+      preserved experimental job_runner.py and its test first, record exactly
+      one disposition from REUSE, EXTEND, ADAPT, REPLACE or NEW, and do not
+      create a replacement before that inspection. The reconciliation must
+      preserve useful filesystem, identity, idempotency and reporting behavior
+      while removing any raw-customer-material constructor contract or heuristic
+      role inference already resolved by Intake.
 
     completion_criterion: >
       Prove the full greeting-card chain from primary customer materials
