@@ -1,0 +1,40 @@
+{
+  "schema_version": "forprint_project_closeout_manifest_v0_1",
+  "workstream_id": "gdl_accept_and_advance_foundation_v0_1",
+  "expected_head": "90a753d5d22a4fb63c31387c322ddb673931fc61",
+  "commit_message": "feat(gdl): add governed accept-and-advance workflow",
+  "visual_confirmation": "PASS",
+  "visual_confirmation_reason": "NON_VISUAL_COORDINATION_FOUNDATION_OPERATOR_REVIEW",
+  "verified_counts": {
+    "focused_transition_tests": 14,
+    "full_governance_tests": 265
+  },
+  "write_set": [
+    "Makefile",
+    "coordination/graphic_design_lab/continuity/assistant_context_contract_v0_1.yaml",
+    "coordination/graphic_design_lab/continuity/project_first_working_rule_v0_1.yaml",
+    "coordination/graphic_design_lab/execution/accept_and_advance_protocol_v0_1.yaml",
+    "coordination/graphic_design_lab/execution/gdl_accept_and_advance_foundation_closeout_v0_1.json",
+    "coordination/graphic_design_lab/execution/index.yaml",
+    "scripts/coordination/gdl_accept_and_advance_v0_1.py",
+    "tests/coordination/test_gdl_accept_and_advance_v0_1.py",
+    "tests/graphic_design_lab/test_gdl_blueprint_pattern_inheritance_v0_1.py",
+    "tests/graphic_design_lab/test_gdl_local_execution_cursor_v0_1.py",
+    "tests/graphic_design_lab/test_greeting_card_constructor_bundle_v0_1.py",
+    "tests/graphic_design_lab/test_greeting_card_constructor_semantics_v0_1.py"
+  ],
+  "review_commands": [
+    [
+      "make",
+      "gdl-accept-and-advance-check"
+    ],
+    [
+      "make",
+      "gdl-project-first-check"
+    ],
+    [
+      "make",
+      "governance-check"
+    ]
+  ]
+}

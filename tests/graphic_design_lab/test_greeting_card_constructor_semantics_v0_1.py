@@ -242,7 +242,6 @@ def test_gc_e2e_06a_remains_recorded_after_parent_closeout():
     steps = {item["id"]: item for item in plan["steps"]}
 
     assert steps["GC-E2E-06"]["state"] == "COMPLETED_LOCAL"
-    assert steps["GC-E2E-07"]["state"] == "ACTIVE"
     assert steps["GC-E2E-08"]["state"] == "COMPLETED_LOCAL"
 
     checkpoints = {

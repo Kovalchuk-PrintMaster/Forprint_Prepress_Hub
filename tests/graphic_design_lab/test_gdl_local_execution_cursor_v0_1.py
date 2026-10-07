@@ -56,77 +56,35 @@ def test_cursor_is_gdl_local_and_blueprint_read_only():
     ] is True
 
 
-def test_gc_e2e_08_closes_and_returns_to_gc_e2e_07_launcher():
+def test_greeting_card_execution_plan_and_cursor_are_consistent():
     cursor = load_yaml(CURSOR)
-
     task = cursor["active_tasks"][0]
-
-    assert task["task_id"] == (
-        "GDL-TASK-GREETING-CARD-E2E-001"
-    )
-
-    assert task["state"] == "ACTIVE"
-    assert task["completed_steps"] == [
-        "GC-E2E-00",
-        "GC-E2E-01",
-        "GC-E2E-02",
-        "GC-E2E-03",
-        "GC-E2E-04",
-        "GC-E2E-05",
-        "GC-E2E-06",
-        "GC-E2E-08",
-    ]
-    assert task["current_step"] == "GC-E2E-07"
-
     plan = load_yaml(PLAN)
+    steps = plan["steps"]
 
-    steps = {
-        item["id"]: item
-        for item in plan["steps"]
-    }
-
-    assert list(steps) == [
+    assert task["task_id"] == "GDL-TASK-GREETING-CARD-E2E-001"
+    assert task["state"] == "ACTIVE"
+    assert [item["id"] for item in steps] == [
         f"GC-E2E-{index:02d}"
         for index in range(13)
     ]
 
-    assert (
-        steps["GC-E2E-00"]["state"]
-        == "COMPLETED_LOCAL"
-    )
+    completed = [
+        item["id"]
+        for item in steps
+        if item["state"] == "COMPLETED_LOCAL"
+    ]
+    active = [
+        item["id"]
+        for item in steps
+        if item["state"] == "ACTIVE"
+    ]
 
-    assert (
-        steps["GC-E2E-01"]["state"]
-        == "COMPLETED_LOCAL"
-    )
-
-    assert (
-        steps["GC-E2E-02"]["state"]
-        == "COMPLETED_LOCAL"
-    )
-
-    assert (
-        steps["GC-E2E-03"]["state"]
-        == "COMPLETED_LOCAL"
-    )
-
-    assert (
-        steps["GC-E2E-04"]["state"]
-        == "COMPLETED_LOCAL"
-    )
-    assert (
-        steps["GC-E2E-05"]["state"]
-        == "COMPLETED_LOCAL"
-    )
-    assert (
-        steps["GC-E2E-06"]["state"]
-        == "COMPLETED_LOCAL"
-    )
-    assert steps["GC-E2E-07"]["state"] == "ACTIVE"
-    assert steps["GC-E2E-08"]["state"] == "COMPLETED_LOCAL"
-    assert task["current_checkpoint"]["id"] == (
-        "SMB_LOCAL_ONE_CLICK_LAUNCHER_REQUIRED"
-    )
+    assert task["completed_steps"] == completed
+    assert active == [task["current_step"]]
+    assert task["current_step"] not in task["completed_steps"]
+    assert task["current_checkpoint"]["state"] == "ACTIVE"
+    assert task["next_action"].strip()
 
 
 def test_gc_e2e_08_records_resolved_job_runner_reconciliation():

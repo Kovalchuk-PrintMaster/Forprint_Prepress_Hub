@@ -22,6 +22,10 @@ help:
 	@echo "  make gdl-greeting-card-constructor-ingest BUNDLE=/path/to/accepted_constructor_bundle - validate and ingest one accepted constructor bundle"
 	@echo "  make gdl-greeting-card-smb-launch SHARE=In_Progress RELATIVE_PATH_B64=<token> - resolve SMB bundle path and invoke canonical constructor ingest"
 	@echo "  make gdl-project-first-check - validate project-internal-tooling-first execution rule"
+	@echo "  make gdl-accept-and-advance REQUEST=tmp/<request>.yaml [APPLY=1 CONFIRM=<operation-id>] - preview/apply explicit governed GDL lifecycle transition"
+	@echo "  make gdl-accept-and-advance-check - validate local governed transition tooling"
+	@echo "  make gdl-transition-closeout-review - review exact latest GDL transition write-set"
+	@echo "  make gdl-transition-closeout-apply CONFIRM=YES - exact-stage, commit, push and verify latest GDL transition"
 	@echo "  make gdl-closeout-review - review exact GDL closeout write-set"
 	@echo "  make gdl-closeout-apply CONFIRM=YES - exact-stage, commit, push and verify reviewed slice"
 	@echo "  make gdl-empirical-check - validate GDL empirical case semantics and privacy boundaries"
@@ -208,6 +212,40 @@ gdl-closeout-review:
 gdl-closeout-apply:
 	@test "$(CONFIRM)" = "YES" || (echo "Explicit confirmation required: CONFIRM=YES"; exit 2)
 	$(PYTHON) $(GDL_CLOSEOUT_TOOL) apply --manifest "$(GDL_CLOSEOUT_MANIFEST)" --confirm "$(CONFIRM)"
+# --- Project-owned GDL accept-and-advance lifecycle transition ---
+
+GDL_ACCEPT_AND_ADVANCE_TOOL ?= scripts/coordination/gdl_accept_and_advance_v0_1.py
+GDL_ACCEPT_AND_ADVANCE_REQUEST ?= $(REQUEST)
+GDL_ACCEPT_AND_ADVANCE_APPLY ?= $(APPLY)
+GDL_ACCEPT_AND_ADVANCE_CONFIRMATION ?= $(CONFIRM)
+GDL_TRANSITION_CLOSEOUT_MANIFEST ?= coordination/graphic_design_lab/execution/current_transition_closeout_v0_1.json
+
+.PHONY: gdl-accept-and-advance gdl-accept-and-advance-check gdl-transition-closeout-review gdl-transition-closeout-apply
+
+gdl-accept-and-advance:
+	@test -n "$(GDL_ACCEPT_AND_ADVANCE_REQUEST)" || (echo "Set REQUEST=tmp/<request>.yaml"; exit 2)
+	@test "$(GDL_ACCEPT_AND_ADVANCE_APPLY)" = "" -o "$(GDL_ACCEPT_AND_ADVANCE_APPLY)" = "0" -o "$(GDL_ACCEPT_AND_ADVANCE_APPLY)" = "1" || (echo "APPLY must be 0 or 1"; exit 2)
+	@if [ "$(GDL_ACCEPT_AND_ADVANCE_APPLY)" = "1" ]; then \
+		test -n "$(GDL_ACCEPT_AND_ADVANCE_CONFIRMATION)" || { echo "CONFIRM=<operation-id> required when APPLY=1"; exit 2; }; \
+		$(PYTHON) $(GDL_ACCEPT_AND_ADVANCE_TOOL) --root . --request "$(GDL_ACCEPT_AND_ADVANCE_REQUEST)" --apply --operator-confirmation "$(GDL_ACCEPT_AND_ADVANCE_CONFIRMATION)"; \
+	else \
+		$(PYTHON) $(GDL_ACCEPT_AND_ADVANCE_TOOL) --root . --request "$(GDL_ACCEPT_AND_ADVANCE_REQUEST)"; \
+	fi
+
+gdl-accept-and-advance-check:
+	$(PYTHON) -m pytest -q -p no:cacheprovider \
+		tests/coordination/test_gdl_accept_and_advance_v0_1.py \
+		tests/graphic_design_lab/test_gdl_blueprint_pattern_inheritance_v0_1.py
+
+gdl-transition-closeout-review:
+	@test -f "$(GDL_TRANSITION_CLOSEOUT_MANIFEST)" || (echo "No current transition closeout manifest"; exit 2)
+	$(PYTHON) $(GDL_CLOSEOUT_TOOL) review --manifest "$(GDL_TRANSITION_CLOSEOUT_MANIFEST)"
+
+gdl-transition-closeout-apply:
+	@test "$(CONFIRM)" = "YES" || (echo "Explicit confirmation required: CONFIRM=YES"; exit 2)
+	@test -f "$(GDL_TRANSITION_CLOSEOUT_MANIFEST)" || (echo "No current transition closeout manifest"; exit 2)
+	$(PYTHON) $(GDL_CLOSEOUT_TOOL) apply --manifest "$(GDL_TRANSITION_CLOSEOUT_MANIFEST)" --confirm "$(CONFIRM)"
+
 # --- Greeting-card accepted-constructor-bundle ingest ---
 
 GDL_GREETING_CARD_CONSTRUCTOR_RUNNER ?= scripts/graphic_design_lab/greeting_cards/job_runner.py

@@ -485,12 +485,11 @@ def test_index_registers_accepted_constructor_bundle_contract():
     )
 
 
-def test_gc_e2e_08_closes_and_gc_e2e_07_becomes_active():
+def test_gc_e2e_06_and_08_completion_remain_recorded():
     plan = load_yaml(PLAN)
     steps = {item["id"]: item for item in plan["steps"]}
 
     assert steps["GC-E2E-06"]["state"] == "COMPLETED_LOCAL"
-    assert steps["GC-E2E-07"]["state"] == "ACTIVE"
     assert steps["GC-E2E-08"]["state"] == "COMPLETED_LOCAL"
 
     checkpoints = {
@@ -507,7 +506,3 @@ def test_gc_e2e_08_closes_and_gc_e2e_07_becomes_active():
     assert "GC-E2E-08" in task["completed_steps"]
     assert "GC-E2E-06A" in task["completed_subcheckpoints"]
     assert "GC-E2E-06B" in task["completed_subcheckpoints"]
-    assert task["current_step"] == "GC-E2E-07"
-    assert task["current_checkpoint"]["id"] == (
-        "SMB_LOCAL_ONE_CLICK_LAUNCHER_REQUIRED"
-    )

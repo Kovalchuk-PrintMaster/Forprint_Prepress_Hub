@@ -1,0 +1,73 @@
+schema_version: gdl_accept_and_advance_protocol_v0_1
+status: ACTIVE_LOCAL_ADAPTATION
+
+inheritance_disposition: ADAPT_LOCALLY
+blueprint_pattern_source:
+  repository: forprint_system_blueprint
+  access: READ_ONLY_STRICT
+  committed_source_only: true
+  observed_reference_head: c2ec5ae6aba7cf704d78895ef43cd3716544554f
+  references:
+    - coordination/standards/governance/accept_and_advance_protocol_v0_1.md
+    - coordination/standards/governance/next_work_selection_policy_v0_1.md
+    - scripts/coordination/accept_and_advance_v0_1.py
+
+runtime_dependency_on_blueprint: false
+blueprint_mutation_allowed: false
+
+purpose: >
+  Provide a project-owned GDL lifecycle transition workflow that accepts one
+  explicitly completed active step and activates one explicitly operator-bound,
+  dependency-eligible planned step without using current_step++ semantics.
+
+operator_model:
+  preview_is_default: true
+  mutation_requires_apply_flag: true
+  explicit_accept_required: true
+  operator_confirmation_must_equal_operation_id: true
+  exact_next_step_binding_required: true
+  automatic_next_step_activation_forbidden: true
+  blind_current_step_increment_forbidden: true
+  git_commit_or_push_performed: false
+  git_closeout_is_separate_project_owned_phase: true
+
+request:
+  schema_version: gdl_accept_and_advance_request_v0_1
+  required:
+    - operation_id
+    - explicit_operator_input
+    - task_id
+    - accept
+    - advance
+    - closeout
+  accept:
+    decision_must_equal: ACCEPT
+    completion_evidence_required: true
+    all_declared_exit_criteria_must_be_explicitly_true: true
+  advance:
+    mode: activate_explicit_step
+    expected_step_id_required: true
+    next_checkpoint_id_required: true
+    next_action_required: true
+
+eligibility:
+  next_step_must_be: PLANNED
+  declared_depends_on_must_be_completed: true
+  declared_blocked_by_must_be_completed: true
+  explicit_override_cannot_bypass_declared_dependencies: true
+
+failure_and_idempotency:
+  exact_pre_transition_snapshot_restore_on_failure: true
+  operation_id_binds_request_fingerprint: true
+  same_request_retry_is_idempotent: true
+  changed_request_with_same_operation_id_fails_closed: true
+
+privacy:
+  live_customer_paths_in_transition_evidence_forbidden: true
+  customer_phone_markers_in_transition_evidence_forbidden: true
+
+closeout:
+  manifest: coordination/graphic_design_lab/execution/current_transition_closeout_v0_1.json
+  review_target: gdl-transition-closeout-review
+  apply_target: gdl-transition-closeout-apply
+  exact_stage_commit_push_owned_by_project_closeout_tool: true

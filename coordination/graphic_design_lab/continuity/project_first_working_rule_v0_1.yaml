@@ -51,6 +51,15 @@ project_internal_tooling_policy:
     - project_cli
     - project_script
     chat_supplied_patch_scripts_are_disposable_after_project_integration: true
+blueprint_pattern_inheritance_policy:
+  access: READ_ONLY_STRICT
+  inspect_committed_blueprint_equivalent_before_new_generic_tool: true
+  inherit_semantics_safety_gates_and_operator_pattern_when_compatible: true
+  local_implementation_required: true
+  hidden_runtime_dependency_on_blueprint_forbidden: true
+  blueprint_mutation_from_module_forbidden: true
+  blind_current_step_increment_forbidden: true
+  automatic_next_step_activation_without_explicit_gate_forbidden: true
 local_execution_cursor_policy:
   scope: GRAPHIC_DESIGN_LAB_ONLY
 
