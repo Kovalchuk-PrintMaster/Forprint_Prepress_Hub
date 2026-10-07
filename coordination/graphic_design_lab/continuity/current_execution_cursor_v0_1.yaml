@@ -61,8 +61,9 @@ active_tasks:
       - GC-E2E-04
       - GC-E2E-05
       - GC-E2E-06
+      - GC-E2E-08
 
-    current_step: GC-E2E-08
+    current_step: GC-E2E-07
 
     completed_subcheckpoints:
       - GC-E2E-04A
@@ -73,17 +74,15 @@ active_tasks:
       - GC-E2E-06B
 
     current_checkpoint:
-      id: CONSTRUCTOR_BUNDLE_INGEST_IMPLEMENTATION
+      id: SMB_LOCAL_ONE_CLICK_LAUNCHER_REQUIRED
       state: ACTIVE
 
     next_action: >
-      Adapt the reconciled project-owned job runner to accept only
-      ACCEPTED_CONSTRUCTOR_BUNDLE as constructor input. Preserve its proven
-      SHA-256 identity, atomic machine writes, source non-mutation,
-      idempotent job identity, workspace and reporting mechanics. Remove raw
-      folder discovery, raw-material semantic inspection, candidate-role
-      heuristics and raw-to-normalized-batch synthesis from the constructor
-      boundary.
+      Build GC-E2E-07 operator launcher located with or near the accepted
+      Constructor Bundle. It must detect its own location and invoke the
+      project-owned gdl-greeting-card-constructor-ingest entrypoint with the
+      exact bundle path, without manual Linux path entry or constructor-side
+      reinterpretation.
 
     completion_criterion: >
       Prove the full greeting-card chain from primary customer materials
@@ -113,7 +112,16 @@ last_reconciliation:
       test_greeting_card_job_runner_v0_1.py
 
     current_role:
-      EXPERIMENTAL_UNCOMMITTED_JOB_RUNNER_CANDIDATE
+      CANONICAL_PROJECT_OWNED_CONSTRUCTOR_INGEST
+
+    implementation_evidence:
+      canonicalized: true
+      implementation_commit: 21f7e2f2052c9693bf8503ecead2186f4d363987
+      project_owned_entrypoint: scripts/graphic_design_lab/greeting_cards/job_runner.py
+      operator_make_target: gdl-greeting-card-constructor-ingest
+      canonical_validator_reused: true
+      deterministic_run_id_enforced: true
+      source_non_mutation_enforced: true
 
     reconciliation_step:
       GC-E2E-08

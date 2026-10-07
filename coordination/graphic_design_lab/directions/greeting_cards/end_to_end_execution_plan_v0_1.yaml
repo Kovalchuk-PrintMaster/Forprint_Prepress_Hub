@@ -276,16 +276,7 @@ steps:
 
     title: SMB/local one-click launcher
 
-    state: BLOCKED_BY_GC_E2E_08
-
-    blocked_by:
-      - GC-E2E-08
-
-    blocking_reason: >
-      The launcher requires a stable project-owned server entrypoint that
-      consumes ACCEPTED_CONSTRUCTOR_BUNDLE. GC-E2E-08 reconciliation is
-      complete, but the reconciled runner must still be adapted and validated
-      as that constructor-bundle entrypoint before the launcher can depend on it.
+    state: ACTIVE
 
     objective: >
       Provide a simple operator launcher located with or near the accepted
@@ -301,8 +292,7 @@ steps:
 
     title: Constructor bundle ingest and validation
 
-    state: ACTIVE
-    active_phase: CONSTRUCTOR_BUNDLE_INGEST_IMPLEMENTATION
+    state: COMPLETED_LOCAL
 
     objective: >
       Validate and ingest ACCEPTED_CONSTRUCTOR_BUNDLE as constructor input.
@@ -380,6 +370,23 @@ steps:
       do_not_create_replacement_before_inspection: true
 
       do_not_commit_as_canonical_raw_intake_runner_without_reconciliation: true
+
+    completion_evidence:
+      implementation_commit: 21f7e2f2052c9693bf8503ecead2186f4d363987
+      project_owned_entrypoint: scripts/graphic_design_lab/greeting_cards/job_runner.py
+      operator_make_target: gdl-greeting-card-constructor-ingest
+      accepted_bundle_schema_validated: true
+      canonical_validator_reused: true
+      canonical_bundle_sha256_reused: true
+      job_runner_candidate_reconciled: true
+      reuse_disposition_recorded: ADAPT
+      constructor_workspace_created_without_source_mutation: true
+      deterministic_run_id_enforced: true
+      raw_customer_material_interpretation_performed: false
+      heuristic_role_inference_performed: false
+      normalized_batch_synthesis_performed: false
+      governance_check: PASS
+      full_test_count: 244
 
     exit_criteria:
       - accepted_bundle_schema_validated

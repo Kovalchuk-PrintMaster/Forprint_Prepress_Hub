@@ -56,7 +56,7 @@ def test_cursor_is_gdl_local_and_blueprint_read_only():
     ] is True
 
 
-def test_greeting_card_cursor_advances_to_gc_e2e_08_constructor_ingest():
+def test_gc_e2e_08_closes_and_returns_to_gc_e2e_07_launcher():
     cursor = load_yaml(CURSOR)
 
     task = cursor["active_tasks"][0]
@@ -74,8 +74,9 @@ def test_greeting_card_cursor_advances_to_gc_e2e_08_constructor_ingest():
         "GC-E2E-04",
         "GC-E2E-05",
         "GC-E2E-06",
+        "GC-E2E-08",
     ]
-    assert task["current_step"] == "GC-E2E-08"
+    assert task["current_step"] == "GC-E2E-07"
 
     plan = load_yaml(PLAN)
 
@@ -121,17 +122,10 @@ def test_greeting_card_cursor_advances_to_gc_e2e_08_constructor_ingest():
         steps["GC-E2E-06"]["state"]
         == "COMPLETED_LOCAL"
     )
-    assert (
-        steps["GC-E2E-07"]["state"]
-        == "BLOCKED_BY_GC_E2E_08"
-    )
-    assert steps["GC-E2E-07"]["blocked_by"] == ["GC-E2E-08"]
-    assert steps["GC-E2E-08"]["state"] == "ACTIVE"
-    assert steps["GC-E2E-08"]["active_phase"] == (
-        "CONSTRUCTOR_BUNDLE_INGEST_IMPLEMENTATION"
-    )
+    assert steps["GC-E2E-07"]["state"] == "ACTIVE"
+    assert steps["GC-E2E-08"]["state"] == "COMPLETED_LOCAL"
     assert task["current_checkpoint"]["id"] == (
-        "CONSTRUCTOR_BUNDLE_INGEST_IMPLEMENTATION"
+        "SMB_LOCAL_ONE_CLICK_LAUNCHER_REQUIRED"
     )
 
 
@@ -143,10 +137,13 @@ def test_gc_e2e_08_records_resolved_job_runner_reconciliation():
         for item in plan["steps"]
     }
 
-    assert steps["GC-E2E-08"]["state"] == "ACTIVE"
-    assert steps["GC-E2E-08"]["active_phase"] == (
-        "CONSTRUCTOR_BUNDLE_INGEST_IMPLEMENTATION"
-    )
+    assert steps["GC-E2E-08"]["state"] == "COMPLETED_LOCAL"
+    evidence = steps["GC-E2E-08"]["completion_evidence"]
+    assert evidence["implementation_commit"] == "21f7e2f2052c9693bf8503ecead2186f4d363987"
+    assert evidence["accepted_bundle_schema_validated"] is True
+    assert evidence[
+        "constructor_workspace_created_without_source_mutation"
+    ] is True
 
     checkpoint = steps["GC-E2E-08"][
         "mandatory_job_runner_reuse_checkpoint"
