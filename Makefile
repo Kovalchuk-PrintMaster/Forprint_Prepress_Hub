@@ -19,6 +19,7 @@ help:
 	@echo "  make gdl-greeting-card-freeze-check - validate canonical recurring greeting-card structural freeze"
 	@echo "  make gdl-greeting-card-prototype - run project-owned recurring greeting-card prototype generator"
 	@echo "  make gdl-greeting-card-corpus-validate - classify and validate all recurring greeting-card front families"
+	@echo "  make gdl-greeting-card-constructor-ingest BUNDLE=/path/to/accepted_constructor_bundle - validate and ingest one accepted constructor bundle"
 	@echo "  make gdl-project-first-check - validate project-internal-tooling-first execution rule"
 	@echo "  make gdl-closeout-review - review exact GDL closeout write-set"
 	@echo "  make gdl-closeout-apply CONFIRM=YES - exact-stage, commit, push and verify reviewed slice"
@@ -206,3 +207,13 @@ gdl-closeout-review:
 gdl-closeout-apply:
 	@test "$(CONFIRM)" = "YES" || (echo "Explicit confirmation required: CONFIRM=YES"; exit 2)
 	$(PYTHON) $(GDL_CLOSEOUT_TOOL) apply --manifest "$(GDL_CLOSEOUT_MANIFEST)" --confirm "$(CONFIRM)"
+# --- Greeting-card accepted-constructor-bundle ingest ---
+
+GDL_GREETING_CARD_CONSTRUCTOR_RUNNER ?= scripts/graphic_design_lab/greeting_cards/job_runner.py
+GDL_GREETING_CARD_BUNDLE ?= $(BUNDLE)
+
+.PHONY: gdl-greeting-card-constructor-ingest
+
+gdl-greeting-card-constructor-ingest:
+	@test -n "$(GDL_GREETING_CARD_BUNDLE)" || (echo "Set BUNDLE=/path/to/accepted_constructor_bundle"; exit 2)
+	$(PYTHON) $(GDL_GREETING_CARD_CONSTRUCTOR_RUNNER) --bundle "$(GDL_GREETING_CARD_BUNDLE)"
