@@ -20,6 +20,7 @@ help:
 	@echo "  make gdl-greeting-card-prototype - run project-owned recurring greeting-card prototype generator"
 	@echo "  make gdl-greeting-card-corpus-validate - classify and validate all recurring greeting-card front families"
 	@echo "  make gdl-greeting-card-constructor-ingest BUNDLE=/path/to/accepted_constructor_bundle - validate and ingest one accepted constructor bundle"
+	@echo "  make gdl-greeting-card-smb-launch SHARE=In_Progress RELATIVE_PATH_B64=<token> - resolve SMB bundle path and invoke canonical constructor ingest"
 	@echo "  make gdl-project-first-check - validate project-internal-tooling-first execution rule"
 	@echo "  make gdl-closeout-review - review exact GDL closeout write-set"
 	@echo "  make gdl-closeout-apply CONFIRM=YES - exact-stage, commit, push and verify reviewed slice"
@@ -217,3 +218,16 @@ GDL_GREETING_CARD_BUNDLE ?= $(BUNDLE)
 gdl-greeting-card-constructor-ingest:
 	@test -n "$(GDL_GREETING_CARD_BUNDLE)" || (echo "Set BUNDLE=/path/to/accepted_constructor_bundle"; exit 2)
 	$(PYTHON) $(GDL_GREETING_CARD_CONSTRUCTOR_RUNNER) --bundle "$(GDL_GREETING_CARD_BUNDLE)"
+
+# --- Greeting-card SMB/local one-click launcher bridge ---
+
+GDL_GREETING_CARD_SMB_LAUNCH_BRIDGE ?= scripts/graphic_design_lab/greeting_cards/smb_launcher_bridge.py
+GDL_GREETING_CARD_SMB_SHARE ?= $(SHARE)
+GDL_GREETING_CARD_SMB_RELATIVE_PATH_B64 ?= $(RELATIVE_PATH_B64)
+
+.PHONY: gdl-greeting-card-smb-launch
+
+gdl-greeting-card-smb-launch:
+	@test -n "$(GDL_GREETING_CARD_SMB_SHARE)" || (echo "Set SHARE=In_Progress"; exit 2)
+	@test -n "$(GDL_GREETING_CARD_SMB_RELATIVE_PATH_B64)" || (echo "Set RELATIVE_PATH_B64=<base64url-token>"; exit 2)
+	$(PYTHON) $(GDL_GREETING_CARD_SMB_LAUNCH_BRIDGE) --share "$(GDL_GREETING_CARD_SMB_SHARE)" --relative-path-b64 "$(GDL_GREETING_CARD_SMB_RELATIVE_PATH_B64)"
