@@ -1,0 +1,30 @@
+schema_version: gdl_accept_and_advance_evidence_v0_1
+operation_id: gc_e2e_07_accept_activate_09_v0_1
+request_fingerprint_sha256: 24f3e51751bf2eefdf30382f6c5da651f40693c37b3a60067b05c51311a1039d
+task_id: GDL-TASK-GREETING-CARD-E2E-001
+accepted_step_id: GC-E2E-07
+activated_step_id: GC-E2E-09
+selection_source: explicit_operator_bound_candidate
+dependency_eligibility: PASS
+explicit_operator_confirmation: true
+blind_current_step_increment_performed: false
+automatic_next_step_activation_performed: false
+rollback_model: EXACT_PRE_TRANSITION_SNAPSHOT
+git_mutation_performed: false
+blueprint_runtime_dependency: false
+blueprint_mutation_performed: false
+completion_evidence:
+  exit_criteria_satisfied:
+    normal_operator_flow_needs_no_manual_linux_path_entry: true
+    launcher_passes_exact_bundle_path: true
+    server_entrypoint_is_project_owned: true
+  empirical_result: PASS
+  windows_launch: PASS
+  manual_linux_path_entry: false
+  exact_bundle_path_passed: true
+  source_mutation: false
+  implementation_commits:
+  - 48eb573c61aa9a05f60612471f3636efcb577711
+  - 07ceb3f557b53a943cfb2e3abded338a498ce617
+  - 90a753d5d22a4fb63c31387c322ddb673931fc61
+source_head: 8605864d2e126e6688adc7d778dff6d400fdde31

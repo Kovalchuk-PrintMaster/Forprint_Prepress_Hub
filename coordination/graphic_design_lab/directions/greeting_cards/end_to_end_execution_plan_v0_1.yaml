@@ -276,7 +276,22 @@ steps:
 
     title: SMB/local one-click launcher
 
-    state: ACTIVE
+    state: COMPLETED_LOCAL
+
+    completion_evidence:
+      exit_criteria_satisfied:
+        normal_operator_flow_needs_no_manual_linux_path_entry: true
+        launcher_passes_exact_bundle_path: true
+        server_entrypoint_is_project_owned: true
+      empirical_result: PASS
+      windows_launch: PASS
+      manual_linux_path_entry: false
+      exact_bundle_path_passed: true
+      source_mutation: false
+      implementation_commits:
+      - 48eb573c61aa9a05f60612471f3636efcb577711
+      - 07ceb3f557b53a943cfb2e3abded338a498ce617
+      - 90a753d5d22a4fb63c31387c322ddb673931fc61
 
     objective: >
       Provide a simple operator launcher located with or near the accepted
@@ -398,7 +413,7 @@ steps:
 
     title: Deterministic composition and Illustrator document worker
 
-    state: PLANNED
+    state: ACTIVE
 
     objective: >
       Resolve canonical greeting-card skeleton and semantic family, bind

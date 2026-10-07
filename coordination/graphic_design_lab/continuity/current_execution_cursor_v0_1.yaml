@@ -61,9 +61,10 @@ active_tasks:
       - GC-E2E-04
       - GC-E2E-05
       - GC-E2E-06
+      - GC-E2E-07
       - GC-E2E-08
 
-    current_step: GC-E2E-07
+    current_step: GC-E2E-09
 
     completed_subcheckpoints:
       - GC-E2E-04A
@@ -74,15 +75,11 @@ active_tasks:
       - GC-E2E-06B
 
     current_checkpoint:
-      id: SMB_LOCAL_ONE_CLICK_LAUNCHER_REQUIRED
+      id: DETERMINISTIC_COMPOSITION_ILLUSTRATOR_WORKER_REQUIRED
       state: ACTIVE
 
     next_action: >
-      Build GC-E2E-07 operator launcher located with or near the accepted
-      Constructor Bundle. It must detect its own location and invoke the
-      project-owned gdl-greeting-card-constructor-ingest entrypoint with the
-      exact bundle path, without manual Linux path entry or constructor-side
-      reinterpretation.
+      Reconcile and implement the project-owned deterministic composition and Illustrator document worker using the accepted Constructor Bundle, preserving canonical skeleton, semantic bindings, fonts, layers and editable object semantics without normal-case manual content rebinding.
 
     completion_criterion: >
       Prove the full greeting-card chain from primary customer materials
