@@ -102,6 +102,10 @@ def test_windows_launcher_is_location_aware_and_ssh_alias_based():
     assert 'ShareName = "In_Progress"' in source
     assert "BatchMode=yes" in source
     assert "ToBase64String" in source
+    assert "[Console]::OutputEncoding" in source
+    assert '$ErrorActionPreference = "Continue"' in source
+    assert "$PreviousErrorActionPreference" in source
+    assert "finally {" in source
     assert "gdl-greeting-card-smb-launch" in source
     assert "/srv/smb/In_Progress/data" not in source
     assert "accepted_constructor_bundle.yaml" in source

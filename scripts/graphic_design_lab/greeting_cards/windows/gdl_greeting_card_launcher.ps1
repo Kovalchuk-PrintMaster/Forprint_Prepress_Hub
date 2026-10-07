@@ -5,6 +5,9 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+$Utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+[Console]::OutputEncoding = $Utf8NoBom
+$OutputEncoding = $Utf8NoBom
 
 $LauncherDir = $PSScriptRoot
 $LabRoot = Split-Path -Parent $LauncherDir
@@ -71,13 +74,24 @@ $LogPath = Join-Path $LogsDir "gc_e2e_07_launcher_$Timestamp.log"
     "BUNDLE_NAME=$([System.IO.Path]::GetFileName($BundleFullPath))"
 ) | Set-Content -Encoding UTF8 -LiteralPath $LogPath
 
-$Output = & ssh.exe `
-    -o BatchMode=yes `
-    -o ConnectTimeout=10 `
-    $SshAlias `
-    $RemoteCommand 2>&1
+$PreviousErrorActionPreference = $ErrorActionPreference
+try {
+    # Windows PowerShell 5.1 wraps native stderr as ErrorRecord objects.
+    # Keep collecting stderr so remote failures are fully logged instead
+    # of terminating on the first stderr line.
+    $ErrorActionPreference = "Continue"
 
-$ExitCode = $LASTEXITCODE
+    $Output = & ssh.exe `
+        -o BatchMode=yes `
+        -o ConnectTimeout=10 `
+        $SshAlias `
+        $RemoteCommand 2>&1
+
+    $ExitCode = $LASTEXITCODE
+}
+finally {
+    $ErrorActionPreference = $PreviousErrorActionPreference
+}
 $Output | Tee-Object -FilePath $LogPath -Append | ForEach-Object { Write-Host $_ }
 
 if ($ExitCode -ne 0) {
