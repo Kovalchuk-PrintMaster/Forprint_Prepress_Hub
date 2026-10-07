@@ -237,23 +237,23 @@ def test_batch_contract_declares_constructor_signature_variant_identity():
     )
 
 
-def test_gc_e2e_06a_is_complete_and_06b_is_active():
+def test_gc_e2e_06a_remains_recorded_after_parent_closeout():
     plan = load_yaml(PLAN)
     steps = {item["id"]: item for item in plan["steps"]}
 
-    assert steps["GC-E2E-06"]["state"] == "ACTIVE"
+    assert steps["GC-E2E-06"]["state"] == "COMPLETED_LOCAL"
+    assert steps["GC-E2E-07"]["state"] == "ACTIVE"
 
     checkpoints = {
         item["id"]: item
         for item in steps["GC-E2E-06"]["execution_checkpoints"]
     }
     assert checkpoints["GC-E2E-06A"]["state"] == "COMPLETED_LOCAL"
-    assert checkpoints["GC-E2E-06B"]["state"] == "ACTIVE"
+    assert checkpoints["GC-E2E-06A"]["closes_parent_step"] is False
+    assert checkpoints["GC-E2E-06B"]["state"] == "COMPLETED_LOCAL"
 
     cursor = load_yaml(CURSOR)
     task = cursor["active_tasks"][0]
-    assert task["current_step"] == "GC-E2E-06"
     assert "GC-E2E-06A" in task["completed_subcheckpoints"]
-    assert task["current_checkpoint"]["id"] == (
-        "ACCEPTED_CONSTRUCTOR_BUNDLE_REQUIRED"
-    )
+    assert "GC-E2E-06B" in task["completed_subcheckpoints"]
+    assert "GC-E2E-06" in task["completed_steps"]

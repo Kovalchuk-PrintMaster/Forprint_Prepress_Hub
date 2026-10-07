@@ -60,8 +60,9 @@ active_tasks:
       - GC-E2E-03
       - GC-E2E-04
       - GC-E2E-05
+      - GC-E2E-06
 
-    current_step: GC-E2E-06
+    current_step: GC-E2E-07
 
     completed_subcheckpoints:
       - GC-E2E-04A
@@ -69,17 +70,17 @@ active_tasks:
       - GC-E2E-05A
       - GC-E2E-05B
       - GC-E2E-06A
+      - GC-E2E-06B
 
     current_checkpoint:
-      id: ACCEPTED_CONSTRUCTOR_BUNDLE_REQUIRED
+      id: SMB_LOCAL_ONE_CLICK_LAUNCHER_REQUIRED
       state: ACTIVE
 
     next_action: >
-      Materialize GC-E2E-06B Accepted Constructor Bundle using only confirmed
-      normalized bindings, accepted visual assets, explicit recipient-branding
-      presence or confirmed absence, the extensible signature configuration
-      matrix, optional resolved semantic-family hints and deterministic
-      provenance without re-running Intake or guessing unresolved intent.
+      Build GC-E2E-07 operator launcher located with or near the accepted
+      Constructor Bundle. It must detect its own location and invoke the stable
+      server-side project entrypoint with the exact bundle path without manual
+      Linux path entry or constructor-side reinterpretation.
 
     completion_criterion: >
       Prove the full greeting-card chain from primary customer materials

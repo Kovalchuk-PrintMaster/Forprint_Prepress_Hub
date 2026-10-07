@@ -1,0 +1,104 @@
+schema_version: gdl_greeting_card_accepted_constructor_bundle_contract_v0_1
+status: ACTIVE_EMPIRICAL_CONTRACT
+direction_id: greeting_cards
+constructor_input_class: ACCEPTED_CONSTRUCTOR_BUNDLE
+
+purpose: >
+  Materialize the reviewed normalized greeting-card package that the later
+  constructor can ingest without re-performing Intake interpretation, Creator
+  review, or semantic guessing.
+
+inputs:
+  - normalized_batch
+  - source_inventory
+  - entity_registry
+  - accepted_visual_assets
+  - signature_variant_catalog
+  - intake_review
+  - optional_resolved_semantic_family_hints
+
+intake_review:
+  state: PASS
+  evidence_must_be_explicit: true
+  current_basis: OPERATOR_REVIEWED_NORMALIZED_BATCH
+  review_id_required: true
+  reviewer_source_required: true
+  source_batch_id_must_match_bundle: true
+  builder_must_not_infer_PASS: true
+
+constructor_ready_rules:
+  intake_review_state: PASS
+  required_bindings_must_be_confirmed: true
+  proposed_bindings_forbidden: true
+  unresolved_bindings_forbidden: true
+  job_uncertainties_must_be_empty: true
+  numeric_confidence_scoring_forbidden: true
+
+required_job_sections:
+  - structured_greeting_data
+  - exact_person_text_asset_bindings
+  - accepted_visual_assets
+  - branding_selection
+  - signature_selection
+
+recipient_branding:
+  target_object_id: front.recipient_branding
+  explicit_presence_required: true
+  allowed_presence_states: [PRESENT, ABSENT]
+  confirmed_absence_is_constructor_ready: true
+
+signature_selection:
+  catalog_ref: signature_variant_catalog_v0_1.yaml
+  explicit_variant_id_required: true
+  sender_variant_is_layout_semantics_not_identity: true
+  silent_variant_inference_forbidden: true
+  coupled_object_ids:
+    - inside_text.sender_block
+    - inside_text.signature
+
+accepted_visual_assets:
+  current_materialized_acceptance_basis: CREATOR_INTERNAL_REVIEW_PASS
+  current_materialized_adapter: accepted_visual_from_creator_review
+  portrait_target_object_id: inside_image.portrait
+  source_asset_identity_must_match_normalized_portrait_binding: true
+  constructor_must_not_repeat_creator_review: true
+  assessment_states_already_modeled_upstream:
+    - PASS_THROUGH
+    - DETERMINISTIC_TEMPLATE_NORMALIZATION
+    - CREATOR_TRANSFORMATION_REQUIRED
+    - HUMAN_REVIEW_REQUIRED
+  future_non_creator_routes_require_dedicated_evidence_adapter: true
+  HUMAN_REVIEW_REQUIRED_is_not_constructor_ready: true
+
+semantic_family_hint:
+  optional: true
+  include_only_when_resolved: true
+  allowed_current_families:
+    - STANDARD
+    - RECIPIENT_BRANDING_OVERLAY
+    - BILINGUAL_OCCASION
+  automatic_inference_from_filename_forbidden: true
+
+provenance_manifest:
+  algorithm: sha256_canonical_json_v0_1
+  deterministic: true
+  bundle_hash_required: true
+  source_batch_id_required: true
+  intake_review_id_required: true
+  accepted_visual_review_ids_recorded_when_present: true
+  signature_catalog_id_required: true
+
+scope_boundary:
+  constructor_workspace_created: false
+  renderer_run: false
+  pdf_created: false
+  smb_launcher_created: false
+  source_material_mutated: false
+  customer_forwarding_performed: false
+
+authority:
+  provider_execution_performed: false
+  gdl_runtime_initialized: false
+  production_write_enabled: false
+  automatic_customer_messaging: false
+  automatic_design_approval: false

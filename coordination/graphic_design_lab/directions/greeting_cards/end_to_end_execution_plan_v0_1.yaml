@@ -220,7 +220,7 @@ steps:
 
     title: Accepted Constructor Bundle
 
-    state: ACTIVE
+    state: COMPLETED_LOCAL
 
     objective: >
       Build the complete normalized package that the constructor can consume
@@ -251,7 +251,19 @@ steps:
           signature_sender_block_coupling_modeled: true
       - id: GC-E2E-06B
         title: Accepted Constructor Bundle materialization
-        state: ACTIVE
+        state: COMPLETED_LOCAL
+        closes_parent_step: true
+        evidence:
+          accepted_constructor_bundle_validates: true
+          constructor_required_fields_have_no_unresolved_ambiguity: true
+          intake_review_state_is_PASS: true
+          intake_review_evidence_explicit: true
+          exact_confirmed_bindings_only: true
+          accepted_visual_assets: true
+          explicit_branding_presence_or_absence: true
+          explicit_signature_configuration: true
+          deterministic_provenance_manifest: true
+          constructor_execution_performed: false
         completion_requires:
           - reviewed_normalized_bundle
           - exact_confirmed_bindings_only
@@ -264,7 +276,7 @@ steps:
 
     title: SMB/local one-click launcher
 
-    state: PLANNED
+    state: ACTIVE
 
     objective: >
       Provide a simple operator launcher located with or near the accepted

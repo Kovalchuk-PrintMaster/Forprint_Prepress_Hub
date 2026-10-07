@@ -196,11 +196,10 @@ def test_greeting_card_index_registers_review_contract():
     assert "creator_review_contract_v0_1.yaml" in index["documents"]
 
 
-def test_gc_e2e_05a_remains_recorded_after_parent_closeout():
+def test_gc_e2e_05a_remains_recorded_after_later_progress():
     plan = load_yaml(PLAN)
     steps = {item["id"]: item for item in plan["steps"]}
     assert steps["GC-E2E-05"]["state"] == "COMPLETED_LOCAL"
-    assert steps["GC-E2E-06"]["state"] == "ACTIVE"
 
     checkpoints = {
         item["id"]: item
@@ -214,4 +213,3 @@ def test_gc_e2e_05a_remains_recorded_after_parent_closeout():
     task = cursor["active_tasks"][0]
     assert "GC-E2E-05A" in task["completed_subcheckpoints"]
     assert "GC-E2E-05B" in task["completed_subcheckpoints"]
-    assert task["current_step"] == "GC-E2E-06"

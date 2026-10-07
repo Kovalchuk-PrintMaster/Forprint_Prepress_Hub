@@ -1,0 +1,98 @@
+schema_version: gdl_greeting_card_constructor_bundle_fixture_v0_1
+fixture_id: sanitized_greeting_card_constructor_bundle_v0_1
+sanitized: true
+
+entity_registry:
+  entities:
+    - entity_id: entity_bundle_recipient
+      entity_type: recipient
+      canonical_name: Recipient Bundle
+      exact_aliases: [Bundle Recipient]
+
+source_inventory:
+  assets:
+    - asset_id: sanitized_source_portrait_001
+      kind: raster
+      logical_role: candidate_portrait
+      provenance:
+        source_class: customer_supplied
+    - asset_id: asset_signature_grigo
+      kind: raster
+      logical_role: signature
+      provenance:
+        source_class: previously_confirmed
+  references: []
+
+normalized_batch:
+  schema_version: gdl_greeting_card_normalized_batch_v0_1
+  batch_id: sanitized_constructor_batch_001
+  request_id: sanitized_constructor_request_001
+  product_playbook_id: recurring_greeting_card_v0_1
+  product_type: greeting_card
+  jobs:
+    - job_id: sanitized_job_review_001
+      raw_recipient_name: Recipient Bundle
+      candidate_entity_id: entity_bundle_recipient
+      occasion: birthday
+      greeting_text_source: sanitized://text/bundle_recipient.txt
+      sender_variant: SINGLE_PRIMARY
+      supplied_assets:
+        - sanitized_source_portrait_001
+        - asset_signature_grigo
+      special_requests: []
+      uncertainties: []
+      bindings:
+        recipient_entity:
+          state: CONFIRMED
+          basis: operator_assignment
+          entity_id: entity_bundle_recipient
+          human_confirmation_required: false
+        greeting_text:
+          state: CONFIRMED
+          basis: customer_assignment
+          text: "Sanitized birthday greeting."
+          source_ref: sanitized://text/bundle_recipient.txt
+          human_confirmation_required: false
+        portrait:
+          state: CONFIRMED
+          basis: operator_assignment
+          source_id: sanitized_source_portrait_001
+          human_confirmation_required: false
+        recipient_branding:
+          state: CONFIRMED
+          basis: operator_assignment
+          presence: ABSENT
+          source_id: null
+          human_confirmation_required: false
+        signature:
+          state: CONFIRMED
+          basis: previously_confirmed
+          source_id: asset_signature_grigo
+          variant_id: GRIGO
+          human_confirmation_required: false
+        sender_variant:
+          state: CONFIRMED
+          basis: previously_confirmed
+          value: SINGLE_PRIMARY
+          human_confirmation_required: false
+
+semantic_family_hints:
+  sanitized_job_review_001:
+    family_id: STANDARD
+    basis: operator_assignment
+
+intake_review:
+  review_id: sanitized-intake-review-001
+  reviewer_source: fixture_operator
+  basis: OPERATOR_REVIEWED_NORMALIZED_BATCH
+  state: PASS
+  source_batch_id: sanitized_constructor_batch_001
+
+expected:
+  bundle_id: sanitized-accepted-constructor-bundle-001
+  constructor_input_class: ACCEPTED_CONSTRUCTOR_BUNDLE
+  signature_variant_id: GRIGO
+  sender_variant: SINGLE_PRIMARY
+  branding_presence: ABSENT
+  semantic_family_id: STANDARD
+  accepted_visual_artifact_ref: sanitized-restored-portrait-r001

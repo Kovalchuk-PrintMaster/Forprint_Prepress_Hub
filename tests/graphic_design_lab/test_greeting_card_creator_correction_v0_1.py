@@ -341,12 +341,11 @@ def test_greeting_card_index_registers_correction_contract():
     )
 
 
-def test_gc_e2e_05_closes_and_gc_e2e_06_becomes_active():
+def test_gc_e2e_05_remains_closed_after_later_progress():
     plan = load_yaml(PLAN)
     steps = {item["id"]: item for item in plan["steps"]}
 
     assert steps["GC-E2E-05"]["state"] == "COMPLETED_LOCAL"
-    assert steps["GC-E2E-06"]["state"] == "ACTIVE"
 
     checkpoints = {
         item["id"]: item
@@ -359,10 +358,6 @@ def test_gc_e2e_05_closes_and_gc_e2e_06_becomes_active():
 
     cursor = load_yaml(CURSOR)
     task = cursor["active_tasks"][0]
-    assert task["current_step"] == "GC-E2E-06"
     assert "GC-E2E-05" in task["completed_steps"]
     assert "GC-E2E-05A" in task["completed_subcheckpoints"]
     assert "GC-E2E-05B" in task["completed_subcheckpoints"]
-    assert task["current_checkpoint"]["id"] == (
-        "ACCEPTED_CONSTRUCTOR_BUNDLE_REQUIRED"
-    )
