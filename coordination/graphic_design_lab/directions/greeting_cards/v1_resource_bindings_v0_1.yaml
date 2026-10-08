@@ -21,7 +21,7 @@ private_assets:
     staging_evidence_path: tmp/flowers.default.v1.png
     sha256: d9113f8d6f9627f9b106f5550e6187aaa562139fef6122e4834e7d4f2f3bbd67
     tracked_in_git: false
-    final_private_resource_location: TO_BE_RESOLVED_BEFORE_BUILDER_EXECUTION
+    final_private_resource_location: EXTERNAL_PRIVATE_RESOURCE_MANIFEST
     missing_resource_policy: STOP_JOB_AND_REPORT_EXACT_RESOURCE
 private_fonts:
   tracked_in_git: false
@@ -30,7 +30,7 @@ private_fonts:
   known_requirements:
     front_occasion: Monotype Corsiva
     greeting_and_sender: ZapfChanceryC
-  final_private_resource_locations: TO_BE_RESOLVED_BEFORE_BUILDER_EXECUTION
+  final_private_resource_locations: EXTERNAL_PRIVATE_RESOURCE_MANIFEST
 human_editability_reference:
   path: scripts/graphic_design_lab/greeting_cards/illustrator_operator_companion_v0_1.jsx
   script_id: FORPRINT_GDL_ILLUSTRATOR_OPERATOR_COMPANION_V0_2_2B
@@ -40,3 +40,44 @@ human_editability_reference:
     artboard_layout: 2x2
     logical_block_model: FLAT_LOGICAL_BLOCKS_V0_2
     canonical_production_artifact: false
+
+resolved_resource_fingerprints_v0_1:
+  resolution_contract: private_resource_manifest_contract_v0_1.yaml
+  private_absolute_paths_tracked_in_git: false
+  silent_substitution_allowed: false
+
+  front_occasion_font:
+    logical_id: font.front_occasion.monotype_corsiva.v1
+    canonical_filename: MTCORSVA.TTF
+    observed_byte_identical_alias:
+      filename: MTCORSVA_0.TTF
+      accepted_only_when_sha256_matches: true
+    sha256: a6f6dacb871be365ad93fe1aab09332f768cd2aa35fdfca8e0053a38f5a2662b
+    family: Monotype Corsiva
+    postscript_name: MonotypeCorsiva
+    version: "Version 2.35"
+    required_ukrainian_glyphs: PASS
+
+  greeting_sender_font:
+    logical_id: font.greeting_sender.zapf_chancery_c.v1
+    canonical_filename: ZapfChanceryC.otf
+    sha256: 628f8ed5839ae3e6ab7406d365e275ea82c563912a92d2e57fb548b6149e9025
+    family: ZapfChanceryC
+    postscript_name: ZapfChanceryC
+    required_ukrainian_glyphs: PASS
+
+  canonical_reference_pdf:
+    logical_id: template.greeting_card.dolinska.v1
+    sha256: 66ed88de51ce621fcc0067263e6fc740392a1a0e9ee39e88514089451b1f2e85
+    page_count: 4
+    private_absolute_path: EXTERNAL_PRIVATE_RESOURCE_MANIFEST
+
+  noncanonical_single_page_source_evidence:
+    sha256: 93cc869b5c673474a322d742986397d769a6af606a8d708e250c108fd6bc028e
+    page_count: 1
+    role: SOURCE_ARTIFACT_NOT_CANONICAL_FOUR_PAGE_REFERENCE
+
+  default_inside_image:
+    logical_id: asset.flowers.default.v1
+    sha256: d9113f8d6f9627f9b106f5550e6187aaa562139fef6122e4834e7d4f2f3bbd67
+    private_absolute_path: EXTERNAL_PRIVATE_RESOURCE_MANIFEST

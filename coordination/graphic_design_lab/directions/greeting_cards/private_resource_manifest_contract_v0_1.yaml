@@ -1,0 +1,58 @@
+
+schema_version: gdl_greeting_card_private_resource_manifest_contract_v0_1
+status: ACTIVE_V1_RUNTIME_CONTRACT
+direction_id: greeting_cards
+
+purpose: >
+  Bind the deterministic greeting-card Builder to exact private resource files
+  without storing client-private absolute paths or proprietary binary assets in
+  Git.
+
+manifest:
+  schema_version: gdl_greeting_card_private_resource_manifest_v0_1
+
+  resources:
+    font.front_occasion.monotype_corsiva.v1:
+      path:
+        type: absolute_private_path
+        tracked_in_git: false
+
+    font.greeting_sender.zapf_chancery_c.v1:
+      path:
+        type: absolute_private_path
+        tracked_in_git: false
+
+    template.greeting_card.dolinska.v1:
+      path:
+        type: absolute_private_path
+        tracked_in_git: false
+
+    asset.flowers.default.v1:
+      path:
+        type: absolute_private_path
+        tracked_in_git: false
+
+runtime_rules:
+  exact_hash_required: true
+  exact_font_identity_required: true
+  required_ukrainian_glyph_coverage_required: true
+  canonical_reference_pdf_page_count_required: 4
+  silent_substitution_allowed: false
+  basename_guessing_allowed: false
+  fuzzy_resource_search_allowed: false
+  private_path_logging_required: false
+  private_path_commit_allowed: false
+
+privacy:
+  real_client_workspace_absolute_path_in_git: false
+  client_name_or_phone_in_tracked_resource_binding: false
+  proprietary_font_binary_in_git: false
+  private_asset_binary_in_git: false
+
+failure_policy:
+  - missing_required_binding_stops_execution
+  - missing_file_stops_execution
+  - hash_mismatch_stops_execution
+  - font_identity_mismatch_stops_execution
+  - missing_required_glyph_stops_execution
+  - reference_pdf_identity_mismatch_stops_execution

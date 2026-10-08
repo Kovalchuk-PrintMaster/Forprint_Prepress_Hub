@@ -18,6 +18,7 @@ help:
 	@echo "  make gdl-toolchain-check - validate installed GDL PDF/vector/raster host toolchain"
 	@echo "  make gdl-greeting-card-freeze-check - validate canonical recurring greeting-card structural freeze"
 	@echo "  make gdl-greeting-card-builder-input-check - validate exact Builder v1 input extension over the Accepted Constructor Bundle"
+	@echo "  make gdl-greeting-card-private-resources-check RESOURCE_MANIFEST=/private/path/resources.yaml - fail-closed validation of exact Builder v1 private resources"
 	@echo "  make gdl-greeting-card-prototype - run project-owned recurring greeting-card prototype generator"
 	@echo "  make gdl-greeting-card-corpus-validate - classify and validate all recurring greeting-card front families"
 	@echo "  make gdl-greeting-card-constructor-ingest BUNDLE=/path/to/accepted_constructor_bundle - validate and ingest one accepted constructor bundle"
@@ -253,6 +254,17 @@ gdl-transition-closeout-apply:
 
 gdl-greeting-card-builder-input-check:
 	.venv_prepress_hub/bin/python -m pytest -q -p no:cacheprovider tests/graphic_design_lab/test_greeting_card_builder_input_v0_1.py
+
+# --- Greeting-card Builder v1 private-resource resolver ---
+
+GDL_GREETING_CARD_PRIVATE_RESOURCE_CHECKER ?= scripts/graphic_design_lab/greeting_cards/private_resource_check.py
+GDL_GREETING_CARD_PRIVATE_RESOURCE_MANIFEST ?= $(RESOURCE_MANIFEST)
+
+.PHONY: gdl-greeting-card-private-resources-check
+
+gdl-greeting-card-private-resources-check:
+	@test -n "$(GDL_GREETING_CARD_PRIVATE_RESOURCE_MANIFEST)" || (echo "Set RESOURCE_MANIFEST=/private/path/resources.yaml"; exit 2)
+	$(PYTHON) $(GDL_GREETING_CARD_PRIVATE_RESOURCE_CHECKER) --manifest "$(GDL_GREETING_CARD_PRIVATE_RESOURCE_MANIFEST)"
 
 # --- Greeting-card accepted-constructor-bundle ingest ---
 
