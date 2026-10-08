@@ -1,0 +1,66 @@
+{
+  "schema_version": "forprint_project_closeout_manifest_v0_1",
+  "workstream_id": "gdl_greeting_card_all_signature_bindings_v0_1",
+  "expected_head": "086ade7ffc66f4f3e0a2c3d11428ded2f8d50695",
+  "commit_message": "feat(gdl): bind all greeting-card signature variants",
+  "visual_confirmation": "PASS",
+  "visual_confirmation_reason": "NON_VISUAL_RESOURCE_IDENTITY_BINDING",
+  "verified_counts": {
+    "signature_resource_and_component_tests": 17,
+    "builder_constructor_regression_tests": 10,
+    "full_governance_tests": 293
+  },
+  "verified_facts": {
+    "signature_variant_count": 3,
+    "grigo_binding_resolved": true,
+    "herasymenko_binding_resolved": true,
+    "dual_binding_resolved": true,
+    "silent_signature_fallback": false,
+    "filename_based_signature_selection": false,
+    "private_source_paths_tracked": false,
+    "pdf_rendering_performed": false
+  },
+  "write_set": [
+    "Makefile",
+    "app/graphic_design_lab/greeting_card_embedded_components.py",
+    "app/graphic_design_lab/greeting_card_private_resources.py",
+    "coordination/graphic_design_lab/directions/greeting_cards/embedded_component_bindings_v0_1.yaml",
+    "coordination/graphic_design_lab/directions/greeting_cards/index.yaml",
+    "coordination/graphic_design_lab/directions/greeting_cards/private_resource_manifest_contract_v0_1.yaml",
+    "coordination/graphic_design_lab/directions/greeting_cards/v1_resource_bindings_v0_1.yaml",
+    "coordination/graphic_design_lab/execution/greeting_card_all_signature_bindings_closeout_v0_1.json",
+    "scripts/graphic_design_lab/greeting_cards/embedded_component_check.py",
+    "tests/graphic_design_lab/test_greeting_card_embedded_components_v0_1.py",
+    "tests/graphic_design_lab/test_greeting_card_private_resources_v0_1.py"
+  ],
+  "review_commands": [
+    [
+      ".venv_prepress_hub/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "tests/graphic_design_lab/test_greeting_card_private_resources_v0_1.py",
+      "tests/graphic_design_lab/test_greeting_card_embedded_components_v0_1.py"
+    ],
+    [
+      ".venv_prepress_hub/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "tests/graphic_design_lab/test_greeting_card_builder_input_v0_1.py",
+      "tests/graphic_design_lab/test_greeting_card_job_runner_v0_1.py"
+    ],
+    [
+      "make",
+      "gdl-project-first-check"
+    ],
+    [
+      "make",
+      "governance-check"
+    ]
+  ]
+}

@@ -1,0 +1,96 @@
+
+schema_version: gdl_greeting_card_embedded_component_bindings_v0_1
+status: ACTIVE_V1_RUNTIME_BINDING
+direction_id: greeting_cards
+
+purpose: >
+  Bind deterministic greeting-card Builder components that are embedded in exact,
+  hash-verified private PDF sources. Component identity is content-derived and
+  never inferred from a customer filename.
+
+source_resources:
+  canonical_reference:
+    resource_id: template.greeting_card.dolinska.v1
+    sha256: 66ed88de51ce621fcc0067263e6fc740392a1a0e9ee39e88514089451b1f2e85
+    page_count: 4
+
+  herasymenko_signature_source:
+    resource_id: source.greeting_card.signature.herasymenko.v1
+    sha256: a5392be1234c026d1200cad288a3b4989f506f8eb32522dcbe6236bb221722a8
+    page_count: 4
+    tracked_private_path: false
+
+  dual_signature_source:
+    resource_id: source.greeting_card.signature.dual_grigo_herasymenko.v1
+    sha256: 2cdff2f2c9a243c2189067675a9f093c0807df30ccae0f57eecc4003b271130c
+    page_count: 4
+    tracked_private_path: false
+
+components:
+  front_sender_logo:
+    component_id: component.front.sender_logo.embedded.v1
+    source_resource_id: template.greeting_card.dolinska.v1
+    physical_page: 1
+    selector:
+      type: PYMUPDF_IMAGE_DIGEST_EXACT
+      digest_hex: 78b87a6195270a66b0e32de814f8f597
+    external_sender_logo_file_required_for_v1: false
+
+  signature_variants:
+    GRIGO:
+      component_id: component.signature.grigo.embedded_vector.v1
+      source_resource_id: template.greeting_card.dolinska.v1
+      physical_page: 4
+      kind: embedded_vector_cluster
+      drawing_count: 7
+      bbox_mm: [103.465, 213.348, 155.203, 247.531]
+      normalized_sha256: 8a50d63892577d3a61fdd76503a036c16423085e9025d0f84e87032acb276580
+
+    HERASYMENKO:
+      component_id: component.signature.herasymenko.embedded_image.v1
+      source_resource_id: source.greeting_card.signature.herasymenko.v1
+      physical_page: 4
+      kind: embedded_image
+      image_pixel_size: [536, 700]
+      pymupdf_image_digest_hex: 18225bc81e1d5e6337539614421b2ac6
+      extracted_sha256: 2d7bc1b4f30adf646222da75731e631070c6cc40a653fb9bfdce9d181fe51406
+      bbox_mm: [82.877, 214.875, 128.258, 274.141]
+
+    DUAL_GRIGO_HERASYMENKO:
+      component_id: component.signature.dual_grigo_herasymenko.embedded_composite.v1
+      source_resource_id: source.greeting_card.signature.dual_grigo_herasymenko.v1
+      physical_page: 4
+      kind: embedded_composite
+      component_count: 2
+      composite_sha256: 4ab2cd819f743b4e08ea44a76b26d1e0036806270618343df6e697c485726f5b
+      components:
+        grigo_vector:
+          drawing_indices: [103, 104, 105, 106, 107, 108, 109]
+          drawing_count: 7
+          bbox_mm: [88.186, 196.983, 139.923, 231.166]
+          normalized_sha256: 00dd0946e9d3fd4ec9ff4f8bad05ee294618270f51e437eb5f0f3d7f69771e21
+        herasymenko_image:
+          image_pixel_size: [536, 700]
+          pymupdf_image_digest_hex: 18225bc81e1d5e6337539614421b2ac6
+          extracted_sha256: 2d7bc1b4f30adf646222da75731e631070c6cc40a653fb9bfdce9d181fe51406
+          bbox_mm: [96.048, 219.891, 141.429, 279.158]
+
+runtime_rules:
+  supported_signature_variants:
+    - GRIGO
+    - HERASYMENKO
+    - DUAL_GRIGO_HERASYMENKO
+  exact_source_pdf_hash_required: true
+  exact_component_hash_required: true
+  filename_based_signature_selection_allowed: false
+  silent_signature_fallback_allowed: false
+  illustrator_runtime_dependency: false
+
+privacy:
+  private_absolute_path_tracked_in_git: false
+  client_identity_required_in_binding_contract: false
+
+scope:
+  all_current_signature_variants_bound: true
+  renderer_implemented_here: false
+  private_source_relocation_from_lab_tmp_to_stable_workspace: deferred_before_production_ready

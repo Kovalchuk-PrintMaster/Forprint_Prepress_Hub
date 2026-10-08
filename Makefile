@@ -19,6 +19,7 @@ help:
 	@echo "  make gdl-greeting-card-freeze-check - validate canonical recurring greeting-card structural freeze"
 	@echo "  make gdl-greeting-card-builder-input-check - validate exact Builder v1 input extension over the Accepted Constructor Bundle"
 	@echo "  make gdl-greeting-card-private-resources-check RESOURCE_MANIFEST=/private/path/resources.yaml - fail-closed validation of exact Builder v1 private resources"
+	@echo "  make gdl-greeting-card-embedded-components-check RESOURCE_MANIFEST=/private/path/resources.yaml - validate sender-logo and all v1 signature template components"
 	@echo "  make gdl-greeting-card-prototype - run project-owned recurring greeting-card prototype generator"
 	@echo "  make gdl-greeting-card-corpus-validate - classify and validate all recurring greeting-card front families"
 	@echo "  make gdl-greeting-card-constructor-ingest BUNDLE=/path/to/accepted_constructor_bundle - validate and ingest one accepted constructor bundle"
@@ -265,6 +266,17 @@ GDL_GREETING_CARD_PRIVATE_RESOURCE_MANIFEST ?= $(RESOURCE_MANIFEST)
 gdl-greeting-card-private-resources-check:
 	@test -n "$(GDL_GREETING_CARD_PRIVATE_RESOURCE_MANIFEST)" || (echo "Set RESOURCE_MANIFEST=/private/path/resources.yaml"; exit 2)
 	$(PYTHON) $(GDL_GREETING_CARD_PRIVATE_RESOURCE_CHECKER) --manifest "$(GDL_GREETING_CARD_PRIVATE_RESOURCE_MANIFEST)"
+
+# --- Greeting-card embedded template components ---
+
+GDL_GREETING_CARD_EMBEDDED_COMPONENT_CHECKER ?= scripts/graphic_design_lab/greeting_cards/embedded_component_check.py
+GDL_GREETING_CARD_EMBEDDED_COMPONENT_RESOURCE_MANIFEST ?= $(RESOURCE_MANIFEST)
+
+.PHONY: gdl-greeting-card-embedded-components-check
+
+gdl-greeting-card-embedded-components-check:
+	@test -n "$(GDL_GREETING_CARD_EMBEDDED_COMPONENT_RESOURCE_MANIFEST)" || (echo "Set RESOURCE_MANIFEST=/private/path/resources.yaml"; exit 2)
+	$(PYTHON) $(GDL_GREETING_CARD_EMBEDDED_COMPONENT_CHECKER) --manifest "$(GDL_GREETING_CARD_EMBEDDED_COMPONENT_RESOURCE_MANIFEST)" --signature-variant ALL
 
 # --- Greeting-card accepted-constructor-bundle ingest ---
 

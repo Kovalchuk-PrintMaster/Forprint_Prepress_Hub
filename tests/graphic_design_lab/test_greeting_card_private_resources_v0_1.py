@@ -324,3 +324,32 @@ def test_unknown_resource_id_is_rejected():
             },
             required_ids=[],
         )
+
+def test_signature_source_pdf_fingerprints_are_exact():
+    assert (
+        resources.EXPECTED_RESOURCES[
+            resources.RESOURCE_SIGNATURE_HERASYMENKO
+        ]["sha256"]
+        == "a5392be1234c026d1200cad288a3b4989f506f8eb32522dcbe6236bb221722a8"
+    )
+
+    assert (
+        resources.EXPECTED_RESOURCES[
+            resources.RESOURCE_SIGNATURE_HERASYMENKO
+        ]["page_count"]
+        == 4
+    )
+
+    assert (
+        resources.EXPECTED_RESOURCES[
+            resources.RESOURCE_SIGNATURE_DUAL
+        ]["sha256"]
+        == "2cdff2f2c9a243c2189067675a9f093c0807df30ccae0f57eecc4003b271130c"
+    )
+
+    assert (
+        resources.EXPECTED_RESOURCES[
+            resources.RESOURCE_SIGNATURE_DUAL
+        ]["page_count"]
+        == 4
+    )

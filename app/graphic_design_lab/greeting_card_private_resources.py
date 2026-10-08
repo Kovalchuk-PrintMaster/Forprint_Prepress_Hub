@@ -27,6 +27,13 @@ RESOURCE_DEFAULT_FLOWERS = (
     "asset.flowers.default.v1"
 )
 
+RESOURCE_SIGNATURE_HERASYMENKO = (
+    "source.greeting_card.signature.herasymenko.v1"
+)
+RESOURCE_SIGNATURE_DUAL = (
+    "source.greeting_card.signature.dual_grigo_herasymenko.v1"
+)
+
 REQUIRED_UKRAINIAN_TEXT = (
     "Привітання з нагоди Дня Народження!"
     "Привітання з Ювілеєм!"
@@ -70,6 +77,22 @@ EXPECTED_RESOURCES: dict[str, dict[str, Any]] = {
             "d9113f8d6f9627f9b106f5550e6187a"
             "aa562139fef6122e4834e7d4f2f3bbd67"
         ),
+    },
+    RESOURCE_SIGNATURE_HERASYMENKO: {
+        "kind": "pdf",
+        "sha256": (
+            "a5392be1234c026d1200cad288a3b498"
+            "9f506f8eb32522dcbe6236bb221722a8"
+        ),
+        "page_count": 4,
+    },
+    RESOURCE_SIGNATURE_DUAL: {
+        "kind": "pdf",
+        "sha256": (
+            "2cdff2f2c9a243c2189067675a9f093c"
+            "0807df30ccae0f57eecc4003b271130c"
+        ),
+        "page_count": 4,
     },
 }
 

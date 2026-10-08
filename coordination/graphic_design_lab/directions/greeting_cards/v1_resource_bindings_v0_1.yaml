@@ -81,3 +81,54 @@ resolved_resource_fingerprints_v0_1:
     logical_id: asset.flowers.default.v1
     sha256: d9113f8d6f9627f9b106f5550e6187aaa562139fef6122e4834e7d4f2f3bbd67
     private_absolute_path: EXTERNAL_PRIVATE_RESOURCE_MANIFEST
+
+embedded_template_components_v0_1:
+  binding_contract: embedded_component_bindings_v0_1.yaml
+  filename_based_component_selection_allowed: false
+  private_absolute_paths_tracked_in_git: false
+  silent_signature_fallback_allowed: false
+
+  front_sender_logo:
+    component_id: component.front.sender_logo.embedded.v1
+    source_resource_id: template.greeting_card.dolinska.v1
+    source: CANONICAL_REFERENCE_EMBEDDED_COMPONENT
+    physical_page: 1
+    pymupdf_image_digest_hex: 78b87a6195270a66b0e32de814f8f597
+    external_file_required_for_first_render: false
+
+  signature_variants:
+    GRIGO:
+      component_id: component.signature.grigo.embedded_vector.v1
+      source_resource_id: template.greeting_card.dolinska.v1
+      kind: embedded_vector_cluster
+      physical_page: 4
+      drawing_count: 7
+      bbox_mm: [103.465, 213.348, 155.203, 247.531]
+      normalized_sha256: 8a50d63892577d3a61fdd76503a036c16423085e9025d0f84e87032acb276580
+      supported: true
+
+    HERASYMENKO:
+      component_id: component.signature.herasymenko.embedded_image.v1
+      source_resource_id: source.greeting_card.signature.herasymenko.v1
+      kind: embedded_image
+      physical_page: 4
+      image_pixel_size: [536, 700]
+      image_digest_hex: 18225bc81e1d5e6337539614421b2ac6
+      extracted_sha256: 2d7bc1b4f30adf646222da75731e631070c6cc40a653fb9bfdce9d181fe51406
+      bbox_mm: [82.877, 214.875, 128.258, 274.141]
+      supported: true
+
+    DUAL_GRIGO_HERASYMENKO:
+      component_id: component.signature.dual_grigo_herasymenko.embedded_composite.v1
+      source_resource_id: source.greeting_card.signature.dual_grigo_herasymenko.v1
+      kind: embedded_composite
+      physical_page: 4
+      component_count: 2
+      composite_sha256: 4ab2cd819f743b4e08ea44a76b26d1e0036806270618343df6e697c485726f5b
+      supported: true
+
+  failure_policy:
+    unknown_signature_variant: STOP_JOB_AND_REPORT_EXACT_VARIANT
+    missing_signature_source: STOP_JOB_AND_REPORT_EXACT_RESOURCE
+    component_hash_mismatch: STOP_JOB
+    silent_signature_fallback_allowed: false
