@@ -87,3 +87,26 @@ local_execution_cursor_policy:
     blueprint_write_forbidden: true
     blueprint_work_front_is_not_gdl_local_cursor: true
     parent_prepress_roadmap_write_from_gdl_forbidden: true
+
+material_intent_preservation_policy:
+  material_execution_intent_must_survive_chat: true
+  supporting_intent_record_required_when:
+    - experiment_changes_future_implementation_direction
+    - material_functionality_is_deferred
+    - operator_corrects_assistant_architectural_interpretation
+    - implementation_choice_would_be_hard_to_reconstruct_from_canonical_state_alone
+  operator_intent_and_assistant_interpretation_must_be_distinguished: true
+  assistant_inference_is_not_operator_decision: true
+
+capability_harvest_policy:
+  apply_when_real_end_to_end_workflow_is_completed_and_verified: true
+  purpose: >
+    Identify reusable implementation capabilities after a workflow proves useful
+    so future GDL directions can REUSE, EXTEND or ADAPT rather than rebuild.
+  record:
+    - capability
+    - implementation_location
+    - input_output_contract
+    - validation_evidence
+    - operator_entrypoint
+    - candidate_future_reuse

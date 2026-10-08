@@ -1,0 +1,106 @@
+schema_version: gdl_greeting_card_builder_input_contract_draft_v0_1
+status: DRAFT_DERIVED_PROJECTION_NOT_CANONICAL_INPUT
+package_type: FULL_BUILD
+authority_relationship:
+  canonical_input_authority: accepted_constructor_bundle_contract_v0_1.yaml
+  duplicate_source_of_truth_forbidden: true
+  disposition: EXTEND_OR_PROJECT_EXISTING_ACCEPTED_BUNDLE_FOR_BUILDER_V1
+purpose: >
+  Self-contained machine handoff from accepted Intake/Creator workflow to the
+  deterministic Builder. Builder must not reconstruct task intent from prose.
+
+required_top_level:
+  - schema_version
+  - package_id
+  - package_sha256
+  - created_date
+  - jobs
+  - resources
+  - authority
+
+job_required:
+  - job_id
+  - recipient_label
+  - revision
+  - front
+  - inside_image
+  - inside_greeting
+
+example_shape:
+  schema_version: gdl_greeting_card_builder_package_v0_1
+  package_id: sanitized-package-example
+  package_sha256: PLACEHOLDER_FOR_SCHEMA_EXAMPLE
+  created_date: YYYY-MM-DD
+
+  jobs:
+    - job_id: GC-YYYYMMDD-RECIPIENT-HASH6
+      recipient_label: SANITIZED_RECIPIENT
+      revision: r001
+
+      front:
+        family: STANDARD
+        sender_logo_asset_id: sender_logo.default.v1
+        recipient_branding:
+          mode: ABSENT
+          asset_id: null
+        occasion:
+          kind: BIRTHDAY
+          display_text: EXACT_VISIBLE_TEXT
+
+      inside_image:
+        mode: DEFAULT_ASSET
+        asset_id: flowers.default.v1
+
+      inside_greeting:
+        greeting_text: EXACT_CUSTOMER_GREETING_TEXT
+        sender_variant: GRIGO
+        sender_text:
+          closing_phrase: EXACT_TEXT
+          primary_title: EXACT_TEXT
+          primary_name: EXACT_TEXT
+          secondary_title: null
+          secondary_name: null
+        signature_variant: GRIGO
+        signature_asset_ids:
+          - signature.grigo.v1
+
+  resources:
+    assets:
+      - asset_id: flowers.default.v1
+        package_path: assets/flowers_default.png
+        sha256: EXACT_SHA256
+      - asset_id: sender_logo.default.v1
+        package_or_library_ref: PRIVATE_RESOURCE_REFERENCE
+        sha256: EXACT_SHA256
+    fonts:
+      - font_id: front.occasion
+        family: Monotype Corsiva
+        private_resource_ref: EXACT_PRIVATE_FONT_REFERENCE
+      - font_id: greeting.sender
+        family: ZapfChanceryC
+        private_resource_ref: EXACT_PRIVATE_FONT_REFERENCE
+
+  authority:
+    raw_customer_material_interpretation_allowed: false
+    semantic_guessing_allowed: false
+    font_substitution_allowed: false
+    silent_asset_substitution_allowed: false
+
+validation_rules:
+  - every_job_id_is_unique_within_package
+  - every_non_null_asset_id_resolves_exactly_once
+  - every_exact_asset_has_integrity_identity
+  - front_family_is_explicit
+  - occasion_display_text_is_exact
+  - sender_variant_is_one_of_current_v1_variants
+  - every_dynamic_text_field_is_exact
+  - builder_never_inferrs_default_asset_from_missing_input
+  - package_hash_is_deterministic
+
+notes:
+  - >
+    This is a draft integration shape, not yet a canonical repo schema. Tomorrow
+    reconcile it with the existing Accepted Constructor Bundle instead of
+    creating duplicate truth.
+  - >
+    Prefer extending/mapping the current accepted bundle where possible.

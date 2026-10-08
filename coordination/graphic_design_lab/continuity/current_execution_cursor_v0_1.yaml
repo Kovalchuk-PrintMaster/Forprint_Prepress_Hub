@@ -75,11 +75,17 @@ active_tasks:
       - GC-E2E-06B
 
     current_checkpoint:
-      id: DETERMINISTIC_COMPOSITION_ILLUSTRATOR_WORKER_REQUIRED
+      id: DETERMINISTIC_EDITABLE_PDF_BUILDER_REQUIRED
       state: ACTIVE
 
     next_action: >
-      Reconcile and implement the project-owned deterministic composition and Illustrator document worker using the accepted Constructor Bundle, preserving canonical skeleton, semantic bindings, fonts, layers and editable object semantics without normal-case manual content rebinding.
+      Integrate the corrected operator intent for GC-E2E-09, then implement
+      the minimum project-owned deterministic greeting-card PDF Builder.
+      Consume only the accepted Constructor Bundle plus explicit private
+      resource bindings; generate one PDF and four PNG previews per job;
+      preserve the V0_2_2B human-editability structure without making
+      Illustrator a runtime dependency. Keep PATCH/interactive UX and
+      generic logo-reuse intelligence deferred to later phases.
 
     completion_criterion: >
       Prove the full greeting-card chain from primary customer materials
@@ -93,6 +99,22 @@ active_tasks:
 
 inactive_or_blocked_tasks: []
 
+latest_operator_intent_reconciliation:
+  date: 2026-10-08
+  disposition: CORRECT_PREVIOUS_ASSISTANT_ARCHITECTURAL_INFERENCE
+  operator_intent_authority: true
+  gc_e2e_09:
+    runtime_target: DETERMINISTIC_EDITABLE_PDF_BUILDER
+    illustrator_runtime_dependency: false
+    illustrator_human_editability_reference:
+      script_id: FORPRINT_GDL_ILLUSTRATOR_OPERATOR_COMPANION_V0_2_2B
+      path: scripts/graphic_design_lab/greeting_cards/illustrator_operator_companion_v0_1.jsx
+  v1_priority: FULL_BATCH_PDF_PLUS_PAGE_PREVIEWS
+  deferred:
+    - interactive_patch_launcher
+    - generic_logo_visual_reuse_resolver
+    - advanced_housekeeping
+  supporting_intent_journal: execution_intent_journal_v0_1.yaml
 last_reconciliation:
   disposition: ADAPT
 

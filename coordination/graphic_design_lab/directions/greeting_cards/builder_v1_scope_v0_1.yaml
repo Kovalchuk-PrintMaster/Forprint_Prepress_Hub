@@ -1,0 +1,53 @@
+schema_version: gdl_greeting_card_builder_v1_scope_v0_1
+status: OPERATOR_CONFIRMED_MINIMUM_SCOPE
+
+primary_success_condition: >
+  A real accepted batch can be dropped into the client automation workflow and,
+  through the existing launcher path, produces usable greeting-card PDFs and
+  customer-facing PNG page previews without manual rebinding.
+
+must_have:
+  - process_full_batch
+  - one_pdf_per_job
+  - four_png_previews_per_job
+  - previews_derived_from_generated_pdf
+  - standard_front_without_recipient_branding
+  - recipient_branding_overlay_front
+  - exact_custom_or_standard_occasion_title
+  - portrait_or_explicit_default_flowers_asset
+  - exact_customer_greeting_text
+  - three_sender_signature_variants
+  - exact_font_use
+  - deterministic_typefit
+  - machine_execution_report
+  - fail_closed_on_missing_required_resource
+
+resource_failure_policy:
+  missing_asset: STOP_JOB_AND_REPORT_EXACT_RESOURCE
+  missing_font: STOP_JOB_AND_REPORT_EXACT_RESOURCE
+  hash_mismatch: STOP_JOB_AND_REPORT
+  unresolved_semantics: STOP_JOB_AND_REPORT
+  font_substitution: FORBIDDEN
+
+current_sender_variants:
+  - GRIGO
+  - HERASYMENKO
+  - DUAL_GRIGO_HERASYMENKO
+
+preview_policy:
+  format: PNG
+  pages_per_job: 4
+  target_size_each: APPROX_500_KB_OR_LESS
+  quality_precedence:
+    - readable_text
+    - recognizable_logo_and_portrait
+    - file_size_target
+
+do_not_block_v1_on:
+  - advanced_logo_reuse_intelligence
+  - interactive_patch_cli
+  - GUI
+  - automatic_housekeeping
+  - automatic_job_close
+  - Illustrator_runtime_integration
+  - perfect_optical_scaling_model_for_every_brand_shape

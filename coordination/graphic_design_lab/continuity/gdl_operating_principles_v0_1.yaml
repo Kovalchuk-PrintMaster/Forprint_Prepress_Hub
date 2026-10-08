@@ -1,0 +1,62 @@
+schema_version: gdl_operating_principles_candidate_v0_1
+status: ACTIVE_OPERATING_PRINCIPLES
+purpose: >
+  Preserve fundamental GDL execution laws that must survive individual chats,
+  assistants, product directions and implementation phases.
+
+principles:
+  - id: OPERATOR_INTENT_OVERRIDES_ASSISTANT_INFERENCE
+    rule: >
+      When the operator's intended architecture or workflow is known, assistant
+      interpretation must not silently replace it.
+
+  - id: MATERIAL_ARCHITECTURAL_AMBIGUITY_REQUIRES_OPERATOR_CONFIRMATION
+    rule: >
+      If two or more materially different architectural interpretations are
+      plausible, the assistant must surface the ambiguity and obtain a short
+      operator decision before committing the project to one interpretation.
+    forbidden:
+      - silently_choose_a_material_architecture
+      - expand_a_local_experiment_into_a_runtime_dependency_without_confirmation
+
+  - id: MATERIAL_EXECUTION_INTENT_MUST_SURVIVE_CHAT
+    rule: >
+      Material implementation intent, deferred design ideas, experiment purpose,
+      and accepted interpretation must be recorded in project-owned supporting
+      state before the related step is considered durably closed.
+
+  - id: REPEATABLE_EXECUTION_LOGIC_LIVES_IN_PROJECT
+    rule: >
+      Repeatable execution logic must be implemented behind stable project-owned
+      commands/contracts and must not remain as chat-only procedure.
+
+  - id: AI_TO_AI_HANDOFF_MUST_BE_MACHINE_READABLE
+    rule: >
+      A downstream AI or worker must be able to execute its bounded task from the
+      machine package and referenced assets without reconstructing intent from
+      conversational prose.
+
+  - id: REUSE_BEFORE_NEW
+    rule: >
+      Before designing a new generic capability, inspect project and inherited
+      architecture for an existing implementation or contract that can be
+      REUSED, EXTENDED or ADAPTED.
+
+  - id: COMPLETED_WORKFLOW_REQUIRES_CAPABILITY_HARVEST
+    phase: POST_V1_OR_WHEN_WORKFLOW_IS_STABLE
+    rule: >
+      After a real end-to-end workflow is completed and verified, inspect the
+      implementation for reusable capabilities. Record what exists, where it
+      lives, its input/output contract, validation evidence, operator entrypoint,
+      and candidate future reuse.
+
+  - id: EXPERIMENT_IS_NOT_RUNTIME_AUTHORITY
+    rule: >
+      A laboratory tool or empirical experiment must not become a runtime
+      dependency merely because it was useful for discovering a desired format.
+      Its verified findings should be transferred into canonical project logic.
+
+context_pack_requirement:
+  include_operating_principles: true
+  include_active_execution_intent: true
+  include_deferred_material_intents: true

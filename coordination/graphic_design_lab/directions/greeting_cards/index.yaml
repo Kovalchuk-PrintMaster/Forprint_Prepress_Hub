@@ -38,5 +38,10 @@ documents:
 - creator_correction_contract_v0_1.yaml
 - signature_variant_catalog_v0_1.yaml
 - accepted_constructor_bundle_contract_v0_1.yaml
+- v1_architecture_v0_1.yaml
+- builder_v1_input_projection_v0_1.yaml
+- builder_v1_scope_v0_1.yaml
+- v2_future_intents_v0_1.yaml
+- v1_resource_bindings_v0_1.yaml
 canonical_structural_model: product_skeleton_v0_1.yaml
 structural_design_freeze: structural_design_freeze_v0_1.yaml

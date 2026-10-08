@@ -1,0 +1,42 @@
+schema_version: gdl_greeting_card_v1_resource_bindings_v0_1
+status: ACTIVE_OPERATOR_CONFIRMED_RESOURCE_INTENT
+scope: GREETING_CARD_V1
+standard_occasion_titles:
+  BIRTHDAY:
+    exact_visible_text: "Привітання з нагоди Дня Народження!"
+    operator_confirmed: true
+  ANNIVERSARY:
+    exact_visible_text: "Привітання з Ювілеєм!"
+    operator_confirmed: true
+  custom_rule: CUSTOMER_EXACT_TEXT_OVERRIDES_PRESET
+occasion_selection_policy:
+  precedence:
+    - explicit_customer_custom_title
+    - explicit_anniversary_indication
+    - known_age_divisible_by_10
+    - birthday_default
+private_assets:
+  flowers.default.v1:
+    role: INSIDE_IMAGE_DEFAULT_WHEN_INTAKE_EXPLICITLY_SELECTS_DEFAULT_ASSET
+    staging_evidence_path: tmp/flowers.default.v1.png
+    sha256: d9113f8d6f9627f9b106f5550e6187aaa562139fef6122e4834e7d4f2f3bbd67
+    tracked_in_git: false
+    final_private_resource_location: TO_BE_RESOLVED_BEFORE_BUILDER_EXECUTION
+    missing_resource_policy: STOP_JOB_AND_REPORT_EXACT_RESOURCE
+private_fonts:
+  tracked_in_git: false
+  exact_font_files_required_for_text_geometry: true
+  substitution_allowed: false
+  known_requirements:
+    front_occasion: Monotype Corsiva
+    greeting_and_sender: ZapfChanceryC
+  final_private_resource_locations: TO_BE_RESOLVED_BEFORE_BUILDER_EXECUTION
+human_editability_reference:
+  path: scripts/graphic_design_lab/greeting_cards/illustrator_operator_companion_v0_1.jsx
+  script_id: FORPRINT_GDL_ILLUSTRATOR_OPERATOR_COMPANION_V0_2_2B
+  role: LABORATORY_REFERENCE_NOT_RUNTIME_DEPENDENCY
+  runtime_dependency: false
+  accepted_structure_signals:
+    artboard_layout: 2x2
+    logical_block_model: FLAT_LOGICAL_BLOCKS_V0_2
+    canonical_production_artifact: false

@@ -1,0 +1,58 @@
+{
+  "schema_version": "forprint_project_closeout_manifest_v0_1",
+  "workstream_id": "gdl_greeting_card_architecture_intent_alignment_v0_1",
+  "expected_head": "d820552d51d1aaf3dbf93d9fc0598d1720c34072",
+  "commit_message": "chore(gdl): align greeting-card builder architecture",
+  "visual_confirmation": "PASS",
+  "visual_confirmation_reason": "NON_VISUAL_ARCHITECTURE_AND_OPERATOR_INTENT_REVIEW",
+  "verified_counts": {
+    "focused_architecture_tests": 32,
+    "full_governance_tests": 270
+  },
+  "write_set": [
+    "coordination/graphic_design_lab/continuity/assistant_context_contract_v0_1.yaml",
+    "coordination/graphic_design_lab/continuity/current_execution_cursor_v0_1.yaml",
+    "coordination/graphic_design_lab/continuity/execution_intent_journal_v0_1.yaml",
+    "coordination/graphic_design_lab/continuity/gdl_operating_principles_v0_1.yaml",
+    "coordination/graphic_design_lab/continuity/generic_asset_reuse_capability_intent_v0_1.yaml",
+    "coordination/graphic_design_lab/continuity/operator_intent_evidence_2026_10_08.md",
+    "coordination/graphic_design_lab/continuity/project_first_working_rule_v0_1.yaml",
+    "coordination/graphic_design_lab/directions/greeting_cards/builder_v1_input_projection_v0_1.yaml",
+    "coordination/graphic_design_lab/directions/greeting_cards/builder_v1_scope_v0_1.yaml",
+    "coordination/graphic_design_lab/directions/greeting_cards/end_to_end_execution_plan_v0_1.yaml",
+    "coordination/graphic_design_lab/directions/greeting_cards/index.yaml",
+    "coordination/graphic_design_lab/directions/greeting_cards/v1_architecture_v0_1.yaml",
+    "coordination/graphic_design_lab/directions/greeting_cards/v1_resource_bindings_v0_1.yaml",
+    "coordination/graphic_design_lab/directions/greeting_cards/v2_future_intents_v0_1.yaml",
+    "coordination/graphic_design_lab/directions/index.yaml",
+    "coordination/graphic_design_lab/execution/greeting_card_architecture_intent_closeout_v0_1.json",
+    "tests/coordination/test_gdl_accept_and_advance_v0_1.py",
+    "tests/graphic_design_lab/test_greeting_card_v1_architecture_intent_v0_1.py"
+  ],
+  "review_commands": [
+    [
+      ".venv_prepress_hub/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "tests/graphic_design_lab/test_greeting_card_v1_architecture_intent_v0_1.py",
+      "tests/graphic_design_lab/test_gdl_local_execution_cursor_v0_1.py",
+      "tests/coordination/test_gdl_accept_and_advance_v0_1.py",
+      "tests/graphic_design_lab/test_greeting_card_illustrator_operator_companion_v0_1.py"
+    ],
+    [
+      "make",
+      "assistant-handoff-check"
+    ],
+    [
+      "make",
+      "gdl-project-first-check"
+    ],
+    [
+      "make",
+      "governance-check"
+    ]
+  ]
+}

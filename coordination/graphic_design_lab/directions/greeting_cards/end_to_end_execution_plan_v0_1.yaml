@@ -411,19 +411,48 @@ steps:
 
   - id: GC-E2E-09
 
-    title: Deterministic composition and Illustrator document worker
+    title: Deterministic greeting-card composition and editable PDF assembly
 
     state: ACTIVE
 
     objective: >
-      Resolve canonical greeting-card skeleton and semantic family, bind
-      normalized content and assets, and build/update the editable Illustrator
-      document while preserving required fonts, layers and object semantics.
+      Consume the accepted Constructor Bundle and canonical greeting-card
+      structural model, resolve exact private resources, and deterministically
+      build one human-editable/universal working PDF per job. Generate customer
+      preview PNGs from that same PDF. Normal operation must not require manual
+      content rebinding.
+
+    operator_intent_correction:
+      recorded: true
+      illustrator_runtime_dependency: false
+      human_editability_reference:
+        path: scripts/graphic_design_lab/greeting_cards/illustrator_operator_companion_v0_1.jsx
+        script_id: FORPRINT_GDL_ILLUSTRATOR_OPERATOR_COMPANION_V0_2_2B
+        role: LABORATORY_REFERENCE_NOT_RUNTIME_DEPENDENCY
+      reason: >
+        Illustrator/JSX was used to discover a convenient human-editable PDF
+        organization. It is not part of the automated greeting-card runtime.
+        Accepted structural findings from the latest companion revision are
+        requirements for Builder output organization.
+
+    v1_scope:
+      full_batch_generation: true
+      one_pdf_per_job: true
+      four_png_previews_per_job: true
+      preview_source: GENERATED_WORKING_PDF
+      exact_fonts_required: true
+      font_substitution_allowed: false
+      interactive_patch_launcher: DEFERRED_TO_V2
+      generic_logo_visual_reuse_resolver: DEFERRED_TO_V2_PLUS
 
     exit_criteria:
-      - editable_document_generated_or_updated
-      - semantic_bindings_applied
+      - working_pdf_generated_for_each_job
+      - exact_semantic_bindings_applied
+      - exact_required_fonts_used_without_substitution
+      - latest_accepted_human_editable_pdf_structure_preserved
       - normal_case_requires_no_manual_content_rebinding
+      - four_png_previews_rendered_from_each_generated_pdf
+      - builder_machine_report_created
 
   - id: GC-E2E-10
 

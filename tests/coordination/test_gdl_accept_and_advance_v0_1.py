@@ -159,10 +159,10 @@ def request() -> dict:
             "expected_step_id": "GC-E2E-09",
             "current_checkpoint_id": (
                 "DETERMINISTIC_COMPOSITION_"
-                "ILLUSTRATOR_WORKER_REQUIRED"
+                "EDITABLE_PDF_BUILDER_REQUIRED"
             ),
             "next_action": (
-                "Build deterministic composition and Illustrator worker."
+                "Build deterministic greeting-card PDF builder."
             ),
         },
         "closeout": {

@@ -1,0 +1,191 @@
+schema_version: gdl_greeting_card_v1_architecture_v0_1
+status: ACTIVE_OPERATOR_ALIGNED_ARCHITECTURE
+
+goal: >
+  Convert raw customer materials through Intake/Creator normalization into a
+  self-contained accepted machine package, then deterministically build one
+  editable/universal PDF and four PNG previews for every greeting-card job in
+  the batch.
+
+normal_flow:
+  - RAW_CUSTOMER_MATERIALS
+  - INTAKE_NORMALIZATION_AND_JOB_MATCHING
+  - CREATOR_ONLY_FOR_REQUIRED_VISUAL_NORMALIZATION
+  - INTAKE_REVIEW_LOOP_UNTIL_ACCEPTED
+  - FINAL_ACCEPTED_MACHINE_PACKAGE
+  - EXISTING_WINDOWS_LAUNCHER
+  - CONSTRUCTOR_INGEST
+  - DETERMINISTIC_PDF_BUILDER
+  - PDF_OUTPUT
+  - PNG_PAGE_PREVIEWS_FROM_THE_SAME_PDF
+  - HUMAN_CUSTOMER_REVIEW
+
+component_boundaries:
+  intake:
+    owns:
+      - parse_raw_customer_text_and_files
+      - identify_jobs
+      - bind_recipient_text_portrait_branding_signature
+      - remove_non_greeting_explanatory_noise_from_customer_text
+      - select_explicit_default_assets_when_inputs_are_absent
+      - create_creator_tasks_when_visual_normalization_is_needed
+      - review_creator_results
+      - emit_final_machine_package
+    must_not_delegate_to_builder:
+      - raw_word_parsing
+      - telegram_interpretation
+      - ambiguous_asset_ownership
+      - semantic_guessing
+
+  creator:
+    owns:
+      - bounded_portrait_cleanup_or_background_removal
+      - bounded_logo_reconstruction_or_cleanup_when_needed
+    does_not_own:
+      - document_geometry
+      - page_structure
+      - greeting_text_semantics
+      - job_identity
+
+  builder:
+    rule: EXECUTE_EXACT_MACHINE_PACKAGE_DO_NOT_INTERPRET_CUSTOMER
+    owns:
+      - load_canonical_resources
+      - select_explicit_front_variant
+      - place_exact_assets
+      - render_exact_text
+      - apply_canonical_geometry
+      - typefit_with_exact_fonts
+      - preserve_latest_accepted_human_editable_pdf_structure
+      - emit_one_pdf_per_job
+      - render_four_png_previews_from_generated_pdf
+      - write_machine_execution_report
+    forbidden:
+      - raw_customer_material_parsing
+      - fuzzy_semantic_inference
+      - silent_asset_substitution
+      - font_substitution
+      - illustrator_runtime_dependency
+
+  illustrator_jsx:
+    role: LABORATORY_HUMAN_EDITABILITY_REFERENCE
+    runtime_dependency: false
+    purpose:
+      - test_how_generated_pdf_opens_for_manual_editing
+      - discover_better_layer_group_and_page_structure
+      - feed_accepted_findings_back_into_builder_output_structure
+
+page_model:
+  FRONT:
+    mutable:
+      - front.sender_logo
+      - front.recipient_branding
+      - front.occasion_text
+    rules:
+      recipient_branding_absent: STANDARD
+      recipient_branding_present: RECIPIENT_BRANDING_OVERLAY
+      recipient_branding_scaling_v1: >
+        preserve aspect ratio, contain within canonical branding safe zone,
+        center in zone, never cross safe bounds
+      optical_relative_scaling: DEFERRED_TO_V2_EMPIRICAL_TUNING
+
+  BACK_LOCKED:
+    mutable: []
+    rule: LOCKED_REUSE_ONLY
+
+  INSIDE_IMAGE:
+    modes:
+      - PORTRAIT
+      - DEFAULT_ASSET
+    default_asset_v1: flowers.default.v1
+    default_asset_v1_sha256: d9113f8d6f9627f9b106f5550e6187aaa562139fef6122e4834e7d4f2f3bbd67
+    rule: >
+      Intake emits the selected mode and exact asset identity; Builder does not
+      infer that missing portrait means flowers.
+
+  INSIDE_GREETING:
+    mutable:
+      - exact_greeting_text
+      - sender_variant
+      - sender_text_lines
+      - signature_assets
+    sender_variants_v1:
+      - GRIGO
+      - HERASYMENKO
+      - DUAL_GRIGO_HERASYMENKO
+    every_sender_text_line_has_stable_id: true
+    typefit:
+      exact_font_required: true
+      current_canonical_tiers_pt: [22.5, 20.0, 17.0]
+      rule: LARGEST_TIER_THAT_FITS_AND_PRESERVES_SENDER_GAP
+      minimum_sender_gap: TWO_CURRENT_TEXT_LINE_HEIGHTS
+      integer_only_font_sizes_required: false
+      revisit_after_first_real_batch: true
+
+occasion_policy_v1:
+  precedence:
+    - explicit_customer_custom_title
+    - explicit_anniversary_indication
+    - known_age_divisible_by_10
+    - birthday_default
+  machine_fields:
+    - occasion
+    - occasion_display_text
+  standard_exact_texts:
+    BIRTHDAY: "Привітання з нагоди Дня Народження!"
+    ANNIVERSARY: "Привітання з Ювілеєм!"
+  custom_title_rule: USE_EXACT_CUSTOMER_TEXT
+
+fonts:
+  store_in_git: false
+  actual_files_location: PRIVATE_AUTOMATION_RESOURCE_LIBRARY
+  builder_requires_exact_files_for_geometry: true
+  substitution_allowed: false
+  known_dynamic_text_families:
+    front_occasion: Monotype Corsiva
+    greeting_and_sender: ZapfChanceryC
+
+job_identity:
+  scheme: GC-YYYYMMDD-NORMALIZED_RECIPIENT_SLUG-HASH6
+  central_counter_required: false
+  hash_basis: stable_initial_job_identity_payload
+  revision_scheme: r001_r002_r003
+  recipient_name_is_machine_identity: false
+
+batch:
+  one_package_may_contain_many_jobs: true
+  one_builder_run_processes_all_jobs: true
+  one_pdf_per_job: true
+
+outputs:
+  completed_dir:
+    contains:
+      - one_pdf_per_job
+  preview_subdir:
+    name: preview
+    contains:
+      - four_png_files_per_job
+    naming: JOB_ID__REVISION__01_to_04.png
+    source: GENERATED_WORKING_PDF
+    target_file_size_each: APPROXIMATELY_500_KB_OR_LESS
+    hard_size_limit: false
+    rule: >
+      Preserve readable text and acceptable photo/logo quality; if safe
+      compression cannot reach the target, keep the larger file and report a
+      warning.
+
+v1_out_of_scope:
+  - interactive_patch_menu
+  - fuzzy_job_selection
+  - missing_output_recovery_dialog
+  - workspace_size_housekeeping
+  - generic_logo_visual_recognition
+  - automatic_job_close_from_file_disappearance
+  - illustrator_automation
+  - advanced_optical_branding_scaling
+
+human_editability_reference:
+  path: scripts/graphic_design_lab/greeting_cards/illustrator_operator_companion_v0_1.jsx
+  script_id: FORPRINT_GDL_ILLUSTRATOR_OPERATOR_COMPANION_V0_2_2B
+  role: LABORATORY_REFERENCE_NOT_RUNTIME_DEPENDENCY
+  runtime_dependency: false

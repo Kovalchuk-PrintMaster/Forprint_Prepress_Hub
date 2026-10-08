@@ -1,0 +1,83 @@
+schema_version: gdl_execution_intent_journal_candidate_v0_1
+status: ACTIVE_SUPPORTING_DECISION_HISTORY
+authority:
+  replaces_roadmap: false
+  replaces_contracts: false
+  explains_why_implementation_exists: true
+  operator_accepted_decisions_take_precedence_over_assistant_interpretation: true
+
+entry_fields:
+  - intent_id
+  - related_step_or_scope
+  - operator_intent
+  - assistant_interpretation
+  - accepted_decision
+  - experiment_or_evidence
+  - implemented_now
+  - deferred
+  - open_questions
+  - related_paths
+  - live_operator_excerpt_refs
+
+entries:
+  - intent_id: GC-INTENT-20261008-001
+    related_step_or_scope: GC-E2E-09
+    operator_intent: >
+      Build the recurring greeting card directly as a useful editable/universal
+      PDF. Illustrator is not part of the normal automated chain.
+    assistant_interpretation: >
+      Earlier roadmap interpretation incorrectly elevated Illustrator into the
+      deterministic document worker.
+    accepted_decision: >
+      Correct GC-E2E-09 toward deterministic greeting-card PDF composition.
+      Preserve Illustrator/JSX only as a laboratory tool for human-editability
+      and structure experiments.
+    implemented_now: false
+    deferred:
+      - final_human_editability_optimization_using_latest_jsx_reference
+
+  - intent_id: GC-INTENT-20261008-002
+    related_step_or_scope: AI_HANDOFFS
+    operator_intent: >
+      Intake and Creator should communicate through explicit machine packages.
+      The human intermediary should not need to explain the task again.
+    accepted_decision: >
+      Every downstream AI handoff must contain complete machine-readable task
+      instructions plus exact referenced assets and must not depend on chat prose.
+
+  - intent_id: GC-INTENT-20261008-003
+    related_step_or_scope: BUILDER_V1
+    operator_intent: >
+      Ship the simplest useful first version quickly because real greeting-card
+      work is waiting.
+    accepted_decision: >
+      V1 supports full batch generation from an accepted machine package and emits
+      PDF plus four PNG previews per job. Interactive patch UX is deferred.
+
+  - intent_id: GC-INTENT-20261008-004
+    related_step_or_scope: BUILDER_V2
+    operator_intent: >
+      Later add a fast interactive launcher for photo/logo/text replacement,
+      rebuild, close/recover and housekeeping without re-running full Intake when
+      a human operator has a tiny exact correction.
+    accepted_decision: DEFER_TO_V2
+    implemented_now: false
+
+  - intent_id: GC-INTENT-20261008-005
+    related_step_or_scope: GENERIC_ASSET_REUSE
+    operator_intent: >
+      Approved organization logos should be reusable across people and future
+      years. New poor-quality supplied logos should be compared against an
+      existing semantic/visual library before Creator redraw work is requested.
+    accepted_decision: >
+      Preserve as a high-value generic GDL v2+ capability intent. Do not build it
+      in v1.
+
+  - intent_id: GC-INTENT-20261008-006
+    related_step_or_scope: GDL_GOVERNANCE
+    operator_intent: >
+      Important implementation intent and experiments must not disappear when the
+      chat ends or the assistant changes.
+    accepted_decision: >
+      Introduce a lightweight supporting execution-intent journal and require its
+      inclusion in assistant continuity/context.

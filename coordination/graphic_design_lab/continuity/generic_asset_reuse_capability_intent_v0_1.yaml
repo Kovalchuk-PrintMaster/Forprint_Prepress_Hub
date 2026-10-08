@@ -1,0 +1,59 @@
+schema_version: gdl_generic_asset_reuse_capability_intent_v0_1
+status: FUTURE_GENERIC_CAPABILITY_INTENT
+phase: V2_PLUS
+generic_scope: GRAPHIC_DESIGN_LAB
+greeting_card_specific: false
+
+problem: >
+  The same organization branding recurs across different recipients and years.
+  Customer-supplied copies are often low quality even when a previously approved
+  high-quality asset already exists.
+
+goal: >
+  Before asking Creator to reconstruct a logo, identify likely reusable approved
+  assets for the same organization or visual identity.
+
+future_entity_model:
+  organization_id: stable_identity
+  organization_aliases: []
+  approved_asset_variants:
+    - primary_horizontal
+    - primary_vertical
+    - compact_mark
+    - with_tagline
+    - other_semantically_named_variants
+
+candidate_signal_layers:
+  - exact_asset_hash
+  - normalized_visible_text
+  - organization_name_and_aliases
+  - asset_type_and_format
+  - aspect_ratio
+  - dominant_color_descriptor
+  - shape_or_layout_descriptor
+  - perceptual_fingerprint
+  - visual_embedding_future_option
+  - prior_operator_confirmed_relationships
+
+decision_states:
+  - EXACT_REUSE
+  - STRONG_CANDIDATE_OPERATOR_CONFIRMATION
+  - MULTIPLE_CANDIDATES_OPERATOR_SELECTION
+  - NO_REUSABLE_ASSET
+  - UNRESOLVED
+
+safety:
+  automatic_reuse_requires_strong_identity: true
+  fuzzy_visual_similarity_alone_cannot_authorize_reuse: true
+  preserve_multiple_valid_variants_for_one_organization: true
+  customer_supplied_current_asset_has_semantic_precedence_when_materially_changed: true
+
+future_handoff_example: >
+  Intake may report that a poor-quality supplied asset appears to match an
+  approved organization asset. Until automated comparison is mature, the
+  operator can provide the candidate file for direct AI comparison.
+
+implementation_now: false
+reason_for_deferral: >
+  High-value generic capability but requires broader empirical testing and must
+  not delay first working greeting-card Builder.

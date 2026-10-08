@@ -1,0 +1,58 @@
+schema_version: gdl_greeting_card_v2_future_intents_v0_1
+status: DEFERRED_OPERATOR_INTENT
+must_not_block_v1: true
+
+features:
+  interactive_launcher:
+    purpose: fast_human_patch_without_full_intake_roundtrip
+    candidate_actions:
+      - FULL_BUILD_FROM_PACKAGE
+      - REPLACE_PORTRAIT
+      - REPLACE_RECIPIENT_BRANDING
+      - REPLACE_GREETING_TEXT
+      - REPLACE_OCCASION_TITLE
+      - PATCH_SENDER_TEXT_FIELD
+      - REBUILD_JOB
+      - CLOSE_JOB
+    architecture_rule: >
+      CLI/GUI actions must compile into the same machine patch contract used by
+      automated Intake rather than creating a second execution system.
+
+  job_selection_assistance:
+    exact_normalized_name_match: MAY_AUTO_SUGGEST
+    fuzzy_match: MUST_REQUIRE_OPERATOR_CONFIRMATION
+    exact_job_id: AUTHORITATIVE
+
+  active_output_reconciliation:
+    behavior: >
+      On launcher start, compare active job state with expected working outputs.
+      Missing outputs are not silently treated as closed.
+    operator_actions:
+      - close_selected
+      - close_all
+      - regenerate_selected
+      - remind_later
+
+  workspace_housekeeping:
+    warning_threshold: 1_GB
+    warning_is_blocking: false
+    actions:
+      - acknowledge
+      - remind_in_30_days
+    retention_intent: >
+      Keep enough machine state/resources for rebuild while avoiding duplicated
+      long-term production files.
+
+  richer_defaults:
+    examples:
+      - birthday_flowers
+      - anniversary_flowers
+      - male_default_image
+      - female_default_image
+    rule: >
+      Intake selects explicit asset identity. Builder stays generic.
+
+  advanced_branding_fit:
+    purpose: >
+      Improve optical size for extremely wide, tall, compact or irregular logo
+      shapes after empirical examples are available.
