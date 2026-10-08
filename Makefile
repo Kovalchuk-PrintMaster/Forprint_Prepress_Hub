@@ -17,6 +17,7 @@ help:
 	@echo "  make gdl-toolchain-contract-check - validate portable GDL PDF/toolchain contract"
 	@echo "  make gdl-toolchain-check - validate installed GDL PDF/vector/raster host toolchain"
 	@echo "  make gdl-greeting-card-freeze-check - validate canonical recurring greeting-card structural freeze"
+	@echo "  make gdl-greeting-card-builder-input-check - validate exact Builder v1 input extension over the Accepted Constructor Bundle"
 	@echo "  make gdl-greeting-card-prototype - run project-owned recurring greeting-card prototype generator"
 	@echo "  make gdl-greeting-card-corpus-validate - classify and validate all recurring greeting-card front families"
 	@echo "  make gdl-greeting-card-constructor-ingest BUNDLE=/path/to/accepted_constructor_bundle - validate and ingest one accepted constructor bundle"
@@ -245,6 +246,13 @@ gdl-transition-closeout-apply:
 	@test "$(CONFIRM)" = "YES" || (echo "Explicit confirmation required: CONFIRM=YES"; exit 2)
 	@test -f "$(GDL_TRANSITION_CLOSEOUT_MANIFEST)" || (echo "No current transition closeout manifest"; exit 2)
 	$(PYTHON) $(GDL_CLOSEOUT_TOOL) apply --manifest "$(GDL_TRANSITION_CLOSEOUT_MANIFEST)" --confirm "$(CONFIRM)"
+
+# --- Greeting-card Builder v1 exact-input extension ---
+
+.PHONY: gdl-greeting-card-builder-input-check
+
+gdl-greeting-card-builder-input-check:
+	.venv_prepress_hub/bin/python -m pytest -q -p no:cacheprovider tests/graphic_design_lab/test_greeting_card_builder_input_v0_1.py
 
 # --- Greeting-card accepted-constructor-bundle ingest ---
 

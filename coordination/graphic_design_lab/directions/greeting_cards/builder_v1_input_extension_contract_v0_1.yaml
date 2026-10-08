@@ -1,0 +1,80 @@
+
+schema_version: gdl_greeting_card_builder_v1_input_extension_contract_v0_1
+status: ACTIVE_TRANSITION_CONTRACT
+direction_id: greeting_cards
+
+purpose: >
+  Close the exact-rendering gap between the existing Accepted Constructor Bundle
+  and the deterministic PDF Builder without introducing a second source of
+  truth. The Builder consumes the same accepted bundle, enriched per job with a
+  builder_v1 exact rendering section.
+
+authority_relationship:
+  canonical_base_bundle: accepted_constructor_bundle_contract_v0_1.yaml
+  second_parallel_job_truth_forbidden: true
+  builder_v1_is_in_bundle_extension: true
+  raw_customer_interpretation_allowed: false
+  semantic_guessing_allowed: false
+
+required_per_job_extension:
+  key: builder_v1
+  schema_version: gdl_greeting_card_builder_payload_v0_1
+  fields:
+    revision:
+      example: r001
+      exact: true
+
+    front:
+      family:
+        allowed:
+          - STANDARD
+          - RECIPIENT_BRANDING_OVERLAY
+          - BILINGUAL_OCCASION
+        exact: true
+      occasion:
+        kind:
+          rule: must_match_structured_greeting_data.occasion
+        display_text:
+          rule: exact_visible_text_required
+          builder_must_not_convert_semantic_kind_to_visible_text: true
+
+    inside_image:
+      mode:
+        allowed:
+          - PORTRAIT
+          - DEFAULT_ASSET
+        exact: true
+      asset_id:
+        rule: must_match_exact_portrait_binding_source_asset_id
+      asset_sha256:
+        rule: exact_sha256_required
+      accepted_artifact_ref:
+        PORTRAIT: required_and_must_match_accepted_visual
+        DEFAULT_ASSET: forbidden
+
+    sender_text:
+      signature_variant_id:
+        rule: must_match_signature_selection.variant_id
+      lines:
+        stable_ids_required: true
+        exact_visible_text_required: true
+        duplicate_ids_forbidden: true
+
+cross_binding_rules:
+  - branding_PRESENT_requires_RECIPIENT_BRANDING_OVERLAY
+  - branding_ABSENT_forbids_RECIPIENT_BRANDING_OVERLAY
+  - semantic_occasion_and_visible_occasion_text_are_separate
+  - exact_inside_image_asset_identity_is_not_inferred_by_builder
+  - exact_sender_text_is_not_inferred_from_signature_variant
+  - builder_never_reads_customer_raw_material
+
+v1_known_default_asset:
+  asset_id: flowers.default.v1
+  sha256: d9113f8d6f9627f9b106f5550e6187aaa562139fef6122e4834e7d4f2f3bbd67
+  mode: DEFAULT_ASSET
+  tracked_in_git: false
+
+scope:
+  pdf_rendering_implemented_here: false
+  private_resource_resolver_implemented_here: false
+  builder_input_exactness_closed: true

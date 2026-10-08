@@ -1,0 +1,43 @@
+{
+  "schema_version": "forprint_project_closeout_manifest_v0_1",
+  "workstream_id": "gdl_greeting_card_builder_v1_input_extension_v0_1",
+  "expected_head": "6f51d943d40d96b1446ac6f80c5762a4bb6c1447",
+  "commit_message": "feat(gdl): add greeting-card builder v1 exact input",
+  "visual_confirmation": "PASS",
+  "visual_confirmation_reason": "NON_VISUAL_BUILDER_INPUT_CONTRACT",
+  "verified_counts": {
+    "full_governance_tests": 276
+  },
+  "write_set": [
+    "Makefile",
+    "app/graphic_design_lab/greeting_card_builder_input.py",
+    "coordination/graphic_design_lab/directions/greeting_cards/builder_v1_input_extension_contract_v0_1.yaml",
+    "coordination/graphic_design_lab/directions/greeting_cards/index.yaml",
+    "coordination/graphic_design_lab/execution/greeting_card_builder_input_closeout_v0_1.json",
+    "tests/graphic_design_lab/test_greeting_card_builder_input_v0_1.py"
+  ],
+  "review_commands": [
+    [
+      "make",
+      "gdl-greeting-card-builder-input-check"
+    ],
+    [
+      ".venv_prepress_hub/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "tests/graphic_design_lab/test_greeting_card_constructor_bundle_v0_1.py",
+      "tests/graphic_design_lab/test_greeting_card_job_runner_v0_1.py"
+    ],
+    [
+      "make",
+      "gdl-project-first-check"
+    ],
+    [
+      "make",
+      "governance-check"
+    ]
+  ]
+}
