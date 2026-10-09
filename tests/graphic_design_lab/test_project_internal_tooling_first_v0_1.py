@@ -46,3 +46,77 @@ def test_repository_first_operator_execution_model_is_explicit():
     assert closeout['exact_path_stage_only'] is True
     assert closeout['broad_git_add_forbidden'] is True
     assert closeout['may_commit_push_and_verify_when_explicitly_requested'] is True
+
+
+def test_project_owned_greeting_card_builder_is_enforced():
+    assert (
+        ROOT
+        / "app/graphic_design_lab/greeting_card_builder_renderer.py"
+    ).is_file()
+    assert (
+        ROOT
+        / "scripts/graphic_design_lab/greeting_cards/builder.py"
+    ).is_file()
+
+    index = yaml.safe_load(
+        (
+            ROOT
+            / "coordination/graphic_design_lab/directions/greeting_cards/index.yaml"
+        ).read_text(encoding="utf-8")
+    )
+    assert (
+        index["deterministic_builder_contract"]
+        == "deterministic_builder_v0_1.yaml"
+    )
+    assert (
+        "deterministic_builder_v0_1.yaml"
+        in index["documents"]
+    )
+
+    makefile = (ROOT / "Makefile").read_text(
+        encoding="utf-8"
+    )
+    assert "gdl-greeting-card-builder:" in makefile
+    assert (
+        "GDL_GREETING_CARD_BUILDER ?= "
+        "scripts/graphic_design_lab/greeting_cards/builder.py"
+        in makefile
+    )
+
+
+def test_materialized_capability_survives_runtime_debugging():
+    rule = yaml.safe_load(
+        (
+            ROOT
+            / "coordination/graphic_design_lab/continuity/"
+            "project_first_working_rule_v0_1.yaml"
+        ).read_text(encoding="utf-8")
+    )
+    policy = rule[
+        "incomplete_implementation_persistence_policy"
+    ]
+
+    assert (
+        policy[
+            "repository_dirty_state_is_valid_working_state"
+        ]
+        is True
+    )
+    assert (
+        policy[
+            "failing_test_or_runtime_smoke_does_not_authorize_full_capability_rollback"
+        ]
+        is True
+    )
+    assert (
+        policy[
+            "subsequent_iterations_patch_project_owned_files"
+        ]
+        is True
+    )
+    assert (
+        policy[
+            "subsequent_chat_script_role"
+        ]
+        == "BOUNDED_REPAIR_ONLY"
+    )

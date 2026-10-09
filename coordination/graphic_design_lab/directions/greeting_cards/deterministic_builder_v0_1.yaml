@@ -1,0 +1,146 @@
+
+schema_version: gdl_greeting_card_deterministic_builder_v0_1
+status: ACTIVE_FIRST_RENDERER_SLICE
+direction_id: greeting_cards
+checkpoint: GC-E2E-09
+
+purpose: >
+  Introduce the first project-owned deterministic PDF Builder slice over the
+  existing builder-ready Accepted Constructor Bundle. The slice produces a
+  four-page PDF and four PNG previews rendered only from that final PDF.
+
+input_authority:
+  accepted_constructor_bundle_with_builder_v1_required: true
+  raw_customer_material_interpretation_allowed: false
+  semantic_inference_allowed: false
+  second_parallel_job_truth_allowed: false
+
+private_resolution:
+  exact_resource_manifest_required: true
+  exact_artifact_manifest_required: true
+  private_absolute_paths_tracked_in_git: false
+
+  accepted_artifact_runtime_boundary:
+    status: OPERATOR_CONFIRMED
+    schema_version: gdl_greeting_card_builder_artifact_manifest_v0_1
+    scope: JOB_SPECIFIC_ACCEPTED_ARTIFACT_PHYSICAL_BINDING
+    separate_from_global_private_resource_manifest: true
+    accepted_constructor_bundle_remains_semantic_and_provenance_authority: true
+    artifact_manifest_authority: PHYSICAL_RESOLUTION_ONLY
+    artifact_binding:
+      key: accepted_artifact_ref
+      required_fields:
+        - source_asset_id
+        - path
+        - sha256
+      path_requirement: ABSOLUTE_PRIVATE_PATH
+    builder_validation:
+      artifact_ref_must_exist: true
+      source_asset_id_must_match_bundle: true
+      sha256_must_match_builder_payload: true
+      physical_file_sha256_must_match: true
+      fail_closed_on_missing_or_mismatch: true
+    artifact_manifest_may_override_bundle_semantics: false
+    private_paths_may_be_committed: false
+    private_paths_may_be_printed_in_public_reports: false
+  source_mutation_allowed: false
+
+first_slice:
+  front_family: STANDARD
+  occasion_kind: BIRTHDAY
+  occasion_display_text: "Привітання з нагоди Дня Народження!"
+  inside_image_mode: PORTRAIT
+  signature_variant: GRIGO
+  recipient_branding_presence: ABSENT
+  other_variants_fail_closed: true
+
+composition:
+  physical_page_count: 4
+  physical_to_logical:
+    1: PAGE_1_FRONT
+    2: PAGE_4_BACK
+    3: PAGE_2_INSIDE_IMAGE
+    4: PAGE_3_INSIDE_GREETING
+
+  page_1:
+    strategy: REFERENCE_COMPONENT_PRESERVATION_PLUS_EXACT_TEXT_REGENERATION
+    authoring_layer_filter_required: true
+    danger_zone_allowed_in_output: false
+    sender_logo:
+      source: canonical_reference_embedded_component
+      canonical_bbox_mm: [64.5, 59.5, 149.5, 144.5]
+    occasion:
+      font: MonotypeCorsiva
+      canonical_empirical_font_size_pt: 52.304
+      canonical_bbox_mm: [32.0, 203.565, 182.03, 248.218]
+      line_count: 2
+      line_texts:
+        - "Привітання з нагоди"
+        - "Дня Народження!"
+      placement: EXACT_CANONICAL_REFERENCE_TEXT_ORIGINS
+      exact_builder_display_text_required: true
+      automatic_textbox_wrapping_allowed: false
+
+  page_2:
+    strategy: LOCKED_REFERENCE_PAGE_TRANSPLANT_AFTER_AUTHORING_LAYER_FILTER
+    authoring_layer_filter_required: true
+    danger_zone_allowed_in_output: false
+
+  page_3:
+    strategy: DETERMINISTIC_BASE_PLUS_PRESERVED_CANONICAL_PORTRAIT_MASK_LAYER
+    accepted_artifact_sha256_required: true
+    reference_geometry_reused: true
+    canonical_portrait_mask_layer_reused: true
+    raster_replacement_preserves_reference_portrait_placement: true
+    canonical_mask_visual_verification_required: true
+    canonical_background_reused: true
+    canonical_frame_reused_above_portrait: true
+    authoring_layer_copy_into_output: false
+    danger_zone_allowed_in_output: false
+    accepted_rgba_alpha_preserved_when_present: true
+    transparent_accepted_artifact_requires_pdf_soft_mask: true
+    post_render_soft_mask_validation_required: true
+    post_render_portrait_identity: REFERENCE_PIXEL_SIZE_AND_BBOX
+    soft_mask_colorspace_required: /DeviceGray
+
+  page_4:
+    strategy: DETERMINISTIC_BASE_PLUS_EXACT_TEXT_AND_GRIGO_VECTOR_CLIP
+    base_components:
+      - background.paper
+      - frame.ornate
+      - watermark.emblem
+    reference_text_or_sender_residue_allowed: false
+    authoring_layer_filter_required: true
+    danger_zone_allowed_in_output: false
+    greeting_font: ZapfChanceryC
+    greeting_font_tiers_pt: [22.5, 20.0, 17.0]
+    sender_start_y_variants_mm: [214.0, 224.0, 236.0]
+    minimum_sender_gap_line_heights: 2.0
+    grigo_signature_vector:
+      source: canonical_reference_embedded_vector_cluster
+      placement: EXACT_BOUND_COMPONENT_CLIP
+      preserved_not_rasterized: true
+      post_render_exact_component_validation: true
+
+  pdf_compatibility:
+    normalize_image_soft_mask_colorspaces: true
+
+outputs:
+  pdf: true
+  png_preview_count: 4
+  preview_source: FINAL_PDF_ONLY
+  machine_report: true
+  production_ready: false
+
+runtime_dependencies:
+  illustrator: false
+  creator: false
+
+known_followups:
+  - add_RECIPIENT_BRANDING_OVERLAY
+  - add_BILINGUAL_OCCASION
+  - add_HERASYMENKO
+  - add_DUAL_GRIGO_HERASYMENKO
+  - close_DEFAULT_ASSET_upstream_accepted_bundle_gap
+  - production_color_profile
+  - final_production_preflight_profile

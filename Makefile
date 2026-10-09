@@ -20,6 +20,7 @@ help:
 	@echo "  make gdl-greeting-card-builder-input-check - validate exact Builder v1 input extension over the Accepted Constructor Bundle"
 	@echo "  make gdl-greeting-card-private-resources-check RESOURCE_MANIFEST=/private/path/resources.yaml - fail-closed validation of exact Builder v1 private resources"
 	@echo "  make gdl-greeting-card-embedded-components-check RESOURCE_MANIFEST=/private/path/resources.yaml - validate sender-logo and all v1 signature template components"
+	@echo "  make gdl-greeting-card-builder BUNDLE=/path/to/builder-ready-bundle RESOURCE_MANIFEST=/private/path/resources.yaml ARTIFACT_MANIFEST=/private/path/artifacts.yaml OUTPUT=/private/output - render first deterministic PDF Builder slice"
 	@echo "  make gdl-greeting-card-prototype - run project-owned recurring greeting-card prototype generator"
 	@echo "  make gdl-greeting-card-corpus-validate - classify and validate all recurring greeting-card front families"
 	@echo "  make gdl-greeting-card-constructor-ingest BUNDLE=/path/to/accepted_constructor_bundle - validate and ingest one accepted constructor bundle"
@@ -301,3 +302,20 @@ gdl-greeting-card-smb-launch:
 	@test -n "$(GDL_GREETING_CARD_SMB_SHARE)" || (echo "Set SHARE=In_Progress"; exit 2)
 	@test -n "$(GDL_GREETING_CARD_SMB_RELATIVE_PATH_B64)" || (echo "Set RELATIVE_PATH_B64=<base64url-token>"; exit 2)
 	$(PYTHON) $(GDL_GREETING_CARD_SMB_LAUNCH_BRIDGE) --share "$(GDL_GREETING_CARD_SMB_SHARE)" --relative-path-b64 "$(GDL_GREETING_CARD_SMB_RELATIVE_PATH_B64)"
+
+# --- Greeting-card deterministic PDF Builder v0.1 ---
+
+GDL_GREETING_CARD_BUILDER ?= scripts/graphic_design_lab/greeting_cards/builder.py
+GDL_GREETING_CARD_BUILDER_BUNDLE ?= $(BUNDLE)
+GDL_GREETING_CARD_BUILDER_RESOURCE_MANIFEST ?= $(RESOURCE_MANIFEST)
+GDL_GREETING_CARD_BUILDER_ARTIFACT_MANIFEST ?= $(ARTIFACT_MANIFEST)
+GDL_GREETING_CARD_BUILDER_OUTPUT ?= $(OUTPUT)
+
+.PHONY: gdl-greeting-card-builder
+
+gdl-greeting-card-builder:
+	@test -n "$(GDL_GREETING_CARD_BUILDER_BUNDLE)" || (echo "Set BUNDLE=/path/to/builder-ready-bundle"; exit 2)
+	@test -n "$(GDL_GREETING_CARD_BUILDER_RESOURCE_MANIFEST)" || (echo "Set RESOURCE_MANIFEST=/private/path/resources.yaml"; exit 2)
+	@test -n "$(GDL_GREETING_CARD_BUILDER_ARTIFACT_MANIFEST)" || (echo "Set ARTIFACT_MANIFEST=/private/path/artifacts.yaml"; exit 2)
+	@test -n "$(GDL_GREETING_CARD_BUILDER_OUTPUT)" || (echo "Set OUTPUT=/private/output"; exit 2)
+	$(PYTHON) $(GDL_GREETING_CARD_BUILDER) --bundle "$(GDL_GREETING_CARD_BUILDER_BUNDLE)" --resource-manifest "$(GDL_GREETING_CARD_BUILDER_RESOURCE_MANIFEST)" --artifact-manifest "$(GDL_GREETING_CARD_BUILDER_ARTIFACT_MANIFEST)" --output-dir "$(GDL_GREETING_CARD_BUILDER_OUTPUT)"

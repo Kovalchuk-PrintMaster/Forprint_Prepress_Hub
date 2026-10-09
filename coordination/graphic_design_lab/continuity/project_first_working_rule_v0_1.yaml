@@ -110,3 +110,19 @@ capability_harvest_policy:
     - validation_evidence
     - operator_entrypoint
     - candidate_future_reuse
+
+incomplete_implementation_persistence_policy:
+  scope: NEW_CAPABILITY_AFTER_FIRST_REPOSITORY_MATERIALIZATION
+  repository_dirty_state_is_valid_working_state: true
+  failing_test_or_runtime_smoke_does_not_authorize_full_capability_rollback: true
+  subsequent_iterations_patch_project_owned_files: true
+  subsequent_chat_script_role: BOUNDED_REPAIR_ONLY
+  repair_script_rollback_scope: REPAIR_DELTA_ONLY
+  full_capability_rollback_requires:
+    - EXPLICIT_OPERATOR_DECISION
+    - SAFETY_OR_REPOSITORY_INTEGRITY_REASON
+  purpose: >
+    Preserve implementation progress across chat boundaries. Once a new
+    capability has been materialized into project-owned files, runtime debugging
+    must strengthen those files rather than repeatedly reconstructing the
+    capability from chat/bootstrap code.

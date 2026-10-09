@@ -9,6 +9,7 @@ creator_review_contract: creator_review_contract_v0_1.yaml
 creator_correction_contract: creator_correction_contract_v0_1.yaml
 signature_variant_catalog: signature_variant_catalog_v0_1.yaml
 accepted_constructor_bundle_contract: accepted_constructor_bundle_contract_v0_1.yaml
+deterministic_builder_contract: deterministic_builder_v0_1.yaml
 creator_portrait_prompt: prompts/GDL-CREATOR-PORTRAIT-v001.md
 loader: prompts/GDL-INTAKE-GREETING-CARDS-v002.md
 previous_intake_version:
@@ -43,6 +44,7 @@ documents:
 - builder_v1_input_extension_contract_v0_1.yaml
 - private_resource_manifest_contract_v0_1.yaml
 - embedded_component_bindings_v0_1.yaml
+- deterministic_builder_v0_1.yaml
 - builder_v1_scope_v0_1.yaml
 - v2_future_intents_v0_1.yaml
 - v1_resource_bindings_v0_1.yaml
