@@ -73,19 +73,20 @@ active_tasks:
       - GC-E2E-05B
       - GC-E2E-06A
       - GC-E2E-06B
+      - GC-E2E-09A
 
     current_checkpoint:
-      id: DETERMINISTIC_EDITABLE_PDF_BUILDER_REQUIRED
+      id: HERASYMENKO_SIGNATURE_RENDERER_REQUIRED
       state: ACTIVE
 
     next_action: >
-      Integrate the corrected operator intent for GC-E2E-09, then implement
-      the minimum project-owned deterministic greeting-card PDF Builder.
-      Consume only the accepted Constructor Bundle plus explicit private
-      resource bindings; generate one PDF and four PNG previews per job;
-      preserve the V0_2_2B human-editability structure without making
-      Illustrator a runtime dependency. Keep PATCH/interactive UX and
-      generic logo-reuse intelligence deferred to later phases.
+      Extend the committed deterministic Builder with the HERASYMENKO
+      signature configuration only. Reuse the already-bound exact private
+      signature source and embedded-component evidence; preserve the validated
+      STANDARD front, PORTRAIT page-3 composition, exact text regeneration,
+      accepted-artifact runtime boundary and fail-closed behavior. Do not
+      introduce recipient-branding physical resolution or other front-family
+      architecture in this slice.
 
     completion_criterion: >
       Prove the full greeting-card chain from primary customer materials

@@ -21,11 +21,32 @@ def test_gc_e2e_09_is_pdf_builder_not_illustrator_runtime():
     assert step["operator_intent_correction"]["illustrator_runtime_dependency"] is False
     assert step["operator_intent_correction"]["human_editability_reference"]["script_id"] == "FORPRINT_GDL_ILLUSTRATOR_OPERATOR_COMPANION_V0_2_2B"
 
-def test_cursor_points_to_pdf_builder():
+def test_cursor_points_to_active_gc_e2e_09_builder_subcheckpoint():
     cursor = load("coordination/graphic_design_lab/continuity/current_execution_cursor_v0_1.yaml")
+    plan = load("coordination/graphic_design_lab/directions/greeting_cards/end_to_end_execution_plan_v0_1.yaml")
+
     task = cursor["active_tasks"][0]
     assert task["current_step"] == "GC-E2E-09"
-    assert task["current_checkpoint"]["id"] == "DETERMINISTIC_EDITABLE_PDF_BUILDER_REQUIRED"
+    assert task["current_checkpoint"]["id"] == "HERASYMENKO_SIGNATURE_RENDERER_REQUIRED"
+    assert "GC-E2E-09A" in task["completed_subcheckpoints"]
+
+    step = next(
+        item
+        for item in plan["steps"]
+        if item["id"] == "GC-E2E-09"
+    )
+
+    checkpoints = {
+        item["id"]: item
+        for item in step["execution_checkpoints"]
+    }
+
+    assert checkpoints["GC-E2E-09A"]["state"] == "COMPLETED_LOCAL"
+    assert checkpoints["GC-E2E-09A"]["implementation_commit"] == (
+        "ca8d6a44c6ede016f34ace1cc02099695c2c4e30"
+    )
+    assert checkpoints["GC-E2E-09B"]["state"] == "ACTIVE"
+    assert checkpoints["GC-E2E-09B"]["scope"]["signature_variant"] == "HERASYMENKO"
 
 def test_exact_titles_and_flowers_hash():
     r = load("coordination/graphic_design_lab/directions/greeting_cards/v1_resource_bindings_v0_1.yaml")

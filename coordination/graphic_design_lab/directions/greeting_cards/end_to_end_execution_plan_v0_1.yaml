@@ -445,6 +445,43 @@ steps:
       interactive_patch_launcher: DEFERRED_TO_V2
       generic_logo_visual_reuse_resolver: DEFERRED_TO_V2_PLUS
 
+    execution_checkpoints:
+      - id: GC-E2E-09A
+        title: STANDARD / PORTRAIT / GRIGO deterministic Builder slice
+        state: COMPLETED_LOCAL
+        closes_parent_step: false
+        implementation_commit: ca8d6a44c6ede016f34ace1cc02099695c2c4e30
+        evidence:
+          project_owned_builder: true
+          front_family: STANDARD
+          inside_image_mode: PORTRAIT
+          signature_variant: GRIGO
+          physical_page_count: 4
+          previews_per_job: 4
+          previews_from_final_pdf: true
+          danger_zone_removed: true
+          page3_portrait_mask_machine_pass: true
+          page3_portrait_mask_visual_pass: true
+          exact_fonts_validated: true
+          grigo_vector_validated: true
+          accepted_artifact_runtime_boundary: OPERATOR_CONFIRMED
+          full_governance: PASS
+          full_test_count: 312
+          production_ready: false
+
+      - id: GC-E2E-09B
+        title: HERASYMENKO signature renderer slice
+        state: ACTIVE
+        closes_parent_step: false
+        scope:
+          preserve_existing_builder_architecture: true
+          front_family: STANDARD
+          inside_image_mode: PORTRAIT
+          signature_variant: HERASYMENKO
+          reuse_exact_private_signature_source: true
+          silent_signature_fallback_forbidden: true
+          recipient_branding_resolution_out_of_scope: true
+
     exit_criteria:
       - working_pdf_generated_for_each_job
       - exact_semantic_bindings_applied
