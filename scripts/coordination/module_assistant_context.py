@@ -55,6 +55,7 @@ ALWAYS_LOCAL = [
     "coordination/prompts/index.yaml",
     "coordination/reports/index.yaml",
     "coordination/graphic_design_lab/continuity/project_first_working_rule_v0_1.yaml",
+    "coordination/graphic_design_lab/continuity/governed_execution_strategy_v0_1.yaml",
 ]
 
 OPTIONAL_LOCAL_GLOBS = [
@@ -269,6 +270,17 @@ def match_topics(path: Path, root: Path, topics: list[str]) -> bool:
     except Exception:
         return False
     return any(topic in text for topic in topics)
+
+
+GDL_REQUIRED_CONTEXT_FILES = (
+    "coordination/graphic_design_lab/continuity/governed_execution_strategy_v0_1.yaml",
+    "coordination/graphic_design_lab/continuity/roadmap_execution_alignment_2026_10_10_v0_1.yaml",
+    "coordination/graphic_design_lab/continuity/assistant_context_contract_v0_1.yaml",
+    "coordination/graphic_design_lab/continuity/current_execution_cursor_v0_1.yaml",
+    "coordination/graphic_design_lab/continuity/gdl_operating_principles_v0_1.yaml",
+    "coordination/graphic_design_lab/continuity/project_first_working_rule_v0_1.yaml",
+    "coordination/graphic_design_lab/directions/greeting_cards/end_to_end_execution_plan_v0_1.yaml",
+)
 
 
 SCOPE_CONTEXT_CONTRACTS: dict[str, str] = {
@@ -517,6 +529,14 @@ def build_pack(
             }
         )
         total += size
+
+    selected_paths = {item["path"] for item in copied}
+    if package_type == "MODULE_CONTEXT" and effective_scope == "graphic_design_lab":
+        missing_required = sorted(set(GDL_REQUIRED_CONTEXT_FILES) - selected_paths)
+        if missing_required:
+            raise ContextError("GDL_CONTEXT_REQUIRED_MISSING=" + ",".join(missing_required))
+    if package_type == "MODULE_ONBOARD" and "coordination/graphic_design_lab/continuity/governed_execution_strategy_v0_1.yaml" not in selected_paths:
+        raise ContextError("GDL_ONBOARD_STRATEGY_MISSING")
 
     repo_state_path = package_dir / "repository_state.json"
     blueprint_refs_path = package_dir / "blueprint_source_refs.json"

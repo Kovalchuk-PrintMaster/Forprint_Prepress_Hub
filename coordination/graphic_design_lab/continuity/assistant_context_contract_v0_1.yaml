@@ -1,6 +1,10 @@
 schema_version: gdl_assistant_context_contract_v0_1
 status: ACTIVE_CONTINUITY_REQUIREMENT
 fresh_assistant_must_know:
+- governed_closed_loop_strategy_and_its_blueprint_boundary
+- inventory_reuse_modernize_before_new_functionality
+- verified_roadmap_vs_execution_cursor_vs_unverified_dirty_work
+- context_pack_required_file_inclusion_gate
 - primary_gdl_surface
 - global_operating_model
 - case_workflow_and_state_machine
@@ -50,6 +54,8 @@ fresh_assistant_must_not:
 acceptance_question: Can a fresh assistant continue an active GDL case from project/context-pack
   state without reading the previous chat?
 context_pack_priority_paths:
+- coordination/graphic_design_lab/continuity/governed_execution_strategy_v0_1.yaml
+- coordination/graphic_design_lab/continuity/roadmap_execution_alignment_2026_10_10_v0_1.yaml
 - coordination/graphic_design_lab/index.yaml
 - coordination/graphic_design_lab/policies/
 - coordination/graphic_design_lab/workflow/
@@ -66,6 +72,8 @@ canonical_operating_principles: gdl_operating_principles_v0_1.yaml
 supporting_execution_intent_journal: execution_intent_journal_v0_1.yaml
 first_read_order:
 - coordination/graphic_design_lab/continuity/current_execution_cursor_v0_1.yaml
+- coordination/graphic_design_lab/continuity/governed_execution_strategy_v0_1.yaml
+- coordination/graphic_design_lab/continuity/roadmap_execution_alignment_2026_10_10_v0_1.yaml
 - coordination/graphic_design_lab/directions/greeting_cards/end_to_end_execution_plan_v0_1.yaml
 - coordination/graphic_design_lab/continuity/gdl_operating_principles_v0_1.yaml
 - coordination/graphic_design_lab/continuity/execution_intent_journal_v0_1.yaml

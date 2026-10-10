@@ -1,0 +1,85 @@
+schema_version: gdl_roadmap_execution_alignment_snapshot_v0_1
+document_type: EVIDENCE_BASED_NON_AUTHORITATIVE_RECONCILIATION
+observed_date: '2026-10-10'
+status: REVIEW_SNAPSHOT_NOT_RUNTIME_CURSOR
+purpose: >
+  Distinguish roadmap horizon, verified milestones and in-progress repair.
+  This snapshot never authorizes advancing the execution cursor or production.
+
+source_precedence:
+  roadmap: coordination/roadmaps/graphic_design_lab/roadmap_v0_1.yaml
+  active_execution: coordination/graphic_design_lab/continuity/current_execution_cursor_v0_1.yaml
+  detailed_execution: coordination/graphic_design_lab/directions/greeting_cards/end_to_end_execution_plan_v0_1.yaml
+  implementation_evidence: TEST_REPORTS_COMMITS_AND_OPERATOR_RUN_LOGS
+  note: CHECK_LIVE_REPO_BEFORE_FURTHER_MATERIAL_EXECUTION
+
+roadmap_capabilities:
+  GDL-N02: IMPLEMENTED_VERIFIED_DESIGN_SPEC_FOUNDATION
+  GDL-N03: IMPLEMENTED_VERIFIED_ASSET_REFERENCE_REVISION_CONTRACTS
+  GDL-N04: IMPLEMENTED_VERIFIED_SVG_SKELETON
+  GDL-N05: PARTIAL_PREVIEW_VALIDATION
+  GDL-N06: PARTIAL_ABRAM_DIARY_PHASE1
+  GDL-N07: PARTIAL_REUSABLE_PRODUCT_PROFILES
+  GDL-F07: PARTIAL_GUIDED_INTAKE
+  GDL-F06: PARTIAL_CREATOR_HANDOFF_AND_RESULT_FOUNDATION
+  warning: HIGH_LEVEL_ROADMAP_NOT_LIVE_GREETING_CARD_CHECKPOINT_LEDGER
+
+greeting_card_chain:
+  active_task: GDL-TASK-GREETING-CARD-E2E-001
+  completed_plan_steps_at_committed_cursor: GC-E2E-00_THROUGH_GC-E2E-08
+  active_plan_step_at_committed_cursor: GC-E2E-09
+  GC-E2E-09A:
+    state: COMPLETED_LOCAL
+    verified_scope: STANDARD_PORTRAIT_GRIGO
+    full_governance: PASS
+    published_head_after_cursor: 4eac9ca370ca5d92c8217c86794a2bba214ff37e
+    production_ready: false
+  GC-E2E-09B:
+    state: REPAIR_IN_PROGRESS_NOT_COMPLETED
+    focus: HERASYMENKO_FINAL_PDF_PIXEL_IDENTITY
+    issue: POST_RENDER_PDF_BINARY_ENCODING_NOT_STABLE
+    last_known: PARTIAL_RENDERER_PATCH_AND_PATCHER_ANCHOR_FAILURE
+    require:
+      - EXACT_CURRENT_DIFF_REVIEW
+      - FOCUSED_TESTS
+      - GRIGO_REGRESSION
+      - HERASYMENKO_REAL_SMOKE
+      - PAGE4_VISUAL_REVIEW
+      - GOVERNANCE_AND_EXPLICIT_CLOSEOUT
+  GC-E2E-09C:
+    state: EVIDENCE_OBSERVED_NOT_RUNTIME_ACCEPTED
+    focus: DUAL_SIGNATURE_REGISTRY_AND_VECTOR_CANDIDATES
+    evidence: REGISTRY_FOUNDATION_AND_SEVEN_VECTOR_CANDIDATES_REPORTED
+    runtime_enabled: false
+    pending:
+      - EXACT_PDF_OBJECT_IDENTITY_VERIFICATION
+      - VISUAL_REVIEW
+      - FUTURE_EXPLICIT_EXECUTION_SCOPE_ALIGNMENT
+  GC-E2E-10: PLANNED_PREVIEW_QC_AND_CORRECTION
+  GC-E2E-11: PLANNED_EDITABLE_AND_PRINT_PDF_EXPORT
+  GC-E2E-12: PLANNED_EMPIRICAL_EVIDENCE_AND_CHAIN_CLOSEOUT
+
+known_navigation_drift:
+  path: coordination/graphic_design_lab/index.yaml
+  index_current_step_at_committed_head: GC-E2E-04
+  cursor_current_step_at_committed_head: GC-E2E-09
+  classification: STALE_DERIVED_NAVIGATION
+  remediation: AUDIT_LIVE_INDEX_BEFORE_MINIMAL_RECONCILIATION
+
+next_engineering_sequence:
+  - INSTALL_LOCAL_STRATEGY_AND_ASSERT_CONTEXT_PACK_INCLUSION
+  - RECONCILE_LIVE_GIT_CURSOR_PLAN_AND_INDEX_WITHOUT_DISCARDING_DIRTY_WORK
+  - FINISH_BOUNDED_09B_REPAIR_USING_EXISTING_PROJECT_IMPLEMENTATION
+  - RUN_REAL_SMOKE_AND_HUMAN_PAGE4_VISUAL_REVIEW
+  - FORMALLY_CLOSE_09B_ONLY_AFTER_EVIDENCE
+  - RECONCILE_09C_DUAL_WITH_AUTHORIZED_EXECUTION_PLAN
+  - COMPLETE_09_AND_THEN_10_11_12_BY_EXPLICIT_GATES
+  - HARVEST_GENERIC_CAPABILITIES_AFTER_VERIFIED_E2E_CHAIN
+
+excluded_from_this_policy_patch:
+  - NO_RENDERER_MUTATION
+  - NO_CURSOR_ADVANCEMENT
+  - NO_BLUEPRINT_MUTATION
+  - NO_PARENT_ROADMAP_MUTATION
+  - NO_RUNTIME_OR_PRODUCTION_ACTIVATION
+  - NO_AUTOMATIC_COMMIT_PUSH_ACCEPTANCE_OR_PUBLICATION

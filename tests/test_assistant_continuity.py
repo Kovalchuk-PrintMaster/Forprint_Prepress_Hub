@@ -88,10 +88,21 @@ def test_generated_assistant_packages_embed_strict_blueprint_read_only_policy(
     }
 
     monkeypatch.setattr(module, "verify", lambda **kwargs: fake_check)
+    # This synthetic module now mirrors the mandatory GDL continuity set.
+    # Do not weaken the real packer's fail-closed strategy/context guards.
+    required_gdl_files = []
+    for rel in module.GDL_REQUIRED_CONTEXT_FILES:
+        original = ROOT / rel
+        assert original.is_file(), rel
+        fixture = module_root / rel
+        fixture.parent.mkdir(parents=True, exist_ok=True)
+        fixture.write_bytes(original.read_bytes())
+        required_gdl_files.append(fixture)
+
     monkeypatch.setattr(
         module,
         "local_candidates",
-        lambda module_root, package_type, topics: [agents],
+        lambda module_root, package_type, topics: [agents, *required_gdl_files],
     )
     monkeypatch.setattr(module, "blueprint_ref_catalog", lambda blueprint_root: [])
 
@@ -113,6 +124,15 @@ def test_generated_assistant_packages_embed_strict_blueprint_read_only_policy(
             (package_dir / "manifest.json").read_text(encoding="utf-8")
         )
         readme = (package_dir / "README.md").read_text(encoding="utf-8")
+
+        included = {row["path"] for row in manifest["module_files"]}
+        strategy_path = (
+            "coordination/graphic_design_lab/continuity/"
+            "governed_execution_strategy_v0_1.yaml"
+        )
+        assert strategy_path in included
+        if package_type == "MODULE_CONTEXT":
+            assert set(module.GDL_REQUIRED_CONTEXT_FILES).issubset(included)
 
         assert (
             manifest["policy_markers"]["system_blueprint_access_from_prepress"]

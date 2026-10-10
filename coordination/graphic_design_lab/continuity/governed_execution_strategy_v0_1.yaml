@@ -1,0 +1,147 @@
+schema_version: gdl_governed_execution_strategy_v0_1
+document_type: GDL_LOCAL_STRATEGIC_EXECUTION_POLICY
+status: ACTIVE_LOCAL_POLICY_WHEN_MATERIALIZED
+owner_confirmation_date: '2026-10-10'
+source_provenance: OPERATOR_APPROVED_ADAPTATION_OF_CF10_STRATEGIC_DIRECTION
+scope: GRAPHIC_DESIGN_LAB_WITHIN_FORPRINT_PREPRESS_HUB
+
+authority:
+  cross_module_architecture_owner: FORPRINT_SYSTEM_BLUEPRINT
+  parent_module_owner: FORPRINT_PREPRESS_HUB
+  blueprint_access_from_prepress: READ_ONLY_STRICT
+  local_policy_does_not_grant_execution: true
+  local_policy_does_not_grant_acceptance: true
+  local_policy_does_not_grant_commit_or_push: true
+  local_policy_does_not_grant_publication_or_release: true
+  local_policy_does_not_activate_production: true
+  blueprint_writes_forbidden: true
+  blueprint_governed_worker_runtime_not_duplicated_in_gdl: true
+  cross_module_policy_change_requires_blueprint_handoff: true
+
+north_star: >
+  Build a project-owned, resumable and evidence-driven closed execution loop,
+  rather than a chat-operated sequence of one-off repair scripts. Deliver
+  working customer-facing design artifacts with repeatable operator actions,
+  governed human review and durable state for the next assistant.
+
+canonical_existing_surfaces:
+  project_first: coordination/graphic_design_lab/continuity/project_first_working_rule_v0_1.yaml
+  operating_principles: coordination/graphic_design_lab/continuity/gdl_operating_principles_v0_1.yaml
+  assistant_context: coordination/graphic_design_lab/continuity/assistant_context_contract_v0_1.yaml
+  local_cursor: coordination/graphic_design_lab/continuity/current_execution_cursor_v0_1.yaml
+  greeting_card_plan: coordination/graphic_design_lab/directions/greeting_cards/end_to_end_execution_plan_v0_1.yaml
+  primary_index: coordination/graphic_design_lab/index.yaml
+  local_execution_philosophy: coordination/graphic_design_lab/execution/execution_philosophy_v0_1.yaml
+  blueprint_equivalent: READ_ONLY_INSPECT_BEFORE_INHERITANCE
+
+execution_cycle:
+  steps:
+    - INTAKE_AND_NORMALIZE
+    - RESOLVE_ACTIVE_TASK_AND_EXECUTION_PLAN
+    - INVENTORY_AND_REUSE_ASSESSMENT
+    - PREPARE_AND_AUTHORITY_GATE
+    - PROJECT_OWNED_BOUNDED_EXECUTION
+    - STRICT_VALIDATION_AND_MACHINE_HANDOFF
+    - INTERNAL_REVIEW_AND_EXPLICIT_ACCEPTANCE_GATE
+    - PROJECT_OWNED_CLOSEOUT_AND_IMMUTABLE_EVIDENCE_WHEN_AVAILABLE
+    - UPDATE_CURSOR_REPORT_AND_NEXT_ADMISSIBLE_ACTION
+    - RETURN_TO_PLANNING
+  rule: >
+    A successful tool exit code does not by itself prove a finished task.
+    Missing, malformed or contradictory required handoff/result/report must
+    block completion. A working implementation is not necessarily accepted.
+
+before_any_new_capability:
+  decision_sequence:
+    - INVENTORY
+    - REUSE_ASSESSMENT
+    - REUSE_OR_MODERNIZE_OR_REPLACE_OR_EXTEND
+    - TESTS
+    - INTEGRATION
+    - DEPRECATION_WHERE_APPLICABLE
+  inspect_existing_module_tools_first: true
+  inspect_committed_blueprint_equivalent_read_only_first: true
+  stable_contracts_and_safety_invariants_are_canonical: true
+  python_implementation_versions_are_not_untouchable: true
+  parallel_generic_runtime_forks_forbidden: true
+  mature_logic_must_be_project_owned: true
+  one_off_chat_scripts: BOUNDED_BOOTSTRAP_OR_REPAIR_ONLY
+
+operating_phases:
+  phase_a:
+    name: PROJECT_NATIVE_MAKE_CLI_ORCHESTRATION
+    state: STRATEGIC_TARGET_PARTIALLY_PRESENT
+    goals:
+      - REUSE_EXISTING_OPERATOR_ENTRYPOINTS
+      - STATUS_RUN_RESUME_REPORT_AS_LOGICAL_OPERATIONS
+      - STOP_AT_UNSATISFIED_AUTHORITY_GATES
+      - PRODUCE_MACHINE_READABLE_REPORTS
+    do_not_create_duplicate_cli_until_inventory_complete: true
+  phase_b:
+    name: RESUMABLE_IDEMPOTENT_CLOSED_LOOP
+    state: FUTURE_HARDENING_TARGET_NOT_CLAIMED_COMPLETE
+    goals:
+      - ONE_INITIATION_UNTIL_NEXT_REQUIRED_GATE
+      - NO_DUPLICATE_RESULTS_AFTER_RETRY
+      - FAIL_CLOSED_ON_MISSING_HANDOFF
+      - DURABLE_CHECKPOINT_AND_TERMINAL_EVIDENCE
+      - NEXT_ALLOWED_ACTION_VISIBLE
+  phase_c:
+    name: BLUEPRINT_GOVERNED_DISPATCHER_INTEGRATION
+    state: CROSS_MODULE_STRATEGIC_DIRECTION_NOT_LOCALLY_ACTIVATED
+    goals:
+      - REUSE_BLUEPRINT_DISPATCH_AND_WORKER_SUBSTRATE
+      - BOUNDED_TASK_DEPENDENCIES_AND_PRIORITY
+      - WORKER_ALLOCATION_AND_RESOURCE_GATES
+      - NOTIFICATIONS_AND_RECOVERY
+    requires_blueprint_review_and_authorization: true
+
+current_work_admission:
+  primary_source: coordination/graphic_design_lab/continuity/current_execution_cursor_v0_1.yaml
+  required_before_material_execution:
+    - LIVE_GIT_STATUS
+    - CURRENT_CURSOR
+    - EXECUTION_PLAN_STEP
+    - AVAILABLE_REUSE_SURFACES
+    - BOUNDED_WRITE_SET
+    - REQUIRED_GOVERNANCE_GATES
+  no_blind_next_step_activation: true
+  max_active_tasks_as_defined_in_existing_cursor: 3
+  blocked_work_preserved: true
+  visual_review_is_not_implied_by_machine_tests: true
+  no_automatic_acceptance_commit_push_or_release: true
+
+handoff_and_reporting:
+  every_machine_step_should_expose:
+    - TASK_AND_STEP_ID
+    - INPUT_AND_OUTPUT_PROVENANCE
+    - VALIDATION_STATE_AND_EVIDENCE
+    - CHANGED_FILES_OR_ARTIFACTS
+    - BLOCKERS_AND_UNRESOLVED_REVIEW
+    - NEXT_ADMISSIBLE_ACTION
+  durable_project_report_preferred: true
+  structured_ai_to_ai_handoff_required: true
+  customer_forwarding_requires_separate_review_gate: true
+
+continuity_contract:
+  strategy_required_in_module_onboard_pack: true
+  strategy_required_in_gdl_context_pack: true
+  roadmap_alignment_required_in_gdl_context_pack: true
+  cursor_and_execution_plan_required_in_gdl_context_pack: true
+  operating_principles_and_project_first_required_in_gdl_context_pack: true
+  absence_of_required_context_file_is_pack_failure: true
+  fresh_assistant_must_distinguish_verified_work_from_dirty_unverified_work: true
+  fresh_assistant_must_report_current_step_and_next_gate: true
+
+completion_metric:
+  project_can_advance_until_next_authority_gate_without_chat_script_chain: true
+  operator_receives_short_command_and_project_generated_report: true
+  next_assistant_can_resume_from_project_context_without_previous_chat: true
+  passing_pytest_alone_is_insufficient: true
+
+roadmap_reconciliation:
+  supporting_snapshot: coordination/graphic_design_lab/continuity/roadmap_execution_alignment_2026_10_10_v0_1.yaml
+  roadmap_is_planning_not_execution_authority: true
+  avoid_direct_roadmap_mutation_without_its_governance_path: true
+  prefer_live_execution_plan_and_cursor_for_current_step: true
+  stale_index_must_be_reconciled_before_being_used_as_current_step_truth: true
