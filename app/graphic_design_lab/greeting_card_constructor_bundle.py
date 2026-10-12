@@ -37,6 +37,7 @@ KNOWN_FRONT_FAMILIES = {
 
 SUPPORTED_ACCEPTANCE_BASES = {
     "CREATOR_INTERNAL_REVIEW_PASS",
+    "SOURCE_ASSET_OPERATOR_REVIEW_PASS",
 }
 
 AUTHORITY_FALSE_FIELDS = (
@@ -891,7 +892,7 @@ def validate_accepted_constructor_bundle(
                 _mapping(raw_job).get("accepted_visual_assets")
             )
             if _mapping(item).get("acceptance_basis")
-            == "CREATOR_INTERNAL_REVIEW_PASS"
+            in SUPPORTED_ACCEPTANCE_BASES
             and _mapping(item).get("review_id")
         }
     )

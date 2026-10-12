@@ -1,0 +1,49 @@
+schema_version: gdl_gc_page4_canonical_repair_v0_1
+status: INTERNAL_REVIEW_CANDIDATE_NOT_CUSTOMER_APPROVED
+scope: PHYSICAL_PAGE_4_ONLY
+provenance:
+  geometry_ref: gdl_gc09_signature_zone_profiles_v0_3_CANDIDATE.yaml
+  greeting_ref: geometry_zones_v0_1.yaml
+  typography_ref: sender_typography_profiles_v0_1.yaml
+  source_of_sender_y: PRIOR_RECORDED_OPERATOR_DIRECTION_NOT_ARBITRARY
+coordinate_system:
+  origin: TOP_LEFT_PHYSICAL_PDF
+  dimensions_mm: [214.0, 301.0]
+  bleed_offset_mm: [2.0, 2.0]
+  conversion: pdf_xy_equals_trim_xy_plus_2_mm
+greeting_bbox_pdf_mm: [27.0, 32.0, 187.0, 212.0]
+greeting_typography:
+  preferred_font_mm: 7.0
+  leading_mm: 8.0
+  allow_smaller_tier_only_after_render_fit_failure: true
+  blank_paragraph_rows: 0
+  preserve_paragraph_boundaries: true
+watermark_opacity: 0.5
+watermark_geometry: EXACT_CANONICAL_REFERENCE_BBOX
+watermark_order: BACKGROUND_BEFORE_TEXT_AND_SIGNATURE
+single_sender:
+  GRIGO:
+    text_x_pdf_mm: [31.0, 101.0]
+    start_y_pdf_mm: 222.0
+    variant_signatory_source: PROJECT_CANONICAL_PRIVATE_PDF_SHA256_VERIFIED
+    signature_geometry: VERIFIED_REFERENCE_VECTOR_BBOX_UNCHANGED
+  HERASYMENKO:
+    text_x_pdf_mm: [31.0, 101.0]
+    start_y_pdf_mm: 224.5
+    variant_signatory_source: PROJECT_CANONICAL_PRIVATE_PDF_SHA256_VERIFIED
+    signature_geometry: VERIFIED_REFERENCE_IMAGE_BBOX_UNCHANGED
+sender_content_order: [closing_phrase, sender_name, sender_role_in_original_relative_order]
+sender_text_policy:
+  intake_sender_lines_rendered: false
+  source: canonical_sender_blocks_v0_1.yaml
+  exact_verified_pdf_text_and_geometry_only: true
+  missing_roles_never_invented: true
+  no_extra_hidden_template_sender_vector_strokes: true
+signature_policy:
+  GRIGO: SEVEN_SOURCE_VERIFIED_NATIVE_VECTORS_ONLY
+  HERASYMENKO: EXISTING_EXACT_RASTER_WITH_SOFT_MASK
+  DUAL_GRIGO_HERASYMENKO: DISABLED
+approval:
+  operator_review_of_r002_required: true
+  production_write: false
+  automatic_customer_delivery: false

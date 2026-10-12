@@ -1,0 +1,46 @@
+# GC-E2E-09C: canonical catalog of signature variants, not approval to render.
+schema_version: gdl_greeting_card_signature_registry_v0_1
+registry_role: IMPLEMENTATION_READINESS_AND_COMPONENT_METADATA
+policy:
+  unknown_variant: REJECT
+  unverified_variant: REJECT
+  silent_fallback: FORBIDDEN
+  production_promotion: HUMAN_GATE_REQUIRED
+  new_builder_for_each_signature: false
+variants:
+  GRIGO:
+    state: MACHINE_VERIFIED
+    runtime_enabled: true
+    source_resource_id: template.greeting_card.dolinska.v1
+    source_physical_page: 4
+    component_kind: VECTOR_CLIP
+    signer_count: 1
+    atomic_binding: SIGNER_TEXT_AND_SIGNATURE
+    renderer_adapter: EXISTING_GRIGO_VECTOR_CLIP_V0_1
+    identity_profile: EXACT_VECTOR_COMPONENT
+    visual_review: REQUIRED
+    production_ready: false
+  HERASYMENKO:
+    state: MACHINE_VERIFIED
+    runtime_enabled: true
+    source_resource_id: source.greeting_card.signature.herasymenko.v1
+    source_physical_page: 4
+    component_kind: EMBEDDED_IMAGE
+    signer_count: 1
+    atomic_binding: SIGNER_TEXT_AND_SIGNATURE
+    renderer_adapter: EXISTING_HERASYMENKO_IMAGE_V0_1
+    identity_profile: EXACT_SOURCE_PLUS_RGBA_BBOX_SOFT_MASK
+    visual_review: REQUIRED
+    production_ready: false
+  DUAL_GRIGO_HERASYMENKO:
+    state: SOURCE_VERIFIED
+    runtime_enabled: false
+    source_resource_id: source.greeting_card.signature.dual_grigo_herasymenko.v1
+    source_physical_page: 4
+    component_kind: COMPOSITE_CANDIDATE
+    signer_count: 2
+    atomic_binding: SIGNER_TEXT_AND_SIGNATURE
+    renderer_adapter: null
+    identity_profile: PENDING_COMPONENT_ISOLATION
+    visual_review: REQUIRED
+    production_ready: false

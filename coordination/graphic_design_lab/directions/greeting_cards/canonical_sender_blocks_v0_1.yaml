@@ -1,0 +1,109 @@
+schema_version: gdl_greeting_card_canonical_sender_blocks_v0_1
+status: SOURCE_VERIFIED_EXACT_TEXT_AND_COORDINATES_INTERNAL_REVIEW
+authority: PROJECT_VERIFIED_PRIVATE_PDF_NOT_INTAKE
+source_page: 4
+coordinate_system: TOP_LEFT_PHYSICAL_PDF_MM
+source_pdf_sha256_required: true
+renderer_text_mode: EXACT_NATIVE_SPAN_BASELINES_FROM_VERIFIED_PDF
+supported_runtime:
+- GRIGO
+- HERASYMENKO
+dual_runtime_enabled: false
+notes: No private PDF bytes in Git. Text and bbox values transcribed from exact SHA256-verified source audit. Graphic
+  signatures unchanged.
+variants:
+  GRIGO:
+    source_sha256: 66ed88de51ce621fcc0067263e6fc740392a1a0e9ee39e88514089451b1f2e85
+    text_sha256: 9450adad46b6cb61fc8a5d9dc8b00d5b677e82776d982e3a0369fa2d0f436457
+    texts:
+    - З щирою повагою,
+    - Грігол КАТАМАДЗЕ
+    - Надзвичайний і Повноважний Посол
+    - Президент ВГО АППУ
+    - Віце-президент АППЄ
+    - Член Наглядової Ради УРБ
+    bboxes_pdf_mm:
+    - - 31.187
+      - 223.965
+      - 60.976
+      - 228.301
+    - - 31.187
+      - 230.288
+      - 78.338
+      - 235.843
+    - - 31.187
+      - 238.445
+      - 91.037
+      - 242.782
+    - - 31.187
+      - 245.685
+      - 68.568
+      - 250.022
+    - - 31.187
+      - 250.838
+      - 67.477
+      - 255.174
+    - - 31.187
+      - 255.99
+      - 74.892
+      - 260.327
+  HERASYMENKO:
+    source_sha256: a5392be1234c026d1200cad288a3b4989f506f8eb32522dcbe6236bb221722a8
+    text_sha256: 38114682ebeff560130e18645589455c61251977d5b537c2d0768f151b261dd8
+    texts:
+    - З найщирішими побажаннями
+    - Людмила Герасименко
+    - Віцепрезидент, Генеральний
+    - директор ВГО АППУ
+    bboxes_pdf_mm:
+    - - 31.187
+      - 223.965
+      - 81.839
+      - 228.301
+    - - 31.187
+      - 230.288
+      - 79.18
+      - 235.843
+    - - 31.187
+      - 238.445
+      - 77.838
+      - 242.782
+    - - 31.187
+      - 243.445
+      - 67.249
+      - 247.782
+  DUAL_GRIGO_HERASYMENKO:
+    source_sha256: 2cdff2f2c9a243c2189067675a9f093c0807df30ccae0f57eecc4003b271130c
+    text_sha256: 6edee985a70130fab2da0f22b951095b5ebf985756a2ff7cfcc174330662adfd
+    texts:
+    - З щирою повагою,
+    - Президент ВГО АППУ
+    - Грігол КАТАМАДЗЕ
+    - Віцепрезидент,
+    - Генеральний директор ВГО АППУ
+    - Людмила ГЕРАСИМЕНКО
+    bboxes_pdf_mm:
+    - - 31.187
+      - 213.965
+      - 60.976
+      - 218.301
+    - - 31.187
+      - 220.288
+      - 79.07
+      - 225.843
+    - - 31.187
+      - 227.528
+      - 78.338
+      - 233.083
+    - - 31.187
+      - 242.008
+      - 62.531
+      - 247.563
+    - - 31.187
+      - 249.249
+      - 103.231
+      - 254.804
+    - - 31.187
+      - 256.489
+      - 89.778
+      - 262.044

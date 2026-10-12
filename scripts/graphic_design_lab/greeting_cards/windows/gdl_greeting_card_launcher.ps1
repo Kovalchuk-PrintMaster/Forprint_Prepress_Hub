@@ -20,7 +20,8 @@ if (-not (Test-Path -LiteralPath $LogsDir -PathType Container)) {
 $SupportedBundleNames = @(
     "accepted_constructor_bundle.yaml",
     "accepted_constructor_bundle.yml",
-    "accepted_constructor_bundle.json"
+    "accepted_constructor_bundle.json",
+    "gdl_intake_handoff.zip"
 )
 
 $Candidates = @(
@@ -30,7 +31,7 @@ $Candidates = @(
 )
 
 if ($Candidates.Count -eq 0) {
-    throw "Accepted Constructor Bundle not found next to launcher lab root."
+    throw "Accepted Constructor Bundle or final Intake ZIP not found next to launcher lab root."
 }
 if ($Candidates.Count -ne 1) {
     throw "Expected exactly one Accepted Constructor Bundle; found $($Candidates.Count)."

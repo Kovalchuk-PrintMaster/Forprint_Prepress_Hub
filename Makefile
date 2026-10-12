@@ -20,11 +20,14 @@ help:
 	@echo "  make gdl-greeting-card-builder-input-check - validate exact Builder v1 input extension over the Accepted Constructor Bundle"
 	@echo "  make gdl-greeting-card-private-resources-check RESOURCE_MANIFEST=/private/path/resources.yaml - fail-closed validation of exact Builder v1 private resources"
 	@echo "  make gdl-greeting-card-embedded-components-check RESOURCE_MANIFEST=/private/path/resources.yaml - validate sender-logo and all v1 signature template components"
-	@echo "  make gdl-greeting-card-builder BUNDLE=/path/to/builder-ready-bundle RESOURCE_MANIFEST=/private/path/resources.yaml ARTIFACT_MANIFEST=/private/path/artifacts.yaml OUTPUT=/private/output - render first deterministic PDF Builder slice"
+	@echo "  make gdl-greeting-card-builder BUNDLE=/path/to/builder-ready-bundle RESOURCE_MANIFEST=/private/path/resources.yaml ARTIFACT_MANIFEST=/private/path/artifacts.yaml OUTPUT=/private/output - render supported deterministic PDF Builder slice"
 	@echo "  make gdl-greeting-card-prototype - run project-owned recurring greeting-card prototype generator"
 	@echo "  make gdl-greeting-card-corpus-validate - classify and validate all recurring greeting-card front families"
 	@echo "  make gdl-greeting-card-constructor-ingest BUNDLE=/path/to/accepted_constructor_bundle - validate and ingest one accepted constructor bundle"
 	@echo "  make gdl-greeting-card-smb-launch SHARE=In_Progress RELATIVE_PATH_B64=<token> - resolve SMB bundle path and invoke canonical constructor ingest"
+	@echo "  make gdl-greeting-card-intake-handoff-config - one-time binding to private resource library"
+	@echo "  make gdl-greeting-card-intake-handoff-preflight PACKAGE=/share/client/gdl_intake_handoff.zip - check finalized Intake package"
+	@echo "  make gdl-greeting-card-intake-handoff-run PACKAGE=/share/client/gdl_intake_handoff.zip - ingest and generate full review PDFs"
 	@echo "  make gdl-project-first-check - validate project-internal-tooling-first execution rule"
 	@echo "  make gdl-accept-and-advance REQUEST=tmp/<request>.yaml [APPLY=1 CONFIRM=<operation-id>] - preview/apply explicit governed GDL lifecycle transition"
 	@echo "  make gdl-accept-and-advance-check - validate local governed transition tooling"
@@ -319,3 +322,34 @@ gdl-greeting-card-builder:
 	@test -n "$(GDL_GREETING_CARD_BUILDER_ARTIFACT_MANIFEST)" || (echo "Set ARTIFACT_MANIFEST=/private/path/artifacts.yaml"; exit 2)
 	@test -n "$(GDL_GREETING_CARD_BUILDER_OUTPUT)" || (echo "Set OUTPUT=/private/output"; exit 2)
 	$(PYTHON) $(GDL_GREETING_CARD_BUILDER) --bundle "$(GDL_GREETING_CARD_BUILDER_BUNDLE)" --resource-manifest "$(GDL_GREETING_CARD_BUILDER_RESOURCE_MANIFEST)" --artifact-manifest "$(GDL_GREETING_CARD_BUILDER_ARTIFACT_MANIFEST)" --output-dir "$(GDL_GREETING_CARD_BUILDER_OUTPUT)"
+
+# BEGIN GC09 FULL FOUR PAGE REVIEW V0.1
+# Review-only: never accepts a customer order or enables production.
+GDL_GC09_REVIEW_INPUTS ?= tmp/gdl_gc09b_real_pdf_proof_20261010/private_inputs_local.json
+GDL_GC09_REVIEW_OUTPUT ?= tmp/gdl_gc09_full_card_review
+GDL_GC09_REVIEW_CLI ?= scripts/graphic_design_lab/greeting_cards/full_review_runner_v0_1.py
+.PHONY: gdl-greeting-card-final-review-preflight gdl-greeting-card-final-review
+gdl-greeting-card-final-review-preflight:
+	$(PYTHON) $(GDL_GC09_REVIEW_CLI) --mode preflight --inputs-config "$(GDL_GC09_REVIEW_INPUTS)" --output-root "$(GDL_GC09_REVIEW_OUTPUT)"
+gdl-greeting-card-final-review:
+	$(PYTHON) $(GDL_GC09_REVIEW_CLI) --mode run --inputs-config "$(GDL_GC09_REVIEW_INPUTS)" --output-root "$(GDL_GC09_REVIEW_OUTPUT)"
+# END GC09 FULL FOUR PAGE REVIEW V0.1
+
+# BEGIN GC-E2E INTAKE -> EXISTING BUILDER HANDOFF V0.1
+# Review-only; resource library is configured once in ignored tmp/.
+GDL_INTAKE_HANDOFF_CLI ?= scripts/graphic_design_lab/greeting_cards/intake_handoff_runner_v0_1.py
+GDL_INTAKE_HANDOFF_PACKAGE ?= $(PACKAGE)
+GDL_INTAKE_PRIVATE_INPUTS ?= tmp/gdl_gc09b_real_pdf_proof_20261010/private_inputs_local.json
+.PHONY: gdl-greeting-card-intake-handoff-config gdl-greeting-card-intake-handoff-preflight gdl-greeting-card-intake-handoff-run
+
+gdl-greeting-card-intake-handoff-config:
+	$(PYTHON) $(GDL_INTAKE_HANDOFF_CLI) --mode init-config --from-inputs-config "$(GDL_INTAKE_PRIVATE_INPUTS)"
+
+gdl-greeting-card-intake-handoff-preflight:
+	@test -n "$(GDL_INTAKE_HANDOFF_PACKAGE)" || (echo "Set PACKAGE=/path/to/gdl_intake_handoff.zip"; exit 2)
+	$(PYTHON) $(GDL_INTAKE_HANDOFF_CLI) --mode preflight --package "$(GDL_INTAKE_HANDOFF_PACKAGE)"
+
+gdl-greeting-card-intake-handoff-run:
+	@test -n "$(GDL_INTAKE_HANDOFF_PACKAGE)" || (echo "Set PACKAGE=/path/to/gdl_intake_handoff.zip"; exit 2)
+	$(PYTHON) $(GDL_INTAKE_HANDOFF_CLI) --mode run --package "$(GDL_INTAKE_HANDOFF_PACKAGE)"
+# END GC-E2E INTAKE -> EXISTING BUILDER HANDOFF V0.1

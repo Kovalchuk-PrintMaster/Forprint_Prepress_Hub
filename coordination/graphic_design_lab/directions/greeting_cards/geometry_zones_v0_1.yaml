@@ -1,0 +1,168 @@
+schema_version: gdl_gc_geometry_zone_registry_v0_1
+status: ACTIVE_BOUNDED_GEOMETRY_CANDIDATE
+scope: greeting_card_a3_single_fold_v0_1
+rule: EXACT_ZONES_FIRST_THEN_DETERMINISTIC_CONTENT_FITTING
+page_coordinate_system:
+  trim_mm: [210.0, 297.0]
+  bleed_each_side_mm: 2.0
+  physical_pdf_mm: [214.0, 301.0]
+  trim_origin: TOP_LEFT
+  physical_pdf_origin: TOP_LEFT
+  mapping: physical_xy_equals_trim_xy_plus_2mm
+  units: mm
+page_map:
+  physical_1: PAGE_1_FRONT
+  physical_2: PAGE_4_BACK
+  physical_3: PAGE_2_INSIDE_IMAGE
+  physical_4: PAGE_3_INSIDE_GREETING
+pages:
+  physical_1:
+    existing_slots:
+      front.sender_logo:
+        bbox_pdf_mm: [64.5, 59.5, 149.5, 144.5]
+        status: EXISTING_STANDARD_REFERENCE_ONLY
+      front.occasion_text:
+        bbox_pdf_mm: [32.0, 203.5, 182.0, 248.0]
+        status: EXISTING_STANDARD_REFERENCE_ONLY
+      front.recipient_branding:
+        status: DEFERRED_EXISTING_VARIANT_GEOMETRY
+  physical_2:
+    existing_slots:
+      back.background:
+        status: LOCKED_REFERENCE_PRESERVATION
+      back.fixed_mark:
+        status: LOCKED_REFERENCE_PRESERVATION
+  physical_3:
+    existing_slots:
+      inside_image.portrait:
+        status: REUSE_CURRENT_CANONICAL_REFERENCE_GEOMETRY
+      inside_image.portrait_mask:
+        status: REUSE_CURRENT_CANONICAL_REFERENCE_GEOMETRY
+      inside_image.frame:
+        status: REUSE_CURRENT_CANONICAL_REFERENCE_GEOMETRY
+  physical_4:
+    zones:
+      inside_text.greeting:
+        status: OPERATOR_CONFIRMED_GEOMETRY
+        reference: ILLUSTRATOR_SCREENSHOT_2026_10_10
+        illustrator_reference_point: CENTER
+        illustrator_center_trim_mm: [105.0, 120.0]
+        bbox_trim_mm: [25.0, 30.0, 185.0, 210.0]
+        bbox_pdf_mm: [27.0, 32.0, 187.0, 212.0]
+        max_width_mm: 160.0
+        max_height_mm: 180.0
+        horizontal_alignment: CENTER
+        text_vertical_behavior: TOP_ALIGNED_UNTIL_REVIEW
+        rule: TEXT_MUST_FIT_INSIDE_MAX_ZONE_OR_FAIL_CLOSED
+        font_selection: ILLUSTRATOR_REFERENCE_WITH_BOUNDED_SHRINK_TO_FIT
+        typography_reference:
+          source: ILLUSTRATOR_CHARACTER_PANEL_2026_10_10
+          font_family: ZapfChanceryC
+          font_style: Regular
+          preferred_font_size_mm: 7.0
+          preferred_line_advance_mm: 8.0
+          alignment: CENTER
+          letter_spacing: 0
+          fallback_font_sizes_pt: [18.5, 17.0]
+          leading_for_fallback: SCALE_BY_RATIO_8_OVER_7_AND_FONT_ASCENDER
+          production_acceptance: REQUIRES_PDF_VISUAL_REVIEW
+        extra_constraint: PRESERVE_EXISTING_SENDER_GAP
+        bottom_visual_line_reservation:
+          count: 2
+          basis: OPERATOR_CONFIRMED_TWO_EMPTY_LAST_VISUAL_LINES
+          height_rule: 2 * selected_font_size_pt * 25.4 / 72 * 8 / 7
+          relative_to: FIXED_GREETING_MAX_BOTTOM
+          implementation: EFFECTIVE_LAYOUT_CAP_NOT_LITERAL_TRAILING_NEWLINES
+          output_requires_glyph_clearance: true
+      inside_text.sender_block:
+        status: EXISTING_ENGINEERING_RULE_NOT_NEW_APPROVAL
+        bbox_x_pdf_mm: [31.0, 101.0]
+        candidate_start_y_pdf_mm: [214.0, 224.0, 236.0]
+        line_advance_mm: 8.0
+        conservative_bottom_pdf_mm: 285.0
+        conservative_bottom_is_print_policy: false
+      inside_text.signature:
+        status: EXISTING_APPROVED_VARIANT_SOURCE_GEOMETRY
+        herasymenko_bbox_pdf_mm: [82.877, 214.875, 128.258, 274.141]
+        grigo_and_dual_geometry: PRESERVE_EXISTING_REFERENCE_NOT_REDEFINED
+      inside_text.watermark:
+        status: LOCKED_REFERENCE_PRESERVATION
+    signature_profiles_candidate_v0_3:
+      GRIGO:
+        status: PRESERVE_PREVIOUS_RUNTIME_GEOMETRY
+        sender_text_center_trim_mm:
+        - 60.0
+        - 240.0
+        sender_text_size_mm:
+        - 60.0
+        - 40.0
+        signature_center_trim_mm:
+        - 125.0
+        - 230.0
+        signature_size_mm:
+        - 50.0
+        - 35.0
+        source_signature_bbox_trim_mm:
+        - 101.465
+        - 211.348
+        - 153.203
+        - 245.531
+        runtime_changes: false
+      HERASYMENKO:
+        status: PRESERVE_PREVIOUS_RUNTIME_GEOMETRY
+        sender_text_center_trim_mm:
+        - 55.0
+        - 235.0
+        sender_text_size_mm:
+        - 50.0
+        - 25.0
+        # Candidate-only inset; source_locked PDF geometry remains unchanged.
+        sender_text_inner_top_inset_mm: 0.5
+        signature_center_trim_mm:
+        - 135.0
+        - 245.0
+        signature_size_mm:
+        - 46.0
+        - 60.0
+        source_signature_bbox_trim_mm:
+        - 80.877
+        - 212.875
+        - 126.258
+        - 272.141
+        runtime_changes: false
+      DUAL_GRIGO_HERASYMENKO:
+        status: OPERATOR_COMPOSITION_CANDIDATE_NEEDS_REAL_COMPOSITE_PROOF
+        sender_text_center_trim_mm:
+        - 65.0
+        - 240.0
+        sender_text_size_mm:
+        - 75.0
+        - 55.0
+        signature_center_trim_mm:
+        - 120.0
+        - 240.0
+        signature_size_mm:
+        - 77.0
+        - 70.0
+        nominal_signature_bbox_trim_mm:
+        - 81.5
+        - 205.0
+        - 158.5
+        - 275.0
+        source_ink_top_trim_mm: 194.983
+        source_composite_height_mm: 82.175
+        minimum_ink_clearance_mm: 2.0
+        requires_visible_ink_collision_check: true
+        needs_proportional_component_fit_proof: true
+        runtime_enabled: false
+known_review_questions:
+  - SENDER_AND_SIGNATURE_BBOXES_MAY_OVERLAP_EVEN_IF_VISIBLE_INK_DOES_NOT
+  - FINAL_MINIMUM_FONT_SIZE_NOT_OPERATOR_APPROVED
+  - PRINT_SAFE_AREA_NOT_ESTABLISHED_BY_285_MM_ENGINEERING_GUARD
+  - PAGE_1_AND_PAGE_3_OTHER_ZONE_COORDINATES_REQUIRE_SEPARATE_GATES
+  - ACTUAL_TEXT_MUST_BE_VISUALLY_REVIEWED_WITH_FULL_PDF
+not_authorized:
+  - DUAL_RUNTIME_ACTIVATION
+  - PRODUCTION_RELEASE
+  - GLOBAL_REDESIGN
+  - AUTOMATIC_COMMIT_PUSH

@@ -265,22 +265,21 @@ def test_attach_payload_rehashes_same_bundle_after_exact_render_extension():
     )
 
 
-def test_builder_payload_requires_exact_sender_line_ids_and_text():
+def test_builder_payload_ignores_legacy_non_authoritative_sender_lines():
+    # Only the selected canonical variant controls the signatory block.
+    # Repeated/misleading Intake line IDs do not affect the Builder geometry.
     bundle = base_bundle()
     payload = portrait_payload(bundle)
+    original_variant = payload["sender_text"]["signature_variant_id"]
+    payload["sender_text"]["lines"][1]["id"] = "closing_phrase"
+    payload["sender_text"]["lines"][1]["text"] = "UNTRUSTED INTAKE ROLE"
+    payload["sender_text"]["signature_asset"] = "UNTRUSTED INTAKE ART"
+    payload["sender_text"]["signature_coordinates"] = [0, 0]
 
-    payload["sender_text"]["lines"][1]["id"] = (
-        "closing_phrase"
-    )
+    errors = validate_builder_payload_v1(payload)
 
-    errors = validate_builder_payload_v1(
-        payload
-    )
-
-    assert (
-        "builder_v1.sender_text.lines[1].id:duplicate"
-        in errors
-    )
+    assert errors == []
+    assert payload["sender_text"]["signature_variant_id"] == original_variant
 
 
 def test_builder_payload_requires_front_family_consistent_with_branding_state():

@@ -1,0 +1,37 @@
+schema_version: gdl_greeting_card_variability_matrix_v0_1
+status: CANDIDATE_ENGINEERING_PROBE_NOT_ACCEPTANCE
+bound_task: GDL-TASK-GREETING-CARD-E2E-001
+bound_step: GC-E2E-09
+purpose: >
+  Probe the SAME project-owned Builder's flexibility across synthetic inputs;
+  do not reproduce old customer documents and do not authorize runtime changes.
+authority:
+  cursor_advance: false
+  client_content_acceptance: false
+  dual_runtime_activation: false
+  production_ready: false
+synthetic_greeting_cases:
+  - {id: short_two_line_sender, greeting_length: 110, sender_lines: 2}
+  - {id: medium_three_line_sender, greeting_length: 420, sender_lines: 3}
+  - {id: long_three_line_sender, greeting_length: 760, sender_lines: 3}
+  - {id: long_six_line_sender, greeting_length: 850, sender_lines: 6}
+  - {id: overflow_probe, greeting_length: 1800, sender_lines: 8}
+variant_gate_cases:
+  - {id: standard_grigo, front: STANDARD, image: PORTRAIT, signature: GRIGO, branding: ABSENT, expected: ALLOWED}
+  - {id: standard_herasymenko, front: STANDARD, image: PORTRAIT, signature: HERASYMENKO, branding: ABSENT, expected: ALLOWED}
+  - {id: dual_not_enabled, front: STANDARD, image: PORTRAIT, signature: DUAL_GRIGO_HERASYMENKO, branding: ABSENT, expected: BLOCKED}
+  - {id: recipient_branding_overlay, front: RECIPIENT_BRANDING_OVERLAY, image: PORTRAIT, signature: GRIGO, branding: PRESENT, expected: BLOCKED}
+  - {id: default_asset_flowers, front: STANDARD, image: DEFAULT_ASSET, signature: GRIGO, branding: ABSENT, expected: BLOCKED}
+  - {id: bilingual_front, front: BILINGUAL_OCCASION, image: PORTRAIT, signature: GRIGO, branding: ABSENT, expected: BLOCKED}
+required_v1_future_proofs:
+  - MULTI_JOB_FULL_BATCH
+  - EXACT_CUSTOM_TITLES
+  - DIFFERENT_GREETING_LENGTHS_WITH_SENDER_BLOCK_FIT
+  - GRIGO_HERASYMENKO_DUAL_RUNTIME_BY_EXPLICIT_GATE
+  - RECIPIENT_BRANDING_OVERLAY
+  - EXPLICIT_DEFAULT_IMAGE
+  - MACHINE_TEXT_FIDELITY_AND_VISUAL_QC
+notes:
+  - PROBE_IS_UNIT_LEVEL_LAYOUT_MEASUREMENT_NOT_FINISHED_CUSTOMER_PDF
+  - NO_PRIVATE_CUSTOMER_TEXT_IN_TEST_MATRIX
+  - CASE_FAILURE_MAY_BE_A_REAL_CAPABILITY_GAP_NOT_A_TEST_HARNESS_FAILURE

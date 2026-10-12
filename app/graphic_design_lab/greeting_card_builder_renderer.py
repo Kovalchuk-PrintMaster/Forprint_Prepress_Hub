@@ -13,16 +13,30 @@ from typing import Any
 
 import pymupdf
 import yaml
-from PIL import Image
+from PIL import Image, ImageChops
 
 from app.graphic_design_lab.greeting_card_builder_input import (
     validate_builder_ready_bundle_v1,
 )
+from app.graphic_design_lab.greeting_card_canonical_sender_v0_1 import (
+    source_sender_rows,
+    render_source_sender_text,
+)
+from app.graphic_design_lab.greeting_card_pdf_unicode_v0_1 import (
+    repair_page4_canonical_unicode,
+)
 from app.graphic_design_lab.greeting_card_embedded_components import (
     GRIGO_SIGNATURE_BBOX_MM,
     GRIGO_SIGNATURE_DRAWING_COUNT,
+    HERASYMENKO_SIGNATURE_BBOX_MM,
+    HERASYMENKO_SIGNATURE_IMAGE_DIGEST_HEX,
+    HERASYMENKO_SIGNATURE_PIXEL_SIZE,
     SENDER_LOGO_IMAGE_DIGEST_HEX,
     _inspect_grigo_signature,
+    _select_grigo_signature_drawings,
+    _signature_cluster_sha256,
+    _cluster_union,
+    _inspect_herasymenko_signature,
 )
 from app.graphic_design_lab.greeting_card_pdf_primitives import (
     normalize_image_soft_mask_colorspaces,
@@ -32,6 +46,7 @@ from app.graphic_design_lab.greeting_card_private_resources import (
     RESOURCE_FRONT_FONT,
     RESOURCE_GREETING_FONT,
     RESOURCE_REFERENCE_PDF,
+    RESOURCE_SIGNATURE_HERASYMENKO,
     validate_and_resolve_private_resources,
 )
 
@@ -45,7 +60,7 @@ RENDER_REPORT_SCHEMA = (
 
 SUPPORTED_FRONT_FAMILIES = ("STANDARD",)
 SUPPORTED_IMAGE_MODES = ("PORTRAIT",)
-SUPPORTED_SIGNATURE_VARIANTS = ("GRIGO",)
+SUPPORTED_SIGNATURE_VARIANTS = ("GRIGO", "HERASYMENKO")
 
 PT_PER_MM = 72.0 / 25.4
 MM_PER_PT = 25.4 / 72.0
@@ -70,6 +85,7 @@ FRONT_STANDARD_OCCASION_BBOX_MM = (
     248.0,
 )
 FRONT_STANDARD_OCCASION_FONT_SIZE_PT = 52.0
+FRONT_OCCASION_COLOR_RGB = (96.0 / 255.0, 57.0 / 255.0, 19.0 / 255.0)
 
 STANDARD_BIRTHDAY_DISPLAY_TEXT = (
     "Привітання з нагоди Дня Народження!"
@@ -79,9 +95,17 @@ STANDARD_BIRTHDAY_LINES = (
     "Дня Народження!",
 )
 
+# Illustrator Character panel, 2026-10-10: ZapfChanceryC Regular,
+# size 7 mm, baseline-to-baseline leading 8 mm. The other tiers are
+# bounded shrink-to-fit fallbacks, not alternative design defaults.
+GREETING_REFERENCE_FONT_SIZE_MM = 7.0
+GREETING_REFERENCE_LINE_ADVANCE_MM = 8.0
+GREETING_LINE_ADVANCE_RATIO = (
+    GREETING_REFERENCE_LINE_ADVANCE_MM / GREETING_REFERENCE_FONT_SIZE_MM
+)
 GREETING_FONT_SIZE_TIERS_PT = (
-    22.5,
-    20.0,
+    GREETING_REFERENCE_FONT_SIZE_MM * PT_PER_MM,
+    18.5,
     17.0,
 )
 SENDER_START_Y_VARIANTS_MM = (
@@ -89,16 +113,58 @@ SENDER_START_Y_VARIANTS_MM = (
     224.0,
     236.0,
 )
-GREETING_BODY_LEFT_MM = 26.0
-GREETING_BODY_TOP_MM = 34.0
-GREETING_BODY_RIGHT_MM = 190.0
+# Physical PDF includes 2 mm bleed around the 210 x 297 mm trim.
+# Operator-confirmed Illustrator greeting box: X-center=105, Y-center=120,
+# W=160, H=180 mm in trim coordinates; max PDF box = (27,32,187,212).
+GREETING_BODY_LEFT_MM = 27.0
+GREETING_BODY_TOP_MM = 32.0
+GREETING_BODY_RIGHT_MM = 187.0
+GREETING_BODY_MAX_BOTTOM_MM = 212.0
 MIN_SENDER_GAP_LINE_HEIGHTS = 2.0
+# Operator-confirmed: two visually empty lines at bottom of the fixed
+# 160 x 180 mm greeting zone. This is not customer text or PDF trim.
+GREETING_BOTTOM_RESERVED_LINE_SLOTS = 2
 
 SENDER_TEXT_LEFT_MM = 31.0
 SENDER_TEXT_RIGHT_MM = 101.0
 SENDER_LINE_ADVANCE_MM = 8.0
+# Conservative V1 variability test bound (NOT a print specification).
+SENDER_CONSERVATIVE_SAFE_BOTTOM_MM = 285.0
 SENDER_BASE_FONT_SIZE_PT = 12.171
 SENDER_NAME_FONT_SIZE_PT = 15.591
+
+# GC-E2E Page4 proof: the second, Illustrator-editable PDF revision.
+# Profiles use physical PDF mm including the original 2 mm bleed.
+PAGE4_PROFILE_PATH = (
+    Path(__file__).resolve().parents[2]
+    / 'coordination/graphic_design_lab/directions/greeting_cards/'
+    'page4_canonical_repair_profile_v0_1.yaml'
+)
+GRIGO_REPLAY_VECTOR_SHA256 = (
+    '7944c3c1984b9bcab38fc406445f4180f279e5d55c8c1329fe9f8b8cd5a3f47c'
+)
+
+
+def _page4_runtime_profile(signature_variant: str) -> dict[str, Any]:
+    """Numeric reference profile, never Illustrator screenshot heuristics."""
+    raw = yaml.safe_load(PAGE4_PROFILE_PATH.read_text(encoding='utf-8'))
+    if not isinstance(raw, dict) or raw.get('schema_version') != 'gdl_gc_page4_canonical_repair_v0_1':
+        raise ValueError('page4_profile_invalid')
+    if raw.get('watermark_opacity') != 0.5:
+        raise ValueError('page4_watermark_opacity_unexpected')
+    if raw.get('greeting_bbox_pdf_mm') != [27.0, 32.0, 187.0, 212.0]:
+        raise ValueError('page4_greeting_geometry_contract_mismatch')
+    sender = raw.get('single_sender')
+    if not isinstance(sender, dict):
+        raise ValueError('page4_sender_profile_missing')
+    row = sender.get(signature_variant)
+    if not isinstance(row, dict) or row.get('text_x_pdf_mm') != [31.0, 101.0]:
+        raise ValueError('page4_sender_bbox_invalid')
+    expected_y = {'GRIGO': 222.0, 'HERASYMENKO': 224.5}
+    if signature_variant not in expected_y or row.get('start_y_pdf_mm') != expected_y[signature_variant]:
+        raise ValueError('page4_sender_start_unapproved')
+    return dict(raw)
+
 
 PREVIEW_DPI = 120
 
@@ -275,6 +341,37 @@ def _insert_digest_image(
     target_page.insert_image(
         destination,
         **kwargs,
+    )
+
+
+def _insert_page4_watermark_half_opacity(
+    reference: pymupdf.Document,
+    source: pymupdf.Page,
+    target: pymupdf.Page,
+) -> None:
+    """Reuse canonical watermark pixels and bbox; halve only alpha."""
+    info = _find_image(source, COMMON_IMAGE_DIGESTS['watermark.emblem'])
+    assert info is not None
+    stream, mask = _raw_image_payload(reference, source, int(info['xref']))
+    with Image.open(io.BytesIO(stream)) as image:
+        rgba = image.convert('RGBA')
+    alpha = rgba.getchannel('A')
+    if mask is not None:
+        with Image.open(io.BytesIO(mask)) as m:
+            smask = m.convert('L')
+            if smask.size != rgba.size:
+                raise ValueError('watermark_smask_pixel_size_mismatch')
+            alpha = ImageChops.multiply(alpha, smask)
+    # Integer alpha attenuation; no change to RGB pixels or geometry.
+    alpha = alpha.point(lambda x: int(round(x * 0.5)))
+    rgba.putalpha(alpha)
+    out = io.BytesIO()
+    rgba.save(out, format='PNG')
+    target.insert_image(
+        pymupdf.Rect(info['bbox_rect']),
+        stream=out.getvalue(),
+        keep_proportion=False,
+        overlay=True,
     )
 
 
@@ -600,19 +697,632 @@ def _overlay_grigo_signature(
     target_page: pymupdf.Page,
     overlay: pymupdf.Document,
 ) -> None:
-    clip = _rect_mm(
-        list(
-            GRIGO_SIGNATURE_BBOX_MM
+    """Copy ONLY the seven source-verified blue ink paths into the page.
+
+    show_pdf_page(clip=...) embedded all source-page form resources, including
+    113 invisible reference sender strokes. Illustrator exposed those objects.
+    Replaying source paths as native page vector drawings removes the hidden
+    form without rasterizing or shifting the signature.
+    """
+    clip = _rect_mm(list(GRIGO_SIGNATURE_BBOX_MM))
+    selected = [
+        d for d in overlay[0].get_drawings()
+        if _rects_intersect(pymupdf.Rect(d['rect']), clip)
+    ]
+    if len(selected) != GRIGO_SIGNATURE_DRAWING_COUNT:
+        raise ValueError('grigo_vector_replay_source_count_mismatch')
+    if any(d.get('type') != 'f' or d.get('fill') is None for d in selected):
+        raise ValueError('grigo_vector_replay_non_signature_path')
+
+    for drawing in selected:
+        shape = target_page.new_shape()
+        for item in drawing['items']:
+            if item[0] == 'l':
+                shape.draw_line(item[1], item[2])
+            elif item[0] == 'c':
+                shape.draw_bezier(item[1], item[2], item[3], item[4])
+            else:
+                raise ValueError('grigo_vector_path_operation_unsupported')
+        shape.finish(
+            width=float(drawing.get('width') or 1),
+            color=drawing.get('color'),
+            fill=drawing['fill'],
+            closePath=True,
+            even_odd=bool(drawing.get('even_odd')),
+            fill_opacity=float(drawing.get('fill_opacity') or 1.0),
+        )
+        shape.commit(overlay=True)
+
+
+def _inspect_grigo_vector_only_page(page: pymupdf.Page) -> dict[str, Any]:
+    """Strict post-render gate for exact source-derived vector replay.
+
+    Original reference signature authenticity is independently verified by
+    _inspect_grigo_signature(reference[3]); this verifies native-path replay.
+    """
+    selected = _select_grigo_signature_drawings(page)
+    if len(selected) != GRIGO_SIGNATURE_DRAWING_COUNT:
+        raise ValueError('grigo_replayed_drawing_count_mismatch')
+    union = _cluster_union(selected)
+    bbox = [round(x * MM_PER_PT, 3) for x in union]
+    if any(abs(x - y) > 0.03 for x, y in zip(bbox, GRIGO_SIGNATURE_BBOX_MM)):
+        raise ValueError('grigo_replayed_vector_bbox_mismatch')
+    actual = _signature_cluster_sha256(selected, union=union)
+    if actual != GRIGO_REPLAY_VECTOR_SHA256:
+        raise ValueError('grigo_replayed_vector_hash_mismatch:' + actual)
+    if len(page.get_drawings()) != GRIGO_SIGNATURE_DRAWING_COUNT:
+        raise ValueError('page4_unexpected_hidden_or_duplicate_vector_paths')
+    return {
+        'component_id': 'component.signature.grigo.embedded_vector.v1',
+        'kind': 'native_vector_only_replay',
+        'signature_variant_id': 'GRIGO',
+        'physical_page': 4,
+        'bbox_mm': bbox,
+        'drawing_count': len(selected),
+        'normalized_sha256': actual,
+        'source_hash_validated_before_replay': True,
+        'unrelated_template_drawings_present': False,
+        'status': 'PASS',
+    }
+
+
+def _text_intersections_with_rect(
+    page: pymupdf.Page,
+    rect: pymupdf.Rect,
+) -> list[dict[str, Any]]:
+    hits = []
+
+    raw = page.get_text(
+        "dict"
+    )
+
+    for block in _list(
+        raw.get("blocks")
+    ):
+        block_map = _mapping(
+            block
+        )
+        for line in _list(
+            block_map.get("lines")
+        ):
+            line_map = _mapping(
+                line
+            )
+            for span in _list(
+                line_map.get("spans")
+            ):
+                item = _mapping(
+                    span
+                )
+                text = str(
+                    item.get("text")
+                    or ""
+                ).strip()
+                bbox = item.get(
+                    "bbox"
+                )
+
+                if (
+                    not text
+                    or not bbox
+                ):
+                    continue
+
+                span_rect = pymupdf.Rect(
+                    bbox
+                )
+
+                if _rects_intersect(
+                    span_rect,
+                    rect,
+                ):
+                    hits.append(
+                        {
+                            "bbox": [
+                                float(
+                                    span_rect.x0
+                                ),
+                                float(
+                                    span_rect.y0
+                                ),
+                                float(
+                                    span_rect.x1
+                                ),
+                                float(
+                                    span_rect.y1
+                                ),
+                            ],
+                            "text_sha256":
+                                hashlib.sha256(
+                                    text.encode(
+                                        "utf-8"
+                                    )
+                                ).hexdigest(),
+                        }
+                    )
+
+    return hits
+
+
+def _assert_text_clear_of_rect(
+    page: pymupdf.Page,
+    rect: pymupdf.Rect,
+    *,
+    label: str,
+) -> None:
+    hits = _text_intersections_with_rect(
+        page,
+        rect,
+    )
+
+    if hits:
+        raise ValueError(
+            label
+            + ":text_intersects_signature:"
+            + str(
+                len(
+                    hits
+                )
+            )
+        )
+
+
+def _pdf_image_rgba_pixel_identity(
+    page: pymupdf.Page,
+    image_xref: int,
+) -> dict[str, Any]:
+    if image_xref <= 0:
+        raise ValueError(
+            "pdf_image_identity_xref_invalid"
+        )
+
+    extracted = page.parent.extract_image(
+        image_xref
+    )
+
+    payload = extracted[
+        "image"
+    ]
+
+    with Image.open(
+        io.BytesIO(
+            payload
+        )
+    ) as source:
+        rgba = source.convert(
+            "RGBA"
+        )
+
+    soft_mask_xref = (
+        _image_soft_mask_xref(
+            page,
+            image_xref,
         )
     )
-    target_page.show_pdf_page(
-        clip,
-        overlay,
-        0,
-        clip=clip,
-        keep_proportion=False,
-        overlay=True,
+
+    soft_mask_colorspace = None
+
+    if soft_mask_xref > 0:
+        mask_payload = (
+            page.parent.extract_image(
+                soft_mask_xref
+            )[
+                "image"
+            ]
+        )
+
+        with Image.open(
+            io.BytesIO(
+                mask_payload
+            )
+        ) as mask_source:
+            mask = (
+                mask_source.convert(
+                    "L"
+                )
+            )
+
+        if (
+            mask.size
+            != rgba.size
+        ):
+            raise ValueError(
+                "pdf_image_soft_mask_pixel_size_mismatch:"
+                + f"mask={mask.size},image={rgba.size}"
+            )
+
+        rgba.putalpha(
+            mask
+        )
+
+        (
+            _,
+            soft_mask_colorspace,
+        ) = page.parent.xref_get_key(
+            soft_mask_xref,
+            "ColorSpace",
+        )
+
+    digest = hashlib.sha256()
+
+    digest.update(
+        int(
+            rgba.width
+        ).to_bytes(
+            4,
+            "big",
+        )
     )
+
+    digest.update(
+        int(
+            rgba.height
+        ).to_bytes(
+            4,
+            "big",
+        )
+    )
+
+    digest.update(
+        rgba.tobytes()
+    )
+
+    return {
+        "rgba_pixel_sha256":
+            digest.hexdigest(),
+        "pixel_size": [
+            int(
+                rgba.width
+            ),
+            int(
+                rgba.height
+            ),
+        ],
+        "soft_mask_xref":
+            soft_mask_xref,
+        "soft_mask_colorspace":
+            soft_mask_colorspace,
+        "extracted_sha256":
+            hashlib.sha256(
+                payload
+            ).hexdigest(),
+    }
+
+
+def _insert_herasymenko_signature(
+    target_page: pymupdf.Page,
+    signature_source: pymupdf.Document,
+) -> dict[str, Any]:
+    if (
+        signature_source.page_count
+        != 4
+    ):
+        raise ValueError(
+            "herasymenko_signature_source_page_count_mismatch"
+        )
+
+    source_page = (
+        signature_source[
+            3
+        ]
+    )
+
+    # This remains the strict canonical private-source validation.
+    source_component = (
+        _inspect_herasymenko_signature(
+            source_page
+        )
+    )
+
+    destination = _rect_mm(
+        list(
+            HERASYMENKO_SIGNATURE_BBOX_MM
+        )
+    )
+
+    _assert_text_clear_of_rect(
+        target_page,
+        destination,
+        label="herasymenko_signature",
+    )
+
+    source_info = _find_image(
+        source_page,
+        HERASYMENKO_SIGNATURE_IMAGE_DIGEST_HEX,
+    )
+
+    if source_info is None:
+        raise ValueError(
+            "herasymenko_signature_source_image_missing"
+        )
+
+    source_xref = int(
+        source_info.get(
+            "xref"
+        )
+        or 0
+    )
+
+    if source_xref <= 0:
+        raise ValueError(
+            "herasymenko_signature_source_xref_missing"
+        )
+
+    source_pixel_identity = (
+        _pdf_image_rgba_pixel_identity(
+            source_page,
+            source_xref,
+        )
+    )
+
+    _insert_digest_image(
+        signature_source,
+        source_page,
+        target_page,
+        HERASYMENKO_SIGNATURE_IMAGE_DIGEST_HEX,
+        destination=destination,
+    )
+
+    return {
+        **source_component,
+        "rgba_pixel_sha256":
+            source_pixel_identity[
+                "rgba_pixel_sha256"
+            ],
+        "rgba_pixel_size":
+            source_pixel_identity[
+                "pixel_size"
+            ],
+        "source_soft_mask_present":
+            source_pixel_identity[
+                "soft_mask_xref"
+            ]
+            > 0,
+    }
+
+
+def _inspect_rendered_herasymenko_signature(
+    page: pymupdf.Page,
+    *,
+    expected_rgba_pixel_sha256: str,
+) -> dict[str, Any]:
+    if (
+        not isinstance(
+            expected_rgba_pixel_sha256,
+            str,
+        )
+        or len(
+            expected_rgba_pixel_sha256
+        )
+        != 64
+    ):
+        raise ValueError(
+            "rendered_herasymenko_expected_rgba_sha_invalid"
+        )
+
+    candidates = []
+
+    for info in page.get_image_info(
+        hashes=True,
+        xrefs=True,
+    ):
+        width = int(
+            info.get(
+                "width"
+            )
+            or 0
+        )
+
+        height = int(
+            info.get(
+                "height"
+            )
+            or 0
+        )
+
+        if (
+            width,
+            height,
+        ) != (
+            HERASYMENKO_SIGNATURE_PIXEL_SIZE
+        ):
+            continue
+
+        bbox = pymupdf.Rect(
+            info[
+                "bbox"
+            ]
+        )
+
+        bbox_mm = [
+            round(
+                float(
+                    bbox.x0
+                )
+                * MM_PER_PT,
+                3,
+            ),
+            round(
+                float(
+                    bbox.y0
+                )
+                * MM_PER_PT,
+                3,
+            ),
+            round(
+                float(
+                    bbox.x1
+                )
+                * MM_PER_PT,
+                3,
+            ),
+            round(
+                float(
+                    bbox.y1
+                )
+                * MM_PER_PT,
+                3,
+            ),
+        ]
+
+        if not all(
+            abs(
+                float(
+                    bbox_mm[
+                        index
+                    ]
+                )
+                - float(
+                    HERASYMENKO_SIGNATURE_BBOX_MM[
+                        index
+                    ]
+                )
+            )
+            <= 0.05
+            for index in range(
+                4
+            )
+        ):
+            continue
+
+        candidates.append(
+            {
+                "info":
+                    info,
+                "bbox_mm":
+                    bbox_mm,
+            }
+        )
+
+    if len(
+        candidates
+    ) != 1:
+        raise ValueError(
+            "rendered_herasymenko_signature_candidate_count_mismatch:"
+            + str(
+                len(
+                    candidates
+                )
+            )
+        )
+
+    candidate = (
+        candidates[
+            0
+        ]
+    )
+
+    info = candidate[
+        "info"
+    ]
+
+    xref = int(
+        info.get(
+            "xref"
+        )
+        or 0
+    )
+
+    if xref <= 0:
+        raise ValueError(
+            "rendered_herasymenko_signature_xref_missing"
+        )
+
+    identity = (
+        _pdf_image_rgba_pixel_identity(
+            page,
+            xref,
+        )
+    )
+
+    if (
+        identity[
+            "rgba_pixel_sha256"
+        ]
+        != expected_rgba_pixel_sha256
+    ):
+        raise ValueError(
+            "rendered_herasymenko_signature_rgba_pixel_hash_mismatch:"
+            + str(
+                identity[
+                    "rgba_pixel_sha256"
+                ]
+            )
+        )
+
+    soft_mask_xref = int(
+        identity[
+            "soft_mask_xref"
+        ]
+        or 0
+    )
+
+    if soft_mask_xref <= 0:
+        raise ValueError(
+            "rendered_herasymenko_signature_soft_mask_missing"
+        )
+
+    soft_mask_colorspace = (
+        identity[
+            "soft_mask_colorspace"
+        ]
+    )
+
+    if (
+        soft_mask_colorspace
+        != "/DeviceGray"
+    ):
+        raise ValueError(
+            "rendered_herasymenko_signature_soft_mask_not_devicegray:"
+            + str(
+                soft_mask_colorspace
+            )
+        )
+
+    return {
+        "component_id":
+            "component.signature.herasymenko.embedded_image.v1",
+        "kind":
+            "embedded_image",
+        "signature_variant_id":
+            "HERASYMENKO",
+        "physical_page":
+            4,
+        "identity_mode":
+            "PIXEL_SIZE_BBOX_RGBA_PIXEL_SHA256_SOFT_MASK",
+        "source_pymupdf_digest_required":
+            False,
+        "source_extracted_sha256_required_post_render":
+            False,
+        "output_pymupdf_digest_hex":
+            _digest_hex(
+                info.get(
+                    "digest"
+                )
+            ),
+        "output_extracted_sha256":
+            identity[
+                "extracted_sha256"
+            ],
+        "rgba_pixel_sha256":
+            identity[
+                "rgba_pixel_sha256"
+            ],
+        "pixel_size":
+            identity[
+                "pixel_size"
+            ],
+        "bbox_mm":
+            candidate[
+                "bbox_mm"
+            ],
+        "soft_mask_xref":
+            soft_mask_xref,
+        "soft_mask_colorspace":
+            soft_mask_colorspace,
+        "status":
+            "PASS",
+    }
 
 
 def _normalized_whitespace(
@@ -822,7 +1532,7 @@ def _render_standard_birthday_occasion(
                 font_path
             ),
             fontsize=size,
-            color=(0, 0, 0),
+            color=FRONT_OCCASION_COLOR_RGB,
             overlay=True,
         )
 
@@ -877,28 +1587,73 @@ def _insert_textbox_exact(
     return float(result)
 
 
+def _sender_block_within_conservative_safe_zone(
+    start_y_mm: float,
+    sender_line_count: int,
+) -> bool:
+    """Conservative test envelope for the full sender text slot sequence.
+
+    The actual glyph fit of each slot is checked by _insert_textbox_exact.
+    This is not a replacement for a future verified print-safe-area spec.
+    """
+    if (
+        isinstance(sender_line_count, bool)
+        or not isinstance(sender_line_count, int)
+        or sender_line_count <= 0
+    ):
+        raise ValueError("sender_line_count_invalid")
+    return (
+        float(start_y_mm)
+        + sender_line_count * SENDER_LINE_ADVANCE_MM
+        <= SENDER_CONSERVATIVE_SAFE_BOTTOM_MM
+    )
+
+
+def _greeting_pdf_lineheight(font_path: Path) -> float:
+    """Use accepted font ascender to get actual Illustrator baseline spacing."""
+    ascender = float(pymupdf.Font(fontfile=str(font_path)).ascender)
+    if not (0.25 < ascender < 3.0):
+        raise ValueError("greeting_font_ascender_invalid")
+    return GREETING_LINE_ADVANCE_RATIO / ascender
+
+
 def _fit_greeting(
     page: pymupdf.Page,
     text: str,
     *,
     font_path: Path,
+    sender_line_count: int,
+    fixed_sender_y_mm: float | None = None,
 ) -> tuple[float, float, pymupdf.Rect]:
+    _sender_block_within_conservative_safe_zone(214.0, sender_line_count)
+    lineheight_factor = _greeting_pdf_lineheight(font_path)
     for font_size in (
         GREETING_FONT_SIZE_TIERS_PT
     ):
+        # Reserve empty rows by actual leading, not glyph point size.
         line_height_mm = (
-            font_size * MM_PER_PT
+            font_size * MM_PER_PT * GREETING_LINE_ADVANCE_RATIO
         )
 
         for sender_y_mm in (
-            SENDER_START_Y_VARIANTS_MM
+            SENDER_START_Y_VARIANTS_MM if fixed_sender_y_mm is None
+            else (float(fixed_sender_y_mm),)
         ):
-            body_bottom_mm = (
-                sender_y_mm
-                - (
-                    MIN_SENDER_GAP_LINE_HEIGHTS
-                    * line_height_mm
-                )
+            if not _sender_block_within_conservative_safe_zone(
+                sender_y_mm, sender_line_count
+            ):
+                continue
+            # The greeting box is a FIXED maximum region, not a floating
+            # canvas. Keep the earlier sender gap as a stricter local cap.
+            body_bottom_mm = min(
+                # Reserve two complete visual line slots INSIDE the fixed
+                # operator-confirmed greeting rectangle (not trailing '\n').
+                GREETING_BODY_MAX_BOTTOM_MM - (
+                    GREETING_BOTTOM_RESERVED_LINE_SLOTS * line_height_mm
+                ),
+                sender_y_mm - (
+                    MIN_SENDER_GAP_LINE_HEIGHTS * line_height_mm
+                ),
             )
 
             if (
@@ -928,7 +1683,7 @@ def _fit_greeting(
                 fontname="ZapfChanceryC",
                 fontfile=str(font_path),
                 fontsize=font_size,
-                lineheight=1.0,
+                lineheight=lineheight_factor,
                 align=pymupdf.TEXT_ALIGN_CENTER,
                 color=(0, 0, 0),
             )
@@ -954,6 +1709,28 @@ def _sender_font_size(
     return SENDER_BASE_FONT_SIZE_PT
 
 
+def _canonical_single_sender_lines(lines: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Reorder existing accepted semantic slots, never invent missing lines."""
+    mapped = [_mapping(line) for line in lines]
+    ids = [str(row.get('id', '')) for row in mapped]
+    if len(set(ids)) != len(ids) or not ids:
+        raise ValueError('sender_ids_missing_or_duplicate')
+    closing = [x for x in mapped if x['id'] == 'closing_phrase']
+    names = [x for x in mapped if x['id'] == 'sender_name']
+    other = [x for x in mapped if x['id'] not in ('closing_phrase', 'sender_name')]
+    if len(closing) != 1 or len(names) != 1 or not other:
+        raise ValueError('sender_required_roles_not_confirmed')
+    if any(not str(x.get('text', '')).strip() for x in mapped):
+        raise ValueError('sender_text_line_empty')
+    return closing + names + other
+
+
+def _page4_greeting_compact_paragraphs(text: str) -> str:
+    """Preserve ALL words and paragraph breaks, remove only blank rows."""
+    cleaned = text.replace('\r\n', '\n').replace('\r', '\n')
+    return re.sub(r'\n(?:[ \t]*\n)+', '\n', cleaned).strip()
+
+
 def _render_sender_lines(
     page: pymupdf.Page,
     lines: list[dict[str, Any]],
@@ -961,39 +1738,35 @@ def _render_sender_lines(
     font_path: Path,
     start_y_mm: float,
 ) -> None:
-    current_y = float(start_y_mm)
+    # GC09: the *same* operator-review typography for GRIGO and HERASYMENKO.
+    # Reuse the prior first-row origin, never change signature artwork geometry.
+    # DUAL is not accepted by the upstream Builder runtime gate.
+    from app.graphic_design_lab.greeting_card_sender_zone_planner_v0_1 import (
+        source_locked_slots,
+    )
+    from app.graphic_design_lab.greeting_card_sender_typography_v0_1 import (
+        plan_single_sender_lines,
+    )
 
-    for raw in lines:
+    slot_ids = [str(_mapping(item)["id"]) for item in lines]
+    legacy = source_locked_slots(slot_ids, start_y_pdf_mm=float(start_y_mm))
+    slots = plan_single_sender_lines(
+        slot_ids,
+        start_y_pdf_mm=legacy[0].bbox_pdf_mm[1],
+        variant="SINGLE_SHARED",
+        font_ascender=float(pymupdf.Font(fontfile=str(font_path)).ascender),
+    )
+    for raw, slot in zip(lines, slots):
         line = _mapping(raw)
-        line_id = str(line["id"])
-        text = str(line["text"])
-        font_size = _sender_font_size(
-            line_id
-        )
-
-        rect = _rect_mm(
-            [
-                SENDER_TEXT_LEFT_MM,
-                current_y,
-                SENDER_TEXT_RIGHT_MM,
-                current_y
-                + SENDER_LINE_ADVANCE_MM,
-            ]
-        )
-
         _insert_textbox_exact(
             page,
-            rect,
-            text,
+            _rect_mm(slot.bbox_pdf_mm),
+            str(line["text"]),
             font_path=font_path,
             fontname="ZapfChanceryC",
-            fontsize=font_size,
+            fontsize=slot.font_size_pt,
             align=pymupdf.TEXT_ALIGN_LEFT,
             lineheight=1.0,
-        )
-
-        current_y += (
-            SENDER_LINE_ADVANCE_MM
         )
 
 
@@ -1759,6 +2532,50 @@ def _resource_path(
     return path
 
 
+def _required_resource_ids_for_bundle(
+    bundle: Mapping[str, Any],
+) -> list[str]:
+    required = [
+        RESOURCE_FRONT_FONT,
+        RESOURCE_GREETING_FONT,
+        RESOURCE_REFERENCE_PDF,
+    ]
+
+    jobs = _list(
+        _mapping(
+            bundle
+        ).get(
+            "jobs"
+        )
+    )
+
+    variants = {
+        str(
+            _mapping(
+                _mapping(
+                    _mapping(
+                        job
+                    ).get(
+                        "builder_v1"
+                    )
+                ).get(
+                    "sender_text"
+                )
+            ).get(
+                "signature_variant_id"
+            )
+        )
+        for job in jobs
+    }
+
+    if "HERASYMENKO" in variants:
+        required.append(
+            RESOURCE_SIGNATURE_HERASYMENKO
+        )
+
+    return required
+
+
 def _validate_first_slice_job(
     job: Mapping[str, Any],
 ) -> None:
@@ -2105,6 +2922,12 @@ def _build_one_job(
     sender = _mapping(
         payload["sender_text"]
     )
+    # The only signatory selection under Intake control is the catalog ID.
+    # Incoming sender_text.lines, names, titles, signatures and coordinates
+    # are not render authority, even when present in legacy accepted bundles.
+    signature_variant = str(
+        _mapping(data["signature_selection"])["variant_id"]
+    )
 
     exact = _mapping(
         data.get(
@@ -2157,6 +2980,18 @@ def _build_one_job(
             RESOURCE_GREETING_FONT,
         )
     )
+
+    signature_source_path = None
+    if (
+        signature_variant
+        == "HERASYMENKO"
+    ):
+        signature_source_path = (
+            _resource_path(
+                resources,
+                RESOURCE_SIGNATURE_HERASYMENKO,
+            )
+        )
 
     job_id = str(
         data["job_id"]
@@ -2324,39 +3159,42 @@ def _build_one_job(
             reference[3],
         )
         for digest in (
-            COMMON_IMAGE_DIGESTS[
-                "background.paper"
-            ],
-            COMMON_IMAGE_DIGESTS[
-                "frame.ornate"
-            ],
-            COMMON_IMAGE_DIGESTS[
-                "watermark.emblem"
-            ],
+            COMMON_IMAGE_DIGESTS['background.paper'],
+            COMMON_IMAGE_DIGESTS['frame.ornate'],
         ):
             _insert_reference_digest_at_source_geometry(
+                reference, reference[3], page4, digest,
+            )
+        _insert_page4_watermark_half_opacity(reference, reference[3], page4)
+
+        signature_overlay = None
+        page4_authoring_removed = []
+
+        page4_profile = _page4_runtime_profile(signature_variant)
+        source_signature_verified = False
+        if signature_variant == 'GRIGO':
+            _inspect_grigo_signature(reference[3])
+            source_signature_verified = True
+            (
+                signature_overlay,
+                page4_authoring_removed,
+            ) = _prepare_grigo_signature_overlay(
                 reference,
-                reference[3],
-                page4,
-                digest,
+                reference_portrait_digests,
             )
 
-        (
-            signature_overlay,
-            page4_authoring_removed,
-        ) = _prepare_grigo_signature_overlay(
-            reference,
-            reference_portrait_digests,
+        greeting_text_original = str(
+            _mapping(data['structured_greeting_data'])['greeting_text']
         )
-
-        greeting_text = str(
-            _mapping(
-                data[
-                    "structured_greeting_data"
-                ]
-            )[
-                "greeting_text"
-            ]
+        greeting_text = _page4_greeting_compact_paragraphs(greeting_text_original)
+        canonical_sender_source = (
+            reference_path if signature_variant == "GRIGO"
+            else signature_source_path
+        )
+        if canonical_sender_source is None:
+            raise ValueError("canonical_sender_source_missing")
+        sender_lines = source_sender_rows(
+            signature_variant, canonical_sender_source,
         )
 
         (
@@ -2367,6 +3205,10 @@ def _build_one_job(
             page4,
             greeting_text,
             font_path=greeting_font_path,
+            sender_line_count=len(sender_lines),
+            fixed_sender_y_mm=float(
+                page4_profile['single_sender'][signature_variant]['start_y_pdf_mm']
+            ),
         )
 
         _insert_textbox_exact(
@@ -2377,32 +3219,52 @@ def _build_one_job(
             fontname="ZapfChanceryC",
             fontsize=greeting_font_size,
             align=pymupdf.TEXT_ALIGN_CENTER,
-            lineheight=1.0,
+            lineheight=_greeting_pdf_lineheight(greeting_font_path),
         )
 
-        sender_lines = [
-            _mapping(
-                item
-            )
-            for item in _list(
-                sender.get(
-                    "lines"
-                )
-            )
-        ]
-
-        _render_sender_lines(
+        render_source_sender_text(
             page4,
             sender_lines,
             font_path=greeting_font_path,
-            start_y_mm=sender_start_y_mm,
         )
 
-        _overlay_grigo_signature(
-            page4,
-            signature_overlay,
-        )
-        signature_overlay.close()
+        signature_source_validation = None
+
+        if (
+            signature_variant
+            == "GRIGO"
+        ):
+            assert signature_overlay is not None
+            _overlay_grigo_signature(
+                page4,
+                signature_overlay,
+            )
+            signature_overlay.close()
+
+        elif (
+            signature_variant
+            == "HERASYMENKO"
+        ):
+            if signature_source_path is None:
+                raise ValueError(
+                    "herasymenko_signature_source_path_missing"
+                )
+
+            with pymupdf.open(
+                signature_source_path
+            ) as signature_source:
+                signature_source_validation = (
+                    _insert_herasymenko_signature(
+                        page4,
+                        signature_source,
+                    )
+                )
+
+        else:
+            raise ValueError(
+                "builder_signature_variant_not_implemented:"
+                + signature_variant
+            )
 
         strip_count_p4 = 0
 
@@ -2425,6 +3287,10 @@ def _build_one_job(
             )
         )
 
+        # Fix the source-font /ToUnicode semantics without changing glyphs
+        # or any canonical sender/signature coordinates.
+        canonical_unicode_evidence = repair_page4_canonical_unicode(out)
+
         out.save(
             pdf_path,
             garbage=4,
@@ -2444,11 +3310,42 @@ def _build_one_job(
     with pymupdf.open(
         pdf_path
     ) as rendered_document:
-        output_signature = (
-            _inspect_grigo_signature(
+        if (
+            signature_variant
+            == "GRIGO"
+        ):
+            output_signature = _inspect_grigo_vector_only_page(
                 rendered_document[3]
             )
-        )
+
+        elif (
+            signature_variant
+            == "HERASYMENKO"
+        ):
+            if (
+                signature_source_validation
+                is None
+            ):
+                raise ValueError(
+                    "herasymenko_signature_source_validation_missing"
+                )
+
+            output_signature = (
+                _inspect_rendered_herasymenko_signature(
+                    rendered_document[3],
+                    expected_rgba_pixel_sha256=str(
+                        signature_source_validation[
+                            "rgba_pixel_sha256"
+                        ]
+                    ),
+                )
+            )
+
+        else:
+            raise ValueError(
+                "post_render_signature_variant_not_implemented:"
+                + signature_variant
+            )
 
     page3_soft_mask_evidence = (
         _page_portrait_soft_mask_evidence(
@@ -2495,7 +3392,11 @@ def _build_one_job(
         "revision":
             revision,
         "renderer_slice":
-            "STANDARD_PORTRAIT_GRIGO_V0_1",
+            (
+                "STANDARD_PORTRAIT_"
+                + signature_variant
+                + "_V0_1"
+            ),
         "physical_page_count":
             4,
         "page_mapping": {
@@ -2511,29 +3412,28 @@ def _build_one_job(
         "inside_image_mode":
             "PORTRAIT",
         "signature_variant":
-            "GRIGO",
+            signature_variant,
         "occasion_text_regenerated":
             True,
         "greeting_text_regenerated":
             True,
         "sender_text_regenerated":
             True,
+        "canonical_sender_source": "SHA256_VERIFIED_PRIVATE_PDF_PAGE4",
+        "canonical_sender_registry": "canonical_sender_blocks_v0_1.yaml",
+        "intake_sender_text_rendered": False,
+        "canonical_sender_line_count": len(sender_lines),
+        "canonical_sender_pdf_unicode": canonical_unicode_evidence,
+        "signature_component_validation":
+            output_signature,
+        "signature_component_source_validation":
+            signature_source_validation,
         "signature_vector_preserved_from_reference":
-            True,
-        "signature_vector_validation": {
-            "drawing_count":
-                output_signature[
-                    "drawing_count"
-                ],
-            "bbox_mm":
-                output_signature[
-                    "bbox_mm"
-                ],
-            "normalized_sha256":
-                output_signature[
-                    "normalized_sha256"
-                ],
-        },
+            signature_variant
+            == "GRIGO",
+        "signature_exact_private_source_used":
+            signature_variant
+            == "HERASYMENKO",
         "locked_back_page_transplanted":
             True,
         "authoring_layer_blocks_removed": {
@@ -2585,7 +3485,15 @@ def _build_one_job(
         "danger_zone_authoring_layer_in_final_composition":
             False,
         "page4_composition":
-            "DETERMINISTIC_BASE_PLUS_EXACT_TEXT_AND_GRIGO_VECTOR_CLIP",
+            (
+                "DETERMINISTIC_BASE_PLUS_EXACT_TEXT_AND_"
+                + (
+                    "GRIGO_VECTOR_CLIP"
+                    if signature_variant
+                    == "GRIGO"
+                    else "HERASYMENKO_EXACT_IMAGE_COMPONENT"
+                )
+            ),
         "soft_mask_devicegray_normalized_count":
             len(
                 normalized_smask_xrefs
@@ -2611,13 +3519,24 @@ def _build_one_job(
         "portrait":
             portrait_meta,
         "page3_composition":
-            "DETERMINISTIC_BASE_PLUS_ACCEPTED_RGBA_SOFTMASK_PLUS_FRAME",
+            portrait_meta[
+                "composition"
+            ],
         "page3_post_render_soft_mask":
             page3_soft_mask_evidence,
         "greeting_font_size_pt":
             greeting_font_size,
         "sender_start_y_mm":
             sender_start_y_mm,
+        "page4_watermark_opacity": 0.5,
+        "page4_watermark_geometry": "EXACT_REFERENCE_BBOX",
+        "page4_sender_order": [item['id'] for item in sender_lines],
+        "page4_sender_geometry_profile": "CANONICAL_SOURCE_CANDIDATE_INTERNAL_REVIEW",
+        "page4_signature_source_authenticated": source_signature_verified,
+        "page4_hidden_template_sender_paths": 0 if signature_variant == 'GRIGO' else None,
+        "page4_greeting_blank_rows_removed": (
+            greeting_text != greeting_text_original.strip()
+        ),
         "text_fidelity":
             fidelity,
         "external_checks":
@@ -2758,11 +3677,11 @@ def build_bundle(
     resources = (
         validate_and_resolve_private_resources(
             resource_manifest,
-            required_ids=[
-                RESOURCE_FRONT_FONT,
-                RESOURCE_GREETING_FONT,
-                RESOURCE_REFERENCE_PDF,
-            ],
+            required_ids=(
+                _required_resource_ids_for_bundle(
+                    bundle
+                )
+            ),
         )
     )
 
@@ -2818,6 +3737,30 @@ def build_bundle(
             ]
             for item in results
         ],
+        "renderer_slices": sorted(
+            {
+                str(
+                    item[
+                        "report"
+                    ][
+                        "renderer_slice"
+                    ]
+                )
+                for item in results
+            }
+        ),
+        "signature_variants": sorted(
+            {
+                str(
+                    item[
+                        "report"
+                    ][
+                        "signature_variant"
+                    ]
+                )
+                for item in results
+            }
+        ),
         "source_mutation":
             False,
         "raw_customer_interpretation":

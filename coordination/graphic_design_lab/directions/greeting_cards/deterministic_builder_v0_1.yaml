@@ -1,13 +1,15 @@
 
 schema_version: gdl_greeting_card_deterministic_builder_v0_1
-status: ACTIVE_FIRST_RENDERER_SLICE
+status: ACTIVE_MULTI_SIGNATURE_RENDERER_SLICE
 direction_id: greeting_cards
 checkpoint: GC-E2E-09
 
 purpose: >
-  Introduce the first project-owned deterministic PDF Builder slice over the
-  existing builder-ready Accepted Constructor Bundle. The slice produces a
-  four-page PDF and four PNG previews rendered only from that final PDF.
+  Maintain the project-owned deterministic PDF Builder over the existing
+  builder-ready Accepted Constructor Bundle. The current bounded renderer
+  supports the validated STANDARD / PORTRAIT path with exact GRIGO or
+  HERASYMENKO signature components and produces a four-page PDF plus four PNG
+  previews rendered only from that final PDF.
 
 input_authority:
   accepted_constructor_bundle_with_builder_v1_required: true
@@ -45,14 +47,19 @@ private_resolution:
     private_paths_may_be_printed_in_public_reports: false
   source_mutation_allowed: false
 
-first_slice:
-  front_family: STANDARD
-  occasion_kind: BIRTHDAY
-  occasion_display_text: "Привітання з нагоди Дня Народження!"
-  inside_image_mode: PORTRAIT
-  signature_variant: GRIGO
-  recipient_branding_presence: ABSENT
-  other_variants_fail_closed: true
+implemented_slices:
+  shared:
+    front_family: STANDARD
+    occasion_kind: BIRTHDAY
+    occasion_display_text: "Привітання з нагоди Дня Народження!"
+    inside_image_mode: PORTRAIT
+    recipient_branding_presence: ABSENT
+
+  signature_variants:
+    - GRIGO
+    - HERASYMENKO
+
+  unsupported_variants_fail_closed: true
 
 composition:
   physical_page_count: 4
@@ -104,7 +111,7 @@ composition:
     soft_mask_colorspace_required: /DeviceGray
 
   page_4:
-    strategy: DETERMINISTIC_BASE_PLUS_EXACT_TEXT_AND_GRIGO_VECTOR_CLIP
+    strategy: DETERMINISTIC_BASE_PLUS_EXACT_TEXT_AND_EXACT_SIGNATURE_COMPONENT
     base_components:
       - background.paper
       - frame.ornate
@@ -121,6 +128,20 @@ composition:
       placement: EXACT_BOUND_COMPONENT_CLIP
       preserved_not_rasterized: true
       post_render_exact_component_validation: true
+
+    herasymenko_signature_image:
+      source_resource_id: source.greeting_card.signature.herasymenko.v1
+      component_id: component.signature.herasymenko.embedded_image.v1
+      placement: EXACT_BOUND_COMPONENT_BBOX
+      bbox_mm: [82.877, 214.875, 128.258, 274.141]
+      image_pixel_size: [536, 700]
+      exact_source_component_validation: true
+      post_render_exact_component_validation: true
+      post_render_identity: PIXEL_SIZE_BBOX_RGBA_PIXEL_SHA256_SOFT_MASK
+      source_exact_digest_validation_preserved: true
+      post_render_pdf_encoding_hash_required: false
+      sender_text_intersection_allowed: false
+      silent_fallback_allowed: false
 
   pdf_compatibility:
     normalize_image_soft_mask_colorspaces: true
@@ -139,7 +160,6 @@ runtime_dependencies:
 known_followups:
   - add_RECIPIENT_BRANDING_OVERLAY
   - add_BILINGUAL_OCCASION
-  - add_HERASYMENKO
   - add_DUAL_GRIGO_HERASYMENKO
   - close_DEFAULT_ASSET_upstream_accepted_bundle_gap
   - production_color_profile

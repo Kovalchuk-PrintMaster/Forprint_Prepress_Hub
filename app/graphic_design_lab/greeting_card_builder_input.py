@@ -89,26 +89,12 @@ def validate_builder_payload_v1(
             "forbidden_for_default_asset"
         )
 
+    # Sender display text and attached signatory artwork are CANONICAL,
+    # selected solely by signature_variant_id. Incoming extra/legacy lines,
+    # names, titles and signature coordinates are non-authoritative and ignored.
     sender = _mapping(item.get("sender_text"))
-    lines = _list(sender.get("lines"))
-    if not lines:
-        errors.append(f"{prefix}.sender_text.lines:must_be_nonempty")
-
-    seen_ids: set[str] = set()
-    for idx, raw in enumerate(lines):
-        line = _mapping(raw)
-        line_id = line.get("id")
-        line_text = line.get("text")
-
-        if not isinstance(line_id, str) or not line_id:
-            errors.append(f"{prefix}.sender_text.lines[{idx}].id:required")
-        elif line_id in seen_ids:
-            errors.append(f"{prefix}.sender_text.lines[{idx}].id:duplicate")
-        else:
-            seen_ids.add(line_id)
-
-        if not isinstance(line_text, str) or not line_text.strip():
-            errors.append(f"{prefix}.sender_text.lines[{idx}].text:required")
+    if not isinstance(sender.get("signature_variant_id"), str) or not sender.get("signature_variant_id"):
+        errors.append(f"{prefix}.sender_text.signature_variant_id:required")
 
     return errors
 
@@ -193,6 +179,13 @@ def validate_builder_ready_bundle_v1(
                     f"{prefix}.builder_v1.inside_image.accepted_artifact_ref:"
                     "must_match_accepted_visual"
                 )
+
+            if visual.get("acceptance_basis") == "SOURCE_ASSET_OPERATOR_REVIEW_PASS":
+                if visual.get("provenance_sha256") != image.get("asset_sha256"):
+                    errors.append(
+                        f"{prefix}.builder_v1.inside_image.asset_sha256:"
+                        "must_match_pass_through_provenance"
+                    )
 
         sender = _mapping(payload.get("sender_text"))
         if (

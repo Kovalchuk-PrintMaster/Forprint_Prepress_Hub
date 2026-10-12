@@ -1,0 +1,49 @@
+schema_version: gdl_intake_builder_transport_contract_v0_1
+status: CANDIDATE_SERVER_INTEGRATION_REQUIRES_OPERATOR_REVIEW
+scope: GRAPHIC_DESIGN_LAB_ONLY
+purpose: >
+  Transport the existing, operator-reviewed Accepted Constructor Bundle plus
+  exact accepted visual asset bytes through the current SMB client launcher.
+  This envelope is not a new semantic source of truth.
+archive_name: gdl_intake_handoff.zip
+root_files:
+  - accepted_constructor_bundle.yaml
+  - artifact_manifest.yaml
+  - handoff_manifest.json
+asset_namespace: assets/
+optional_evidence_namespace: intake_evidence/
+allowed_content: regular_files_only_no_symlinks
+handoff_manifest:
+  schema_version: gdl_intake_builder_handoff_v0_1
+  mode: REVIEW_ONLY
+  accepted_bundle_file_sha256: SHA256_OF_EXACT_YAML_FILE_BYTES
+  artifact_manifest_file_sha256: SHA256_OF_EXACT_YAML_FILE_BYTES
+artifact_manifest:
+  schema_version: gdl_greeting_card_builder_artifact_manifest_v0_1
+  path_type: ZIP_RELATIVE_ASSETS_PATH_REBOUND_BY_TRUSTED_SERVER
+  required_per_artifact_fields: [source_asset_id, path, sha256]
+  exact_artifact_ref_match: true
+  unreferenced_assets_forbidden: true
+  duplicate_archive_names_forbidden: true
+  exact_digest_required: true
+server_resource_policy:
+  fonts_and_templates_from_zip: FORBIDDEN
+  private_resource_manifest: SERVER_LOCAL_CONFIG_ONLY
+  accepted_bundle_semantics: EXISTING_CANONICAL_CONTRACT
+  creator_review_provenance: REQUIRED_BY_EXISTING_ACCEPTED_BUNDLE
+  raw_customer_materials_as_builder_input: FORBIDDEN
+  output_dir: CLIENT_WORKSPACE/output/NEW_GDL_REVIEW_RUN
+  source_files_modified: false
+  automatic_customer_approval: false
+  automatic_production_approval: false
+  dual_runtime_enabled: false
+runtime_scope_v0_1:
+  front_family: [STANDARD]
+  inside_image_mode: [PORTRAIT]
+  signature_variant: [GRIGO, HERASYMENKO]
+  supported_unprocessed_routes: [EXPLICIT_BLOCKER_AND_FOLLOWUP]
+  blocked_until_separate_evidence:
+    - RECIPIENT_BRANDING_OVERLAY
+    - DEFAULT_ASSET
+    - DUAL_GRIGO_HERASYMENKO
+    - NON_CREATOR_PASS_THROUGH_ACCEPTANCE_ADAPTER

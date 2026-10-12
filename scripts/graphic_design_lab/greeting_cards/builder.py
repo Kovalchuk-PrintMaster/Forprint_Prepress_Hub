@@ -88,8 +88,13 @@ def main() -> int:
         "GDL_GREETING_CARD_BUILDER=PASS"
     )
     print(
-        "RENDERER_SLICE="
-        "STANDARD_PORTRAIT_GRIGO_V0_1"
+        "RENDERER_SLICES="
+        + ",".join(
+            str(value)
+            for value in report[
+                "renderer_slices"
+            ]
+        )
     )
     print(
         f"JOB_COUNT={report['job_count']}"
@@ -113,7 +118,16 @@ def main() -> int:
         "SENDER_TEXT_REGENERATED=true"
     )
     print(
-        "GRIGO_VECTOR_PRESERVED_FROM_REFERENCE=true"
+        "SIGNATURE_VARIANTS="
+        + ",".join(
+            str(value)
+            for value in report[
+                "signature_variants"
+            ]
+        )
+    )
+    print(
+        "EXACT_SIGNATURE_COMPONENT_VALIDATED=true"
     )
     print(
         "ILLUSTRATOR_RUNTIME_DEPENDENCY=false"

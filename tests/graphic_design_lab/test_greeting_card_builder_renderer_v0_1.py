@@ -20,7 +20,10 @@ from app.graphic_design_lab.greeting_card_builder_renderer import (
     STANDARD_BIRTHDAY_LINES,
     _alpha_profile_bytes,
     _artifact_manifest_entry,
+    _assert_text_clear_of_rect,
     _image_soft_mask_xref,
+    _inspect_rendered_herasymenko_signature,
+    _required_resource_ids_for_bundle,
     _validate_first_slice_job,
     normalize_portrait_bytes,
     render_previews_from_final_pdf,
@@ -37,6 +40,7 @@ def test_first_slice_is_explicit_and_bounded():
     )
     assert SUPPORTED_SIGNATURE_VARIANTS == (
         "GRIGO",
+        "HERASYMENKO",
     )
 
 
@@ -487,7 +491,7 @@ def base_job():
         ),
         (
             "signature",
-            "HERASYMENKO",
+            "DUAL_GRIGO_HERASYMENKO",
             "signature_variant_not_implemented",
         ),
     ],
@@ -519,6 +523,214 @@ def test_other_first_slice_variants_fail_closed(
         _validate_first_slice_job(
             job
         )
+
+
+def test_herasymenko_signature_variant_is_supported():
+    job = base_job()
+    job["builder_v1"]["sender_text"][
+        "signature_variant_id"
+    ] = "HERASYMENKO"
+
+    _validate_first_slice_job(
+        job
+    )
+
+
+def test_herasymenko_bundle_requires_exact_private_signature_source():
+    bundle = {
+        "jobs": [
+            {
+                "builder_v1": {
+                    "sender_text": {
+                        "signature_variant_id":
+                            "HERASYMENKO",
+                    }
+                }
+            }
+        ]
+    }
+
+    required = (
+        _required_resource_ids_for_bundle(
+            bundle
+        )
+    )
+
+    assert (
+        "source.greeting_card.signature.herasymenko.v1"
+        in required
+    )
+
+
+def test_signature_text_collision_fails_closed():
+    document = pymupdf.open()
+    page = document.new_page(
+        width=300,
+        height=300,
+    )
+
+    target = pymupdf.Rect(
+        80,
+        80,
+        200,
+        140,
+    )
+
+    page.insert_text(
+        (90, 110),
+        "COLLISION",
+    )
+
+    with pytest.raises(
+        ValueError,
+        match="text_intersects_signature",
+    ):
+        _assert_text_clear_of_rect(
+            page,
+            target,
+            label="signature",
+        )
+
+    document.close()
+
+
+def test_rendered_herasymenko_identity_uses_rgba_pixels_not_pdf_encoding(
+    tmp_path,
+    monkeypatch,
+):
+    import io
+
+    import pymupdf
+    from PIL import Image
+
+    import app.graphic_design_lab.greeting_card_builder_renderer as renderer
+
+    image = Image.new(
+        "RGBA",
+        (80, 100),
+        (0, 0, 0, 0),
+    )
+
+    for x in range(10, 70):
+        for y in range(10, 90):
+            image.putpixel(
+                (x, y),
+                (20, 40, 70, 180),
+            )
+
+    payload = io.BytesIO()
+
+    image.save(
+        payload,
+        format="PNG",
+    )
+
+    payload_bytes = payload.getvalue()
+
+    monkeypatch.setattr(
+        renderer,
+        "HERASYMENKO_SIGNATURE_PIXEL_SIZE",
+        (80, 100),
+    )
+
+    monkeypatch.setattr(
+        renderer,
+        "HERASYMENKO_SIGNATURE_BBOX_MM",
+        (20.0, 30.0, 60.0, 80.0),
+    )
+
+    document = pymupdf.open()
+
+    page = document.new_page(
+        width=100.0 * renderer.PT_PER_MM,
+        height=120.0 * renderer.PT_PER_MM,
+    )
+
+    xref = int(
+        page.insert_image(
+            renderer._rect_mm(
+                [20.0, 30.0, 60.0, 80.0]
+            ),
+            stream=payload_bytes,
+            keep_proportion=False,
+            overlay=True,
+        )
+    )
+
+    renderer.normalize_image_soft_mask_colorspaces(
+        document
+    )
+
+    source_identity = (
+        renderer._pdf_image_rgba_pixel_identity(
+            page,
+            xref,
+        )
+    )
+
+    assert source_identity["soft_mask_xref"] > 0
+
+    pdf_path = tmp_path / "herasymenko.pdf"
+
+    document.save(
+        pdf_path,
+        garbage=4,
+        deflate=True,
+        clean=True,
+    )
+
+    document.close()
+
+    with pymupdf.open(
+        pdf_path
+    ) as rendered:
+        result = (
+            renderer._inspect_rendered_herasymenko_signature(
+                rendered[0],
+                expected_rgba_pixel_sha256=(
+                    source_identity[
+                        "rgba_pixel_sha256"
+                    ]
+                ),
+            )
+        )
+
+    assert (
+        result["identity_mode"]
+        == "PIXEL_SIZE_BBOX_RGBA_PIXEL_SHA256_SOFT_MASK"
+    )
+
+    assert (
+        result[
+            "source_pymupdf_digest_required"
+        ]
+        is False
+    )
+
+    assert (
+        result[
+            "source_extracted_sha256_required_post_render"
+        ]
+        is False
+    )
+
+    assert (
+        result[
+            "rgba_pixel_sha256"
+        ]
+        == source_identity[
+            "rgba_pixel_sha256"
+        ]
+    )
+
+    assert (
+        result[
+            "soft_mask_colorspace"
+        ]
+        == "/DeviceGray"
+    )
+
+    assert result["status"] == "PASS"
 
 
 def test_post_render_portrait_identity_uses_reference_geometry(tmp_path):

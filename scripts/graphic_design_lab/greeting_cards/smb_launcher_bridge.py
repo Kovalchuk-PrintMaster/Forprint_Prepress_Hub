@@ -9,6 +9,8 @@ from typing import Mapping
 
 REPO = Path(__file__).resolve().parents[3]
 CONSTRUCTOR_MAKE_TARGET = "gdl-greeting-card-constructor-ingest"
+INTAKE_MAKE_TARGET = "gdl-greeting-card-intake-handoff-run"
+INTAKE_ZIP_NAME = "gdl_intake_handoff.zip"
 
 SMB_SHARE_ROOTS: dict[str, Path] = {
     "In_Progress": Path("/srv/smb/In_Progress/data"),
@@ -18,6 +20,7 @@ ALLOWED_BUNDLE_NAMES = {
     "accepted_constructor_bundle.yaml",
     "accepted_constructor_bundle.yml",
     "accepted_constructor_bundle.json",
+    INTAKE_ZIP_NAME,
 }
 
 
@@ -81,6 +84,10 @@ def constructor_entrypoint_command(bundle_path: Path) -> list[str]:
     ]
 
 
+def intake_handoff_command(package_path: Path) -> list[str]:
+    return ["make", INTAKE_MAKE_TARGET, f"PACKAGE={package_path}"]
+
+
 def launch_bundle(share: str, relative_path_b64: str) -> int:
     bundle_path = resolve_bundle_path(share, relative_path_b64)
     makefile = REPO / "Makefile"
@@ -91,10 +98,16 @@ def launch_bundle(share: str, relative_path_b64: str) -> int:
     print(f"SMB_SHARE={share}")
     print(f"BUNDLE_NAME={bundle_path.name}")
     print("PATH_WITHIN_ALLOWED_SHARE=true")
-    print("CONSTRUCTOR_ENTRYPOINT=gdl-greeting-card-constructor-ingest")
+    is_handoff = bundle_path.name.lower() == INTAKE_ZIP_NAME
+    if is_handoff:
+        print("CONSTRUCTOR_ENTRYPOINT=gdl-greeting-card-intake-handoff-run")
+        command = intake_handoff_command(bundle_path)
+    else:
+        print("CONSTRUCTOR_ENTRYPOINT=gdl-greeting-card-constructor-ingest")
+        command = constructor_entrypoint_command(bundle_path)
 
     cp = subprocess.run(
-        constructor_entrypoint_command(bundle_path),
+        command,
         cwd=REPO,
         check=False,
     )

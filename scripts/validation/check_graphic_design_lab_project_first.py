@@ -18,6 +18,48 @@ MAKEFILE = ROOT / "Makefile"
 def load(path):
     return yaml.safe_load(path.read_text(encoding="utf-8"))
 
+def _validate_implemented_slices(builder_contract):
+    """Enforce the bounded, actually supported greeting-card renderer slices."""
+    errors = []
+    slices = builder_contract.get("implemented_slices")
+    if not isinstance(slices, dict):
+        return ["builder_contract:implemented_slices_missing"]
+    shared = slices.get("shared")
+    if not isinstance(shared, dict):
+        return ["builder_contract:implemented_shared_missing"]
+    if shared.get("front_family") != "STANDARD":
+        errors.append("builder_contract:implemented_front")
+    if shared.get("inside_image_mode") != "PORTRAIT":
+        errors.append("builder_contract:implemented_image")
+    if shared.get("occasion_kind") != "BIRTHDAY":
+        errors.append("builder_contract:implemented_occasion")
+    if shared.get("recipient_branding_presence") != "ABSENT":
+        errors.append("builder_contract:implemented_branding")
+    # Machine-verified variants are derived from the canonical readiness catalog.
+    # This still does not promote SOURCE_VERIFIED / DUAL to runtime capability.
+    import sys
+    if str(ROOT) not in sys.path:
+        sys.path.insert(0, str(ROOT))
+    from app.graphic_design_lab.greeting_card_signature_registry import (
+        SignatureRegistryError,
+        enabled_variant_ids,
+        load_registry,
+    )
+    try:
+        signature_registry = load_registry(
+            ROOT / "coordination/graphic_design_lab/directions/greeting_cards/signature_registry_v0_1.yaml"
+        )
+        expected_signatures = enabled_variant_ids(signature_registry)
+    except SignatureRegistryError:
+        errors.append("builder_contract:signature_registry_invalid")
+        return errors
+    if slices.get("signature_variants") != expected_signatures:
+        errors.append("builder_contract:implemented_signatures")
+    if slices.get("unsupported_variants_fail_closed") is not True:
+        errors.append("builder_contract:unsupported_variants_not_closed")
+    return errors
+
+
 def validate(root=ROOT):
     errors=[]
     for name,path in (("rule",RULE),("context",CONTEXT),("addendum",ADDENDUM),("direction",DIRECTION),("index",INDEX),("runner",RUNNER),("builder",BUILDER),("builder_cli",BUILDER_CLI),("builder_contract",BUILDER_CONTRACT),("makefile",MAKEFILE)):
@@ -79,10 +121,7 @@ def validate(root=ROOT):
     if index.get("deterministic_builder_contract") != "deterministic_builder_v0_1.yaml": errors.append("index:builder_contract")
     if "deterministic_builder_v0_1.yaml" not in documents: errors.append("index:builder_document")
     if builder_contract.get("schema_version") != "gdl_greeting_card_deterministic_builder_v0_1": errors.append("builder_contract:schema")
-    first_slice=builder_contract.get("first_slice",{})
-    if first_slice.get("front_family") != "STANDARD": errors.append("builder_contract:first_slice_front")
-    if first_slice.get("inside_image_mode") != "PORTRAIT": errors.append("builder_contract:first_slice_image")
-    if first_slice.get("signature_variant") != "GRIGO": errors.append("builder_contract:first_slice_signature")
+    errors.extend(_validate_implemented_slices(builder_contract))
     if "gdl-greeting-card-builder:" not in makefile: errors.append("make:builder")
     if "GDL_GREETING_CARD_BUILDER ?= scripts/graphic_design_lab/greeting_cards/builder.py" not in makefile: errors.append("make:builder_source")
     if "gdl-project-first-check:" not in makefile: errors.append("make:check")
