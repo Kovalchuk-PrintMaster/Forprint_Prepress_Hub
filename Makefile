@@ -368,3 +368,12 @@ gdl-greeting-card-cycle-closeout-record:
 	@test -n "$(GDL_GC_CYCLE_MANIFEST)" || (echo "Set MANIFEST=tmp/private_cycle.yaml"; exit 2)
 	$(PYTHON) $(GDL_GC_CYCLE_CLOSEOUT_CLI) --mode record --manifest "$(GDL_GC_CYCLE_MANIFEST)"
 # END GDL GENERIC REVIEW CYCLE CLOSEOUT V0.1
+
+# GC-E2E-09C: dual source-verified signature-component proof only.
+# Not a full greeting card and does NOT enable DUAL Builder/runtime execution.
+GDL_GC09_DUAL_COMPONENT_CANDIDATE_CLI ?= scripts/graphic_design_lab/greeting_cards/dual_component_candidate_v0_1.py
+.PHONY: gdl-greeting-card-dual-component-candidate
+gdl-greeting-card-dual-component-candidate:
+	@test -n "$(RESOURCE_MANIFEST)" || (echo "Set RESOURCE_MANIFEST=/private/resources.yaml"; exit 2)
+	@test -n "$(OUTPUT)" || (echo "Set OUTPUT=tmp/private_dual_component_proof"; exit 2)
+	$(PYTHON) $(GDL_GC09_DUAL_COMPONENT_CANDIDATE_CLI) --manifest "$(RESOURCE_MANIFEST)" --output-root "$(OUTPUT)"
