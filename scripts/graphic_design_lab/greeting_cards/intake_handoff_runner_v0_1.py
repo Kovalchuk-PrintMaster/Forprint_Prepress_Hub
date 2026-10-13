@@ -129,17 +129,57 @@ def load_runtime_config(config_path: Path = CONFIG) -> Path:
     return p
 
 
-def _bundle_portraits(bundle: dict[str, Any]) -> dict[str, tuple[str, str]]:
-    result = {}
-    for job in bundle["jobs"]:
-        part = job["builder_v1"]["inside_image"]
-        if part["mode"] != "PORTRAIT":
-            raise HandoffBlocked("image_mode_not_supported_in_handoff_v0_1")
-        ref = str(part["accepted_artifact_ref"])
-        expected = (str(part["asset_id"]), str(part["asset_sha256"]))
+def _bundle_artifacts(bundle: dict[str, Any]) -> dict[str, tuple[str, str]]:
+    """Bind every accepted portrait and optional recipient logo to ZIP bytes.
+
+    Do not infer recipient logo from filenames, photographs, sender components,
+    or the presence of unrelated files. Upstream Accepted Constructor Bundle
+    validation is mandatory and performed separately in inspect_zip().
+    """
+    result: dict[str, tuple[str, str]] = {}
+    role_by_ref: dict[str, str] = {}
+
+    def add(ref: Any, asset_id: Any, sha: Any, role: str) -> None:
+        if (not isinstance(ref, str) or not ref
+                or not isinstance(asset_id, str) or not asset_id
+                or not isinstance(sha, str) or SHA_RE.fullmatch(sha) is None):
+            raise HandoffBlocked("artifact_ref_or_identity_invalid")
+        if ref in role_by_ref and role_by_ref[ref] != role:
+            raise HandoffBlocked("artifact_ref_reused_across_roles")
+        expected = (asset_id, sha)
         if ref in result and result[ref] != expected:
             raise HandoffBlocked("artifact_ref_conflicting_bindings")
         result[ref] = expected
+        role_by_ref[ref] = role
+
+    for job in bundle["jobs"]:
+        builder = job["builder_v1"]
+        portrait = builder["inside_image"]
+        if portrait["mode"] != "PORTRAIT":
+            raise HandoffBlocked("image_mode_not_supported_in_handoff_v0_1")
+        add(portrait.get("accepted_artifact_ref"), portrait.get("asset_id"),
+            portrait.get("asset_sha256"), "PORTRAIT")
+
+        front = builder.get("front") or {}
+        selection = job.get("branding_selection") or {}
+        family = front.get("family")
+        presence = selection.get("presence")
+        if family == "RECIPIENT_BRANDING_OVERLAY" or presence == "PRESENT":
+            if family != "RECIPIENT_BRANDING_OVERLAY" or presence != "PRESENT":
+                raise HandoffBlocked("recipient_logo_family_presence_mismatch")
+            logo = front.get("recipient_branding") or {}
+            exact = ((job.get("exact_person_text_asset_bindings") or {})
+                     .get("recipient_branding") or {})
+            source_id = selection.get("source_asset_id")
+            if (not isinstance(source_id, str) or not source_id
+                    or source_id != logo.get("asset_id")
+                    or source_id != exact.get("source_asset_id")):
+                raise HandoffBlocked("recipient_logo_source_identity_mismatch")
+            add(logo.get("accepted_artifact_ref"), logo.get("asset_id"),
+                logo.get("asset_sha256"), "RECIPIENT_BRANDING")
+        elif front.get("recipient_branding") is not None:
+            raise HandoffBlocked("unexpected_logo_binding_for_standard_front")
+
     return result
 
 
@@ -175,7 +215,7 @@ def inspect_zip(package_path: Path, config_path: Path = CONFIG) -> dict[str, Any
             raise HandoffBlocked("accepted_bundle_canonical_digest_invalid")
         if artifacts.get("schema_version") != ARTIFACT_SCHEMA or not isinstance(artifacts.get("artifacts"), dict):
             raise HandoffBlocked("artifact_manifest_schema_invalid")
-        bindings = _bundle_portraits(bundle)
+        bindings = _bundle_artifacts(bundle)
         entries = artifacts["artifacts"]
         if set(entries) != set(bindings):
             raise HandoffBlocked("artifact_binding_set_mismatch")
