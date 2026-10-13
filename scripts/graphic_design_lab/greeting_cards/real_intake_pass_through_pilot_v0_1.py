@@ -25,6 +25,7 @@ if str(REPO) not in sys.path:
 
 from app.graphic_design_lab.greeting_card_constructor_bundle import build_accepted_constructor_bundle
 from app.graphic_design_lab.greeting_card_builder_input import attach_builder_payload_v1
+from app.graphic_design_lab.greeting_card_builder_renderer import SUPPORTED_FRONT_FAMILIES
 from scripts.graphic_design_lab.greeting_cards.intake_handoff_runner_v0_1 import inspect_zip
 
 CATALOG = REPO / 'coordination/graphic_design_lab/directions/greeting_cards/signature_variant_catalog_v0_1.yaml'
@@ -106,17 +107,61 @@ def selected_jobs(batch: dict, selection: list[str]) -> list[dict]:
     for job in jobs:
         if job.get('uncertainties'):
             raise ValueError('job_uncertainties_not_resolved')
-        if job['branding_selection']['presence'] != 'ABSENT':
-            raise ValueError('recipient_branding_not_supported_in_pilot')
+        presence = job['branding_selection']['presence']
+        family = 'RECIPIENT_BRANDING_OVERLAY' if presence == 'PRESENT' else 'STANDARD'
+        if presence not in ('PRESENT', 'ABSENT') or family not in SUPPORTED_FRONT_FAMILIES:
+            raise ValueError('source_front_family_not_supported_by_current_builder')
+        if presence == 'PRESENT':
+            branding = job['bindings']['recipient_branding']
+            if (branding.get('state') != 'CONFIRMED'
+                    or branding.get('presence') != 'PRESENT'
+                    or not branding.get('source_id')
+                    or branding.get('asset_id') != job['branding_selection'].get('asset_id')):
+                raise ValueError('source_recipient_branding_not_confirmed')
         if job['signature_selection']['variant_id'] not in ('GRIGO', 'HERASYMENKO'):
             raise ValueError('sender_variant_not_supported_in_pilot')
-        if job['builder_support']['current_v1_front'] != 'STANDARD':
-            raise ValueError('front_family_not_supported_in_pilot')
+        # Archived Intake reported the then-deployed front implementation as
+        # UNSUPPORTED. That historical capability hint must not override the
+        # current project-owned Builder feature gate above.
+        declared = job['builder_support']['current_v1_front']
+        accepted_history = ('STANDARD',) if family == 'STANDARD' else (
+            'RECIPIENT_BRANDING_OVERLAY', 'RECIPIENT_BRANDING_OVERLAY_UNSUPPORTED'
+        )
+        if declared not in accepted_history:
+            raise ValueError('source_front_family_evidence_mismatch')
         for role in ('recipient_entity', 'greeting_text', 'portrait', 'recipient_branding', 'signature', 'sender_variant'):
             b = job['bindings'][role]
             if b['state'] != 'CONFIRMED' or b['human_confirmation_required'] is not False:
                 raise ValueError('binding_not_confirmed:' + role)
     return jobs
+
+
+def source_recipient_logo(job: dict, assets: dict) -> tuple[dict, bytes] | None:
+    """Resolve only the Intake-confirmed recipient logo with exact source bytes."""
+    selection = job['branding_selection']
+    binding = job['bindings']['recipient_branding']
+    if selection['presence'] == 'ABSENT':
+        if binding.get('presence') != 'ABSENT' or binding.get('source_id') is not None:
+            raise ValueError('absent_branding_binding_inconsistent')
+        return None
+    if selection['presence'] != 'PRESENT':
+        raise ValueError('recipient_branding_presence_invalid')
+    key = (job['job_id'], 'front.recipient_branding')
+    if key not in assets:
+        raise ValueError('recipient_logo_source_missing')
+    asset, content = assets[key]
+    if (asset.get('semantic_role') != 'front.recipient_branding'
+            or asset.get('job_id') != job['job_id']
+            or asset.get('asset_id') != selection.get('asset_id')
+            or asset.get('asset_id') != binding.get('asset_id')
+            or asset.get('source_id') != binding.get('source_id')
+            or asset.get('mime_type') != 'image/png'
+            or not content.startswith(b'\x89PNG\r\n\x1a\n')
+            or sha(content) != asset.get('sha256')):
+        raise ValueError('recipient_logo_source_not_authenticated')
+    if not isinstance(asset.get('width_px'), int) or not isinstance(asset.get('height_px'), int):
+        raise ValueError('recipient_logo_dimensions_missing')
+    return asset, content
 
 
 def select_from_source(raw: str) -> list[str]:
@@ -140,11 +185,19 @@ def prepare(source: Path, workspace: Path, select: list[str]) -> dict:
              '', 'Оригінальні фото без Creator, без змін пікселів. Відхилені Creator-result не використовуються.', '']
     for j in jobs:
         p, b = assets[j['job_id'], 'inside_image.portrait']
+        logo = source_recipient_logo(j, assets)
         lines += [f"## {j['raw_recipient_name']} / `{j['job_id']}`", '',
                   f"Фотографія: `{p['path']}` · SHA256 `{p['sha256']}` · {p['width_px']}×{p['height_px']} px", '',
                   f"Обкладинка: {j['front_display_text']['exact_text']}", '',
                   '**Текст привітання:**', '', j['greeting_text']['exact_text'], '',
                   '**Блок відправника:**', '']
+        if logo is not None:
+            logo_meta, _ = logo
+            lines += ['', '**Логотип отримувача (джерело, обов’язковий на обкладинці):**', '',
+                      f"`{logo_meta['path']}` · SHA256 `{logo_meta['sha256']}` · "
+                      f"{logo_meta['width_px']}×{logo_meta['height_px']} px", '']
+        else:
+            lines += ['', 'Логотип отримувача: відсутній (STANDARD).', '']
         lines += [f"{x['id']}: {x['text']}" for x in j['sender_text']['lines']]
         lines += ['', f"Підпис: `{j['signature_selection']['variant_id']}`", '', '---', '']
     review = '\n'.join(lines) + '\n'
@@ -196,6 +249,23 @@ def promote(source: Path, workspace: Path, *, ack: str, reviewer: str) -> Path:
         rel = 'assets/' + j['job_id'] + ext
         artifact_entries[art_ref] = {'source_asset_id':srcid,'path':rel,'sha256':p_sha}
         picture_data[rel] = picture
+        logo_source = source_recipient_logo(j, assets)
+        logo_binding = None
+        if logo_source is not None:
+            logo_meta, logo_bytes = logo_source
+            logo_source_id = logo_meta['source_id']
+            logo_sha = sha(logo_bytes)
+            logo_ref = 'recipient-logo:' + j['job_id'] + ':' + logo_sha[:12]
+            logo_rel = 'assets/' + j['job_id'] + '__recipient_logo.png'
+            artifact_entries[logo_ref] = {
+                'source_asset_id': logo_source_id, 'path': logo_rel, 'sha256': logo_sha
+            }
+            picture_data[logo_rel] = logo_bytes
+            logo_binding = {
+                'asset_id': logo_source_id,
+                'asset_sha256': logo_sha,
+                'accepted_artifact_ref': logo_ref,
+            }
         visuals[j['job_id']] = {'job_id':j['job_id'], 'target_object_id':'inside_image.portrait',
                                  'source_asset_id':srcid, 'artifact_ref':art_ref,
                                  'acceptance_basis':SOURCE_BASIS,'review_id':review_id,
@@ -208,7 +278,8 @@ def promote(source: Path, workspace: Path, *, ack: str, reviewer: str) -> Path:
                               'text':j['greeting_text']['exact_text'],'source_ref':j['greeting_text_source']},
             'portrait': {'state':'CONFIRMED','basis':'customer_assignment','human_confirmation_required':False,'source_id':srcid},
             'recipient_branding': {'state':'CONFIRMED','basis':'customer_assignment','human_confirmation_required':False,
-                                   'presence':'ABSENT','source_id':None},
+                                   'presence':'PRESENT' if logo_binding else 'ABSENT',
+                                   'source_id': logo_binding['asset_id'] if logo_binding else None},
             'signature': {'state':'CONFIRMED','basis':'customer_assignment','human_confirmation_required':False,
                           'source_id':j['signature_selection']['source_id'],
                           'variant_id':j['signature_selection']['variant_id']},
@@ -219,13 +290,17 @@ def promote(source: Path, workspace: Path, *, ack: str, reviewer: str) -> Path:
             'job_id':j['job_id'], 'raw_recipient_name':j['raw_recipient_name'],
             'candidate_entity_id':j['candidate_entity_id'], 'occasion':j['occasion'],
             'greeting_text_source':j['greeting_text_source'], 'sender_variant':j['sender_variant'],
-            'supplied_assets':sorted(set([srcid,j['signature_selection']['source_id']])),
+            'supplied_assets': sorted(set([srcid, j['signature_selection']['source_id']]
+                                          + ([logo_binding['asset_id']] if logo_binding else []))),
             'special_requests':j.get('special_requests',[]), 'uncertainties':[], 'bindings':bindings,
         })
+        front = {'family':'RECIPIENT_BRANDING_OVERLAY' if logo_binding else 'STANDARD',
+                 'occasion':{'kind':j['occasion'],'display_text':j['front_display_text']['exact_text']}}
+        if logo_binding:
+            front['recipient_branding'] = logo_binding
         payloads[j['job_id']] = {
             'schema_version':'gdl_greeting_card_builder_payload_v0_1','revision':'r001',
-            'front':{'family':'STANDARD','occasion':{
-                'kind':j['occasion'],'display_text':j['front_display_text']['exact_text']}},
+            'front':front,
             'inside_image':{'mode':'PORTRAIT','asset_id':srcid, 'asset_sha256':p_sha,
                             'accepted_artifact_ref':art_ref},
             'sender_text':{'signature_variant_id':j['signature_selection']['variant_id'],
@@ -256,7 +331,13 @@ def promote(source: Path, workspace: Path, *, ack: str, reviewer: str) -> Path:
                             'operator_review_sheet_sha256':state['review_file_sha256'],
                             'ack_token':ack, 'review_id':review_id,
                             'reviewer_source': 'OPERATOR:' + reviewer,
-                            'job_ids':state['job_ids'], 'image_transform_performed':False,
+                            'job_ids':state['job_ids'],
+                            'recipient_logo_bindings': [
+                                {'job_id':j['job_id'],
+                                 'source_id': j['bindings']['recipient_branding']['source_id']}
+                                for j in jobs if j['branding_selection']['presence'] == 'PRESENT'
+                            ],
+                            'image_transform_performed':False,
                             'original_failed_creator_result_used':False},
                           ensure_ascii=False,indent=2).encode('utf-8')
     staging = workspace / 'validation_PRIVATE' / 'gdl_intake_handoff.zip'

@@ -12,7 +12,7 @@ import yaml
 from app.graphic_design_lab.greeting_card_constructor_bundle import build_accepted_constructor_bundle
 from app.graphic_design_lab.greeting_card_builder_input import attach_builder_payload_v1, validate_builder_ready_bundle_v1
 from scripts.graphic_design_lab.greeting_cards.real_intake_pass_through_pilot_v0_1 import (
-    load_archive, select_from_source, selected_jobs, prepare, promote,
+    load_archive, select_from_source, selected_jobs, source_recipient_logo, prepare, promote,
 )
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -83,11 +83,112 @@ def test_prepare_requires_explicit_operator_confirmation(tmp_path):
         select_from_source('a,a')
 
 
-def test_branding_job_must_not_be_silently_downgraded():
-    job={'job_id':'a','uncertainties':[], 'branding_selection':{'presence':'PRESENT'},
-         'signature_selection':{'variant_id':'GRIGO'}, 'builder_support':{'current_v1_front':'STANDARD'}}
-    with pytest.raises(ValueError,match='recipient_branding_not_supported'):
-        selected_jobs({'jobs':[job]},['a'])
+def branded_source_job():
+    def confirmed(**fields):
+        return {'state': 'CONFIRMED', 'human_confirmation_required': False, **fields}
+    return {
+        'job_id': 'fixture_branded', 'uncertainties': [],
+        'raw_recipient_name': 'Synthetic Recipient',
+        'candidate_entity_id': 'synthetic-recipient',
+        'occasion': 'BIRTHDAY',
+        'front_display_text': {'exact_text': 'Привітання з нагоди Дня Народження!'},
+        'greeting_text_source': 'fixture-document',
+        'greeting_text': {'exact_text': 'Вітаємо!'},
+        'sender_variant': 'SINGLE_SECONDARY',
+        'sender_text': {'lines': []},
+        'signature_selection': {'variant_id': 'HERASYMENKO', 'source_id': 'signature-source'},
+        'branding_selection': {'presence': 'PRESENT', 'asset_id': 'logo-candidate',
+                               'target_object_id': 'front.recipient_branding'},
+        'builder_support': {'current_v1_front': 'RECIPIENT_BRANDING_OVERLAY_UNSUPPORTED'},
+        'bindings': {
+            'recipient_entity': confirmed(entity_id='synthetic-recipient'),
+            'greeting_text': confirmed(text='Вітаємо!', source_ref='fixture-document'),
+            'portrait': confirmed(source_id='portrait-source', sha256='p'*64),
+            'recipient_branding': confirmed(presence='PRESENT', source_id='logo-source', asset_id='logo-candidate'),
+            'signature': confirmed(source_id='signature-source', variant_id='HERASYMENKO'),
+            'sender_variant': confirmed(value='SINGLE_SECONDARY'),
+        },
+    }
+
+
+def test_supported_branded_job_keeps_exact_source_family():
+    job = branded_source_job()
+    assert selected_jobs({'jobs': [job]}, ['fixture_branded']) == [job]
+    assert job['builder_support']['current_v1_front'] == 'RECIPIENT_BRANDING_OVERLAY_UNSUPPORTED'
+    assert job['branding_selection']['presence'] == 'PRESENT'
+
+
+def test_branded_source_identity_required():
+    job = branded_source_job()
+    job['bindings']['recipient_branding']['source_id'] = None
+    with pytest.raises(ValueError, match='source_recipient_branding_not_confirmed'):
+        selected_jobs({'jobs': [job]}, ['fixture_branded'])
+
+
+def test_branded_source_does_not_downgrade_if_runtime_unsupported(monkeypatch):
+    from scripts.graphic_design_lab.greeting_cards import real_intake_pass_through_pilot_v0_1 as pilot
+    monkeypatch.setattr(pilot, 'SUPPORTED_FRONT_FAMILIES', ('STANDARD',))
+    with pytest.raises(ValueError, match='source_front_family_not_supported_by_current_builder'):
+        pilot.selected_jobs({'jobs': [branded_source_job()]}, ['fixture_branded'])
+
+
+def test_branded_logo_sha_and_role_are_source_bound():
+    from PIL import Image
+    import io
+    job = branded_source_job()
+    f = io.BytesIO()
+    Image.new('RGBA', (128, 96), (10, 20, 30, 255)).save(f, format='PNG')
+    data = f.getvalue()
+    item = {'semantic_role':'front.recipient_branding', 'job_id':job['job_id'],
+            'asset_id':'logo-candidate', 'source_id':'logo-source',
+            'mime_type':'image/png', 'sha256':hashlib.sha256(data).hexdigest(),
+            'width_px':128, 'height_px':96, 'path':'source/logo.png'}
+    assets = {(job['job_id'], 'front.recipient_branding'): (item, data)}
+    assert source_recipient_logo(job, assets) == (item, data)
+    with pytest.raises(ValueError, match='recipient_logo_source_not_authenticated'):
+        source_recipient_logo(job, {(job['job_id'], 'front.recipient_branding'): (item, data+b'x')})
+    item2 = {**item, 'source_id':'other-source'}
+    with pytest.raises(ValueError, match='recipient_logo_source_not_authenticated'):
+        source_recipient_logo(job, {(job['job_id'], 'front.recipient_branding'): (item2, data)})
+    with pytest.raises(ValueError, match='recipient_logo_source_missing'):
+        source_recipient_logo(job, {})
+
+
+def test_prepare_branded_is_review_only_and_requires_real_ack(monkeypatch, tmp_path):
+    import hashlib
+    from scripts.graphic_design_lab.greeting_cards import real_intake_pass_through_pilot_v0_1 as pilot
+    from PIL import Image
+    import io
+    job = branded_source_job()
+    job['sender_text']['lines'] = [{'id':'source-sender', 'text':'Synthetic Sender'}]
+    photo = b'fixture-photo-source'
+    logo_buf = io.BytesIO()
+    Image.new('RGBA', (128, 96)).save(logo_buf, format='PNG')
+    logo = logo_buf.getvalue()
+    assets = {
+        ('fixture_branded','inside_image.portrait'):
+            ({'source_id':'portrait-source', 'path':'source/photo.jpg',
+              'sha256':hashlib.sha256(photo).hexdigest(), 'width_px':100,'height_px':100}, photo),
+        ('fixture_branded','front.recipient_branding'):
+            ({'source_id':'logo-source', 'asset_id':'logo-candidate','job_id':'fixture_branded',
+              'semantic_role':'front.recipient_branding', 'mime_type':'image/png',
+              'sha256':hashlib.sha256(logo).hexdigest(),'width_px':128,'height_px':96,
+              'path':'source/logo.png'}, logo),
+    }
+    monkeypatch.setattr(pilot, 'load_archive', lambda source: (
+        {'batch_id': 'synthetic-batch', 'jobs':[job]},
+        {'sources':[]}, assets, {'entries':[], 'entry_count':0}))
+    src = tmp_path/'source.zip';src.write_bytes(b'fixture-transport')
+    work = tmp_path/'private'
+    state = pilot.prepare(src, work, ['fixture_branded'])
+    review = (work/'operator_review_PRIVATE.md').read_text()
+    assert 'Логотип отримувача' in review
+    assert assets[('fixture_branded','front.recipient_branding')][0]['sha256'] in review
+    assert state['status'] == 'WAITING_FOR_OPERATOR_ACK'
+    assert not (work/'output'/'gdl_intake_handoff.zip').exists()
+    with pytest.raises(ValueError, match='explicit_operator_ack_required'):
+        pilot.promote(src, work, ack='NOT_APPROVED', reviewer='fixture-reviewer')
+    assert not (work/'output'/'gdl_intake_handoff.zip').exists()
 
 
 def test_transfer_rejects_modified_bytes_even_with_manifest_present(tmp_path):
@@ -106,3 +207,70 @@ def test_transfer_rejects_modified_bytes_even_with_manifest_present(tmp_path):
         for n,v in content.items(): z.writestr(n, b'tampered' if n == b else v)
     with pytest.raises(ValueError,match='transfer_manifest_hash_mismatch'):
         load_archive(out)
+
+
+def test_synthetic_branded_explicit_ack_builds_valid_private_handoff(monkeypatch, tmp_path):
+    """A true project Constructor/Builder contract check; no real customer approval."""
+    import io
+    from PIL import Image
+    from scripts.graphic_design_lab.greeting_cards import real_intake_pass_through_pilot_v0_1 as pilot
+    from app.graphic_design_lab.greeting_card_constructor_bundle import compute_bundle_sha256
+    job = branded_source_job()
+    job['sender_text']['lines'] = [{'id': 'source-sender', 'text': 'Synthetic'}]
+    photo_io = io.BytesIO()
+    Image.new('RGB', (778, 838), (12, 15, 17)).save(photo_io, format='JPEG')
+    photo = photo_io.getvalue()
+    logo_io = io.BytesIO()
+    Image.new('RGBA', (1954, 1097), (22, 32, 42, 200)).save(logo_io, format='PNG')
+    logo = logo_io.getvalue()
+    photo_sha = hashlib.sha256(photo).hexdigest()
+    logo_sha = hashlib.sha256(logo).hexdigest()
+    job['bindings']['portrait']['sha256'] = photo_sha
+    inventory = {'sources': [
+        {'source_id':'portrait-source','sha256':photo_sha},
+        {'source_id':'logo-source','sha256':logo_sha},
+        {'source_id':'signature-source','sha256':'a'*64},
+    ]}
+    images = {
+        ('fixture_branded','inside_image.portrait'): ({
+            'source_id':'portrait-source','path':'source/portrait.jpg',
+            'sha256':photo_sha,'width_px':778,'height_px':838}, photo),
+        ('fixture_branded','front.recipient_branding'): ({
+            'semantic_role':'front.recipient_branding', 'job_id':'fixture_branded',
+            'asset_id':'logo-candidate','source_id':'logo-source', 'mime_type':'image/png',
+            'sha256':logo_sha,'width_px':1954,'height_px':1097,'path':'source/logo.png'}, logo),
+    }
+    monkeypatch.setattr(pilot, 'load_archive', lambda source: (
+        {'batch_id':'synthetic-batch','jobs':[job]}, inventory, images, {'entries':[]}))
+    checked = []
+    checked_sha256 = []
+    def strict_probe(path):
+        with zipfile.ZipFile(path) as z:
+            bundle = yaml.safe_load(z.read('accepted_constructor_bundle.yaml'))
+            artifacts = yaml.safe_load(z.read('artifact_manifest.yaml'))['artifacts']
+            cat = yaml.safe_load(CATALOG.read_text(encoding='utf-8'))
+            assert validate_builder_ready_bundle_v1(bundle, signature_catalog=cat) == []
+            assert compute_bundle_sha256(bundle) == bundle['provenance_manifest']['bundle_sha256']
+            bjob = bundle['jobs'][0]
+            assert bjob['branding_selection']['presence'] == 'PRESENT'
+            front = bjob['builder_v1']['front']
+            assert front['family'] == 'RECIPIENT_BRANDING_OVERLAY'
+            logo_ref = front['recipient_branding']['accepted_artifact_ref']
+            assert artifacts[logo_ref]['sha256'] == logo_sha
+            assert hashlib.sha256(z.read(artifacts[logo_ref]['path'])).hexdigest() == logo_sha
+            assert len(artifacts) == 2
+            evidence = json.loads(z.read('intake_evidence/operator_review.json'))
+            assert evidence['approved_for'] == 'REVIEW_ONLY_NOT_PRODUCTION'
+            checked.append(path)
+        checked_sha256.append(hashlib.sha256(path.read_bytes()).hexdigest())
+    monkeypatch.setattr(pilot, 'inspect_zip', strict_probe)
+    source = tmp_path/'source.zip'
+    source.write_bytes(b'SYNTHETIC-SOURCE-ONLY')
+    workspace = tmp_path/'private'
+    state = pilot.prepare(source, workspace, ['fixture_branded'])
+    handoff = pilot.promote(source, workspace,
+                            ack=state['ack_token'], reviewer='SYNTHETIC_TEST_OPERATOR')
+    assert handoff.is_file()
+    assert checked == [workspace / "validation_PRIVATE" / "gdl_intake_handoff.zip"]
+    assert not checked[0].exists()
+    assert hashlib.sha256(handoff.read_bytes()).hexdigest() == checked_sha256[0]
