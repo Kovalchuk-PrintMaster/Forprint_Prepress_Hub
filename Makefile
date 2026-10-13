@@ -377,3 +377,13 @@ gdl-greeting-card-dual-component-candidate:
 	@test -n "$(RESOURCE_MANIFEST)" || (echo "Set RESOURCE_MANIFEST=/private/resources.yaml"; exit 2)
 	@test -n "$(OUTPUT)" || (echo "Set OUTPUT=tmp/private_dual_component_proof"; exit 2)
 	$(PYTHON) $(GDL_GC09_DUAL_COMPONENT_CANDIDATE_CLI) --manifest "$(RESOURCE_MANIFEST)" --output-root "$(OUTPUT)"
+
+
+# GC-E2E-09C: source-locked DUAL Page4 review candidate, NOT Builder runtime.
+GDL_GC09_DUAL_PAGE4_CANDIDATE_CLI ?= scripts/graphic_design_lab/greeting_cards/dual_page4_candidate_v0_1.py
+.PHONY: gdl-greeting-card-dual-page4-candidate
+gdl-greeting-card-dual-page4-candidate:
+	@test -n "$(RESOURCE_MANIFEST)" || (echo "Set RESOURCE_MANIFEST=tmp/private_resources.yaml"; exit 2)
+	@test -n "$(PRIOR_COMPONENT_REPORT)" || (echo "Set PRIOR_COMPONENT_REPORT=tmp/private_component_report.json"; exit 2)
+	@test -n "$(OUTPUT)" || (echo "Set OUTPUT=tmp/private_page4_proof"; exit 2)
+	$(PYTHON) $(GDL_GC09_DUAL_PAGE4_CANDIDATE_CLI) --manifest "$(RESOURCE_MANIFEST)" --prior-component-report "$(PRIOR_COMPONENT_REPORT)" --output-root "$(OUTPUT)"
