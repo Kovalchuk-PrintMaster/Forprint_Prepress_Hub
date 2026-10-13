@@ -28,6 +28,8 @@ help:
 	@echo "  make gdl-greeting-card-intake-handoff-config - one-time binding to private resource library"
 	@echo "  make gdl-greeting-card-intake-handoff-preflight PACKAGE=/share/client/gdl_intake_handoff.zip - check finalized Intake package"
 	@echo "  make gdl-greeting-card-intake-handoff-run PACKAGE=/share/client/gdl_intake_handoff.zip - ingest and generate full review PDFs"
+	@echo "  make gdl-greeting-card-cycle-closeout-check MANIFEST=tmp/private_cycle.yaml - verify review artifacts (no production approval)"
+	@echo "  make gdl-greeting-card-cycle-closeout-record MANIFEST=tmp/private_cycle.yaml - record private review receipt"
 	@echo "  make gdl-project-first-check - validate project-internal-tooling-first execution rule"
 	@echo "  make gdl-accept-and-advance REQUEST=tmp/<request>.yaml [APPLY=1 CONFIRM=<operation-id>] - preview/apply explicit governed GDL lifecycle transition"
 	@echo "  make gdl-accept-and-advance-check - validate local governed transition tooling"
@@ -353,3 +355,16 @@ gdl-greeting-card-intake-handoff-run:
 	@test -n "$(GDL_INTAKE_HANDOFF_PACKAGE)" || (echo "Set PACKAGE=/path/to/gdl_intake_handoff.zip"; exit 2)
 	$(PYTHON) $(GDL_INTAKE_HANDOFF_CLI) --mode run --package "$(GDL_INTAKE_HANDOFF_PACKAGE)"
 # END GC-E2E INTAKE -> EXISTING BUILDER HANDOFF V0.1
+
+# BEGIN GDL GENERIC REVIEW CYCLE CLOSEOUT V0.1
+# Generic and review-only: never dispatches Creator, accepts orders or prints.
+GDL_GC_CYCLE_CLOSEOUT_CLI ?= scripts/graphic_design_lab/greeting_cards/cycle_closeout_v0_1.py
+GDL_GC_CYCLE_MANIFEST ?= $(MANIFEST)
+.PHONY: gdl-greeting-card-cycle-closeout-check gdl-greeting-card-cycle-closeout-record
+gdl-greeting-card-cycle-closeout-check:
+	@test -n "$(GDL_GC_CYCLE_MANIFEST)" || (echo "Set MANIFEST=tmp/private_cycle.yaml"; exit 2)
+	$(PYTHON) $(GDL_GC_CYCLE_CLOSEOUT_CLI) --mode check --manifest "$(GDL_GC_CYCLE_MANIFEST)"
+gdl-greeting-card-cycle-closeout-record:
+	@test -n "$(GDL_GC_CYCLE_MANIFEST)" || (echo "Set MANIFEST=tmp/private_cycle.yaml"; exit 2)
+	$(PYTHON) $(GDL_GC_CYCLE_CLOSEOUT_CLI) --mode record --manifest "$(GDL_GC_CYCLE_MANIFEST)"
+# END GDL GENERIC REVIEW CYCLE CLOSEOUT V0.1
