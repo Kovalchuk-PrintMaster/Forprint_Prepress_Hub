@@ -13,6 +13,7 @@ import hashlib
 import json
 import re
 import sys
+import zipfile
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -162,6 +163,102 @@ HANDLERS = {'STANDARD_REVIEW': validate_standard,
             'BRANDED_LAYOUT_PROOF': validate_branded}
 
 
+def verify_constructor_chain(entry: dict[str, Any], report_path: Path,
+                             review: dict[str, Any], jobs: list[dict[str, Any]],
+                             *, root: Path) -> dict[str, str]:
+    """Correlate a real review with immutable Intake/Constructor/Handoff evidence.
+
+    All paths are local to repository tmp. This does not grant printing, customer
+    release or any additional authority beyond operator-reviewed constructor input.
+    """
+    from app.graphic_design_lab.greeting_card_constructor_bundle import compute_bundle_sha256
+
+    ingest_path = inside_tmp(Path(entry['constructor_ingest_report']), root=root)
+    handoff_path = inside_tmp(Path(entry['handoff_report']), root=root)
+    package_path = inside_tmp(Path(entry['handoff_package']), root=root)
+    if (ingest_path.name != 'job_result.json' or ingest_path.parent.name != 'report'
+            or ingest_path.parent.parent.name != 'output'
+            or ingest_path.parents[2].name != 'input_PRIVATE'
+            or handoff_path.name != 'handoff_result.json'
+            or handoff_path.parent != ingest_path.parents[3]
+            or package_path.name != 'gdl_intake_handoff.zip'):
+        raise CycleBlocked('constructor_evidence_location_mismatch')
+    ingest = read_json(ingest_path)
+    handoff = read_json(handoff_path)
+    if (ingest.get('schema_version') != 'gdl_greeting_card_constructor_ingest_report_v0_1'
+            or ingest.get('status') != 'ACCEPTED_CONSTRUCTOR_BUNDLE_INGESTED'
+            or ingest.get('constructor_input_class') != 'ACCEPTED_CONSTRUCTOR_BUNDLE'
+            or ingest.get('ready_for_composition') is not True
+            or ingest.get('source_mutation') is not False):
+        raise CycleBlocked('constructor_ingest_contract_invalid')
+    for flag in ('production_ready', 'production_write_enabled', 'git_mutation',
+                 'raw_customer_material_interpretation_performed',
+                 'heuristic_role_inference_performed', 'normalized_batch_synthesis_performed'):
+        require_exact_bool(ingest, flag, False)
+    input_bundle = ingest_path.parents[2] / 'accepted_constructor_bundle.yaml'
+    if not input_bundle.is_file():
+        raise CycleBlocked('constructor_source_bundle_missing')
+    file_digest = sha_file(input_bundle)
+    fingerprints = review.get('source_fingerprints_sha256')
+    if (not isinstance(fingerprints, dict) or not HEX.fullmatch(file_digest)
+            or ingest.get('bundle_file_sha256') != file_digest
+            or fingerprints.get('bundle') != file_digest):
+        raise CycleBlocked('constructor_builder_bundle_digest_mismatch')
+    bundle = yaml.safe_load(input_bundle.read_bytes())
+    if not isinstance(bundle, dict):
+        raise CycleBlocked('constructor_bundle_not_mapping')
+    computed = compute_bundle_sha256(bundle)
+    if (bundle.get('provenance_manifest', {}).get('bundle_sha256') != computed
+            or ingest.get('bundle_canonical_sha256') != computed
+            or ingest.get('bundle_id') != bundle.get('bundle_id')):
+        raise CycleBlocked('constructor_bundle_canonical_digest_mismatch')
+    actual_ids = [job.get('job_id') for job in jobs]
+    constructor_ids = ingest.get('job_ids')
+    bundle_jobs = bundle.get('jobs')
+    if (not isinstance(constructor_ids, list) or len(set(constructor_ids)) != len(constructor_ids)
+            or ingest.get('job_count') != len(constructor_ids)
+            or set(constructor_ids) != set(actual_ids)
+            or not isinstance(bundle_jobs, list)
+            or sorted(x.get('job_id') for x in bundle_jobs if isinstance(x, dict)) != sorted(actual_ids)
+            or len(bundle_jobs) != len(actual_ids)):
+        raise CycleBlocked('constructor_job_identity_mismatch')
+    if (handoff.get('schema_version') != 'gdl_intake_builder_handoff_v0_1'
+            or handoff.get('status') != 'PASS_REQUIRES_VISUAL_APPROVAL'
+            or handoff.get('job_count') != len(actual_ids)
+            or handoff.get('source_zip_unchanged') is not True
+            or handoff.get('client_review_published') is not False
+            or handoff.get('client_output_subdir') is not None):
+        raise CycleBlocked('handoff_review_contract_invalid')
+    for flag in ('customer_approved', 'production_approved'):
+        require_exact_bool(handoff, flag, False)
+    if not package_path.is_file() or sha_file(package_path) != handoff.get('source_zip_sha256'):
+        raise CycleBlocked('handoff_source_archive_digest_mismatch')
+    with zipfile.ZipFile(package_path, 'r') as package:
+        if package.namelist().count('accepted_constructor_bundle.yaml') != 1:
+            raise CycleBlocked('handoff_bundle_member_invalid')
+        if hashlib.sha256(package.read('accepted_constructor_bundle.yaml')).hexdigest() != file_digest:
+            raise CycleBlocked('handoff_bundle_source_mismatch')
+    private_run = inside_tmp(Path(str(handoff.get('private_review_dir', ''))), root=root)
+    private_archive = inside_tmp(Path(str(handoff.get('private_review_archive', ''))), root=root)
+    if (private_run != report_path.parent.parent or private_archive != private_run / 'full_card_review_PRIVATE.zip'
+            or not private_archive.is_file()):
+        raise CycleBlocked('handoff_review_run_binding_mismatch')
+    # The durable review ZIP must represent the same report and exact PDFs.
+    with zipfile.ZipFile(private_archive, 'r') as zipped:
+        if zipped.namelist().count('review/review_summary.json') != 1:
+            raise CycleBlocked('review_archive_summary_missing_or_duplicate')
+        if hashlib.sha256(zipped.read('review/review_summary.json')).hexdigest() != sha_file(report_path):
+            raise CycleBlocked('review_archive_summary_digest_mismatch')
+        for item in review['jobs']:
+            name = item['pdf']
+            if zipped.namelist().count(name) != 1 or hashlib.sha256(zipped.read(name)).hexdigest() != item['pdf_sha256']:
+                raise CycleBlocked('review_archive_pdf_digest_mismatch')
+    return {'constructor_ingest_report_sha256': sha_file(ingest_path),
+            'handoff_report_sha256': sha_file(handoff_path),
+            'handoff_package_sha256': sha_file(package_path),
+            'accepted_constructor_bundle_sha256': computed}
+
+
 def compile_closeout(manifest: Path, *, root: Path = ROOT) -> dict[str, Any]:
     manifest = inside_tmp(manifest, root=root)
     if not manifest.is_file():
@@ -177,9 +274,19 @@ def compile_closeout(manifest: Path, *, root: Path = ROOT) -> dict[str, Any]:
     evidence: list[dict[str, str]] = []
     seen_reports: set[str] = set()
     for entry in sources:
-        if not isinstance(entry, dict) or set(entry) != {'kind', 'report'}:
+        if not isinstance(entry, dict):
+            raise CycleBlocked('manifest_source_invalid')
+        keys = set(entry)
+        evidence_keys = {'constructor_ingest_report', 'handoff_report', 'handoff_package'}
+        legacy_keys = {'kind', 'report'}
+        has_constructor_evidence = keys == (legacy_keys | evidence_keys)
+        if keys != legacy_keys and not has_constructor_evidence:
             raise CycleBlocked('manifest_source_invalid')
         kind = entry['kind']
+        if has_constructor_evidence and kind != 'STANDARD_REVIEW':
+            raise CycleBlocked('constructor_evidence_kind_invalid')
+        if has_constructor_evidence and any(not isinstance(entry[key], str) or not entry[key] for key in evidence_keys):
+            raise CycleBlocked('constructor_evidence_path_invalid')
         if kind not in VALID_KINDS:
             raise CycleBlocked('manifest_kind_unknown')
         if not isinstance(entry['report'], str):
@@ -189,9 +296,17 @@ def compile_closeout(manifest: Path, *, root: Path = ROOT) -> dict[str, Any]:
             raise CycleBlocked('report_duplicate')
         seen_reports.add(str(report_path))
         data = read_json(report_path)
-        jobs.extend(HANDLERS[kind](report_path, data, root=root))
-        evidence.append(dict(kind=kind, report_sha256=sha_file(report_path),
-                             report_relative_path=str(report_path.relative_to(root))))
+        current_jobs = HANDLERS[kind](report_path, data, root=root)
+        current_evidence = dict(kind=kind, report_sha256=sha_file(report_path),
+                                report_relative_path=str(report_path.relative_to(root)))
+        if has_constructor_evidence:
+            verified = verify_constructor_chain(entry, report_path, data, current_jobs, root=root)
+            for job in current_jobs:
+                job['constructor_accepted_for_internal_review'] = True
+                job['accepted_constructor_bundle_sha256'] = verified['accepted_constructor_bundle_sha256']
+            current_evidence.update(verified)
+        jobs.extend(current_jobs)
+        evidence.append(current_evidence)
     ids = [x.get('job_id') for x in jobs]
     if any(not isinstance(v, str) or not ID.fullmatch(v) for v in ids) or len(set(ids)) != len(ids):
         raise CycleBlocked('job_ids_missing_or_duplicate')
@@ -199,7 +314,8 @@ def compile_closeout(manifest: Path, *, root: Path = ROOT) -> dict[str, Any]:
     return {'schema_version': RECEIPT_SCHEMA, 'status': 'INTERNAL_LAYOUT_CYCLE_VERIFIED_NOT_FOR_PRINT',
             'job_count': len(jobs), 'pdf_count': len(jobs), 'page_count': sum(x['page_count'] for x in jobs),
             'production_approvals': 0, 'customer_approvals': 0, 'client_published': False,
-            'formal_constructor_acceptance_for_all_jobs': False,
+            'formal_constructor_acceptance_for_all_jobs': all(
+                j.get('constructor_accepted_for_internal_review') is True for j in jobs),
             'manifest_sha256': sha_file(manifest), 'source_reports': evidence,
             'jobs': jobs,
             'outstanding_gates': sorted({gate for j in jobs for gate in j.get('outstanding_gates', [])} | {'VISUAL_REVIEW_AND_PRINT_PREFLIGHT'}),
@@ -218,6 +334,8 @@ def main() -> int:
         print('PDF_COUNT=' + str(record['pdf_count']))
         print('PAGE_COUNT=' + str(record['page_count']))
         print('PRODUCTION_APPROVALS=0')
+        print('CONSTRUCTOR_EVIDENCE_VERIFIED_FOR_ALL_JOBS=' +
+              str(record['formal_constructor_acceptance_for_all_jobs']).lower())
         print('CLIENT_PUBLISHED=false')
         if args.mode == 'record':
             root = (ROOT / 'tmp/gdl_gc_cycle_closeout_v0_1/records').resolve()
