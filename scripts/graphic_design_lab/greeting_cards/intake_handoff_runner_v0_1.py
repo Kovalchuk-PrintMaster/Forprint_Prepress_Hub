@@ -281,7 +281,7 @@ def publish_client_review(package: Path, run: Path, *, share_root: Path = CLIENT
     return name
 
 
-def materialize_and_run(inspection: Mapping[str, Any], config_path: Path = CONFIG) -> dict[str, Any]:
+def materialize_and_run(inspection: Mapping[str, Any], config_path: Path = CONFIG, *, publish_client: bool = True) -> dict[str, Any]:
     # Isolated run, never extract on the SMB client side or in tracked tree.
     package = inspection["package"]
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
@@ -333,12 +333,21 @@ def materialize_and_run(inspection: Mapping[str, Any], config_path: Path = CONFI
         review_dir = new_runs[0]
         if digest_file(package) != inspection["archive_sha256"]:
             raise HandoffBlocked("zip_changed_after_build")
-        client_output = publish_client_review(package, review_dir)
+        private_review_archive = review_dir / "full_card_review_PRIVATE.zip"
+        private_review_report = review_dir / "review" / "review_summary.json"
+        if not private_review_archive.is_file() or not private_review_report.is_file():
+            raise HandoffBlocked("private_review_artifacts_missing")
+        # Keep the established publishing route unchanged. Private review stops
+        # before any client share write and exposes only repo-tmp destinations.
+        client_output = publish_client_review(package, review_dir) if publish_client else None
         report = {"schema_version": SCHEMA, "status": "PASS_REQUIRES_VISUAL_APPROVAL",
                   "source_zip_sha256": inspection["archive_sha256"], "job_count": summary["job_count"],
                   "customer_approved": False, "production_approved": False,
                   "source_zip_unchanged": digest_file(package) == inspection["archive_sha256"],
-                  "client_output_subdir": "output/" + client_output}
+                  "client_review_published": client_output is not None,
+                  "private_review_dir": str(review_dir.relative_to(REPO)),
+                  "private_review_archive": str(private_review_archive.relative_to(REPO)),
+                  "client_output_subdir": "output/" + client_output if client_output is not None else None}
         (run_root / "handoff_result.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
         return report
     except Exception:
@@ -368,7 +377,7 @@ def init_config(existing_inputs: Path, config_path: Path = CONFIG) -> None:
 
 def main() -> int:
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--mode", choices=("init-config", "preflight", "run"), required=True)
+    p.add_argument("--mode", choices=("init-config", "preflight", "run", "run-private"), required=True)
     p.add_argument("--package", type=Path)
     p.add_argument("--config", type=Path, default=CONFIG)
     p.add_argument("--from-inputs-config", type=Path)
@@ -386,13 +395,19 @@ def main() -> int:
         print("GDL_INTAKE_HANDOFF_PREFLIGHT=PASS")
         print(f"JOB_COUNT={summary['jobs']} ASSET_COUNT={summary['assets']}")
         print("SOURCE_ZIP_MUTATED=false")
-        if args.mode == "run":
-            report = materialize_and_run(summary, args.config)
+        if args.mode in ("run", "run-private"):
+            report = materialize_and_run(summary, args.config,
+                                         publish_client=(args.mode == "run"))
             print("GDL_INTAKE_HANDOFF=PASS_REQUIRES_VISUAL_APPROVAL")
             print("PRODUCTION_APPROVAL=false")
             print(f"JOB_COUNT={report['job_count']}")
-            print("CLIENT_REVIEW_PUBLISHED=true")
-            print("CLIENT_OUTPUT_SUBDIR=" + report["client_output_subdir"])
+            if args.mode == "run":
+                print("CLIENT_REVIEW_PUBLISHED=true")
+                print("CLIENT_OUTPUT_SUBDIR=" + report["client_output_subdir"])
+            else:
+                print("CLIENT_REVIEW_PUBLISHED=false")
+                print("PRIVATE_REVIEW_DIR=" + report["private_review_dir"])
+                print("PRIVATE_REVIEW_ARCHIVE=" + report["private_review_archive"])
         return 0
     except Exception as exc:
         print("GDL_INTAKE_HANDOFF=BLOCKED")
