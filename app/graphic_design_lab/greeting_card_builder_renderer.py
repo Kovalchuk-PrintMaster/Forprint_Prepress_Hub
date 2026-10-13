@@ -2888,6 +2888,56 @@ def render_previews_from_final_pdf(
     return paths
 
 
+def _verified_signature_report_provenance(
+    *,
+    signature_variant: str,
+    grigo_source_verified: bool,
+    source_validation: dict[str, Any] | None,
+    rendered_validation: dict[str, Any],
+) -> bool:
+    """Return authenticated only after both source and output checks agree.
+
+    This controls a *report field*, not customer acceptance or print authority.
+    PDF-byte encoding is intentionally not an identity requirement for the
+    HERASYMENKO image: RGBA pixel SHA256 and soft-mask identity are authoritative.
+    """
+    if signature_variant not in SUPPORTED_SIGNATURE_VARIANTS:
+        raise ValueError("signature_report_variant_unsupported")
+    if (
+        not isinstance(rendered_validation, dict)
+        or rendered_validation.get("status") != "PASS"
+        or rendered_validation.get("signature_variant_id") != signature_variant
+    ):
+        raise ValueError("signature_report_authentication_incomplete")
+    if signature_variant == "GRIGO":
+        if (
+            grigo_source_verified is not True
+            or rendered_validation.get("source_hash_validated_before_replay") is not True
+        ):
+            raise ValueError("signature_report_authentication_incomplete")
+        return True
+
+    if not isinstance(source_validation, dict):
+        raise ValueError("signature_report_authentication_incomplete")
+    sha = source_validation.get("rgba_pixel_sha256")
+    if (
+        source_validation.get("status") != "PASS"
+        or source_validation.get("signature_variant_id") != signature_variant
+        or source_validation.get("source_soft_mask_present") is not True
+        or not isinstance(sha, str)
+        or re.fullmatch(r"[a-f0-9]{64}", sha) is None
+        or rendered_validation.get("rgba_pixel_sha256") != sha
+        or rendered_validation.get("identity_mode")
+        != "PIXEL_SIZE_BBOX_RGBA_PIXEL_SHA256_SOFT_MASK"
+        or rendered_validation.get("soft_mask_colorspace") != "/DeviceGray"
+        or not isinstance(rendered_validation.get("soft_mask_xref"), int)
+        or isinstance(rendered_validation.get("soft_mask_xref"), bool)
+        or rendered_validation["soft_mask_xref"] <= 0
+    ):
+        raise ValueError("signature_report_authentication_incomplete")
+    return True
+
+
 def _build_one_job(
     job: Mapping[str, Any],
     *,
@@ -3366,6 +3416,13 @@ def _build_one_job(
                 "post_render_signature_variant_not_implemented:"
                 + signature_variant
             )
+
+    source_signature_verified = _verified_signature_report_provenance(
+        signature_variant=signature_variant,
+        grigo_source_verified=source_signature_verified,
+        source_validation=signature_source_validation,
+        rendered_validation=output_signature,
+    )
 
     page3_soft_mask_evidence = (
         _page_portrait_soft_mask_evidence(
