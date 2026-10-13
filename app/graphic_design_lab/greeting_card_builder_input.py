@@ -58,6 +58,18 @@ def validate_builder_payload_v1(
     if family not in KNOWN_FRONT_FAMILIES:
         errors.append(f"{prefix}.front.family:invalid")
 
+    branded = _mapping(front.get("recipient_branding"))
+    if family == "RECIPIENT_BRANDING_OVERLAY":
+        if set(branded) != {"asset_id", "asset_sha256", "accepted_artifact_ref"}:
+            errors.append(f"{prefix}.front.recipient_branding:required_exact_asset_binding")
+        elif (not isinstance(branded["asset_id"], str) or not branded["asset_id"]
+              or not _valid_sha256(branded["asset_sha256"])
+              or not isinstance(branded["accepted_artifact_ref"], str)
+              or not branded["accepted_artifact_ref"]):
+            errors.append(f"{prefix}.front.recipient_branding:invalid_asset_binding")
+    elif front.get("recipient_branding") is not None:
+        errors.append(f"{prefix}.front.recipient_branding:forbidden_for_other_front")
+
     occasion = _mapping(front.get("occasion"))
     display_text = occasion.get("display_text")
     if not isinstance(display_text, str) or not display_text.strip():
@@ -152,6 +164,16 @@ def validate_builder_ready_bundle_v1(
                 f"{prefix}.builder_v1.front.family:"
                 "branding_absent_forbids_overlay_family"
             )
+
+        if family == "RECIPIENT_BRANDING_OVERLAY" and branding_presence == "PRESENT":
+            accepted_binding = _mapping(exact.get("recipient_branding"))
+            declared_branding = _mapping(front.get("recipient_branding"))
+            selected_source = branding.get("source_asset_id")
+            if (not selected_source or selected_source != accepted_binding.get("source_asset_id")
+                    or selected_source != declared_branding.get("asset_id")):
+                errors.append(
+                    f"{prefix}.builder_v1.front.recipient_branding:source_id_mismatch"
+                )
 
         occasion = _mapping(front.get("occasion"))
         if occasion.get("kind") != structured.get("occasion"):

@@ -34,6 +34,7 @@ from app.graphic_design_lab.greeting_card_builder_renderer import (
 def test_first_slice_is_explicit_and_bounded():
     assert SUPPORTED_FRONT_FAMILIES == (
         "STANDARD",
+        "RECIPIENT_BRANDING_OVERLAY",
     )
     assert SUPPORTED_IMAGE_MODES == (
         "PORTRAIT",
@@ -482,7 +483,7 @@ def base_job():
         (
             "front",
             "RECIPIENT_BRANDING_OVERLAY",
-            "front_family_not_implemented",
+            "recipient_overlay_requires_present_branding",
         ),
         (
             "image",

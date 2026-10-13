@@ -18,6 +18,11 @@ from PIL import Image, ImageChops
 from app.graphic_design_lab.greeting_card_builder_input import (
     validate_builder_ready_bundle_v1,
 )
+from app.graphic_design_lab.greeting_card_recipient_overlay_v0_1 import (
+    SENDER_BBOX_PDF_MM as RECIPIENT_OVERLAY_SENDER_BBOX_MM,
+    validate_overlay_job, verify_logo_file, insert_recipient_logo,
+    verify_rendered_recipient_logo,
+)
 from app.graphic_design_lab.greeting_card_canonical_sender_v0_1 import (
     source_sender_rows,
     render_source_sender_text,
@@ -58,7 +63,7 @@ RENDER_REPORT_SCHEMA = (
     "gdl_greeting_card_builder_render_report_v0_1"
 )
 
-SUPPORTED_FRONT_FAMILIES = ("STANDARD",)
+SUPPORTED_FRONT_FAMILIES = ("STANDARD", "RECIPIENT_BRANDING_OVERLAY")
 SUPPORTED_IMAGE_MODES = ("PORTRAIT",)
 SUPPORTED_SIGNATURE_VARIANTS = ("GRIGO", "HERASYMENKO")
 
@@ -2633,13 +2638,7 @@ def _validate_first_slice_job(
             )
         )
 
-    if (
-        branding.get("presence")
-        != "ABSENT"
-    ):
-        raise ValueError(
-            "builder_v0_1_recipient_branding_not_implemented"
-        )
+    validate_overlay_job(data)
 
 
 def _text_fidelity_check(
@@ -2962,6 +2961,18 @@ def _build_one_job(
         )
     )
 
+    branded_logo_path = None
+    branded_logo_info = None
+    if front.get("family") == "RECIPIENT_BRANDING_OVERLAY":
+        selected_logo = _mapping(front.get("recipient_branding"))
+        branded_logo_path = _artifact_manifest_entry(
+            artifact_manifest,
+            artifact_ref=str(selected_logo["accepted_artifact_ref"]),
+            source_asset_id=str(selected_logo["asset_id"]),
+            expected_sha256=str(selected_logo["asset_sha256"]),
+        )
+        branded_logo_info = verify_logo_file(branded_logo_path)
+
     reference_path = (
         _resource_path(
             resources,
@@ -3084,9 +3095,18 @@ def _build_one_job(
                 "front.sender_logo"
             ],
             destination=_rect_mm(
-                FRONT_STANDARD_SENDER_LOGO_BBOX_MM
+                RECIPIENT_OVERLAY_SENDER_BBOX_MM
+                if branded_logo_path is not None
+                else FRONT_STANDARD_SENDER_LOGO_BBOX_MM
             ),
         )
+
+        recipient_logo_meta = None
+        if branded_logo_path is not None:
+            assert branded_logo_info is not None
+            recipient_logo_meta = insert_recipient_logo(
+                page1, branded_logo_path, branded_logo_info,
+            )
 
         front_occasion_meta = (
             _render_standard_birthday_occasion(
@@ -3378,6 +3398,14 @@ def _build_one_job(
         )
     )
 
+    if recipient_logo_meta is not None:
+        with pymupdf.open(pdf_path) as logo_document:
+            verify_rendered_recipient_logo(
+                logo_document[0],
+                recipient_logo_meta["bbox_pdf_mm"],
+                recipient_logo_meta["source_image_size_px"],
+            )
+
     external_checks = (
         _external_checks(
             pdf_path
@@ -3393,7 +3421,7 @@ def _build_one_job(
             revision,
         "renderer_slice":
             (
-                "STANDARD_PORTRAIT_"
+                str(front["family"]) + "_PORTRAIT_"
                 + signature_variant
                 + "_V0_1"
             ),
@@ -3406,7 +3434,7 @@ def _build_one_job(
             "4": "PAGE_3_INSIDE_GREETING",
         },
         "front_family":
-            "STANDARD",
+            str(front["family"]),
         "front_occasion":
             front_occasion_meta,
         "inside_image_mode":
@@ -3552,6 +3580,16 @@ def _build_one_job(
         "production_ready":
             False,
     }
+
+    if recipient_logo_meta is not None:
+        report["recipient_branding"] = {
+            **recipient_logo_meta,
+            "source_asset_id": str(_mapping(front["recipient_branding"])["asset_id"]),
+            "asset_sha256": str(_mapping(front["recipient_branding"])["asset_sha256"]),
+            "artifact_verified": True,
+            "canonical_geometry_verified": True,
+            "post_render_identity": "EXACT_PDF_BBOX_AND_NATIVE_PIXEL_SIZE",
+        }
 
     report_path = (
         report_dir
