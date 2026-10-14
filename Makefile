@@ -413,3 +413,16 @@ gdl-greeting-card-unified-private-cycle:
 	@test "$(GDL_GC10_ALLOW_REPEAT)" = "false" -o "$(GDL_GC10_ALLOW_REPEAT)" = "true" || (echo "Set GDL_GC10_ALLOW_REPEAT=false|true"; exit 2)
 	$(PYTHON) $(GDL_GC10_UNIFIED_PRIVATE_CLI) --mode run --package "$(GDL_GC10_PACKAGE)" --config "$(GDL_GC10_CONFIG)" $(if $(filter true,$(GDL_GC10_ALLOW_REPEAT)),--allow-repeat,)
 # END GC-E2E-10 UNIFIED PRIVATE CYCLE V0.1
+
+# BEGIN GC14 CLIENT SMB WORKSPACE INPUT QUEUE V0.1
+# Only final accepted handoffs enter GC10; Intake staging yields BLOCKED report.
+GDL_GC14_QUEUE_CLI ?= scripts/graphic_design_lab/greeting_cards/smb_workspace_queue_v0_1.py
+GDL_GC14_SHARE ?= $(SHARE)
+GDL_GC14_WORKSPACE_RELATIVE_B64 ?= $(WORKSPACE_RELATIVE_B64)
+.PHONY: gdl-greeting-card-smb-queue
+
+gdl-greeting-card-smb-queue:
+	@test -n "$(GDL_GC14_SHARE)" || (echo "Set SHARE=In_Progress"; exit 2)
+	@test -n "$(GDL_GC14_WORKSPACE_RELATIVE_B64)" || (echo "Set WORKSPACE_RELATIVE_B64=..."; exit 2)
+	$(PYTHON) $(GDL_GC14_QUEUE_CLI) --mode run --share "$(GDL_GC14_SHARE)" --workspace-relative-b64 "$(GDL_GC14_WORKSPACE_RELATIVE_B64)"
+# END GC14 CLIENT SMB WORKSPACE INPUT QUEUE V0.1
