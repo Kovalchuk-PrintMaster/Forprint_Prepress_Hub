@@ -27,6 +27,7 @@ if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
 
 from app.graphic_design_lab.greeting_card_builder_input import validate_builder_ready_bundle_v1
+from app.graphic_design_lab.greeting_card_private_resources import RESOURCE_DEFAULT_FLOWERS, EXPECTED_RESOURCES
 from app.graphic_design_lab.greeting_card_constructor_bundle import compute_bundle_sha256
 from scripts.graphic_design_lab.greeting_cards import full_review_runner_v0_1 as review
 
@@ -155,10 +156,22 @@ def _bundle_artifacts(bundle: dict[str, Any]) -> dict[str, tuple[str, str]]:
     for job in bundle["jobs"]:
         builder = job["builder_v1"]
         portrait = builder["inside_image"]
-        if portrait["mode"] != "PORTRAIT":
+        if portrait["mode"] == "PORTRAIT":
+            add(portrait.get("accepted_artifact_ref"), portrait.get("asset_id"),
+                portrait.get("asset_sha256"), "PORTRAIT")
+        elif portrait["mode"] == "DEFAULT_ASSET":
+            # The accepted ZIP does not transport server-private flowers.
+            # SHA-pinned resource resolution is performed by the Builder.
+            visual = (job.get("accepted_visual_assets") or [None])[0] or {}
+            if (portrait.get("asset_id") != "flowers.default.v1"
+                    or portrait.get("asset_sha256") != EXPECTED_RESOURCES[RESOURCE_DEFAULT_FLOWERS]["sha256"]
+                    or portrait.get("accepted_artifact_ref") is not None
+                    or visual.get("acceptance_basis") != "SOURCE_ASSET_OPERATOR_REVIEW_PASS"
+                    or visual.get("provenance_sha256") != portrait.get("asset_sha256")
+                    or visual.get("source_asset_id") != portrait.get("asset_id")):
+                raise HandoffBlocked("default_flowers_review_or_identity_invalid")
+        else:
             raise HandoffBlocked("image_mode_not_supported_in_handoff_v0_1")
-        add(portrait.get("accepted_artifact_ref"), portrait.get("asset_id"),
-            portrait.get("asset_sha256"), "PORTRAIT")
 
         front = builder.get("front") or {}
         selection = job.get("branding_selection") or {}

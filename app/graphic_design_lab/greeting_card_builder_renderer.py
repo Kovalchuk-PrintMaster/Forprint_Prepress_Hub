@@ -51,6 +51,8 @@ from app.graphic_design_lab.greeting_card_private_resources import (
     RESOURCE_FRONT_FONT,
     RESOURCE_GREETING_FONT,
     RESOURCE_REFERENCE_PDF,
+    RESOURCE_DEFAULT_FLOWERS,
+    EXPECTED_RESOURCES,
     RESOURCE_SIGNATURE_HERASYMENKO,
     RESOURCE_SIGNATURE_DUAL,
     validate_and_resolve_private_resources,
@@ -65,7 +67,7 @@ RENDER_REPORT_SCHEMA = (
 )
 
 SUPPORTED_FRONT_FAMILIES = ("STANDARD", "RECIPIENT_BRANDING_OVERLAY")
-SUPPORTED_IMAGE_MODES = ("PORTRAIT",)
+SUPPORTED_IMAGE_MODES = ("PORTRAIT", "DEFAULT_ASSET")
 SUPPORTED_SIGNATURE_VARIANTS = ("GRIGO", "HERASYMENKO")
 DUAL_CANDIDATE_VARIANT = "DUAL_GRIGO_HERASYMENKO"
 
@@ -2583,6 +2585,15 @@ def _required_resource_ids_for_bundle(
         for job in jobs
     }
 
+    # Only DEFAULT_ASSET jobs need the SHA-verified private flowers.
+    if any(
+        _mapping(
+            _mapping(job).get("builder_v1")
+        ).get("inside_image", {}).get("mode") == "DEFAULT_ASSET"
+        for job in jobs
+    ):
+        required.append(RESOURCE_DEFAULT_FLOWERS)
+
     if "HERASYMENKO" in variants:
         required.append(
             RESOURCE_SIGNATURE_HERASYMENKO
@@ -3021,27 +3032,21 @@ def _build_one_job(
         )
     )
 
-    accepted_artifact_ref = str(
-        image["accepted_artifact_ref"]
-    )
-    source_asset_id = str(
-        portrait_binding[
-            "source_asset_id"
-        ]
-    )
-
-    portrait_path = (
-        _artifact_manifest_entry(
+    source_asset_id = str(portrait_binding["source_asset_id"])
+    if image["mode"] == "DEFAULT_ASSET":
+        if (source_asset_id != "flowers.default.v1"
+                or image.get("asset_id") != source_asset_id
+                or image.get("accepted_artifact_ref") is not None
+                or image.get("asset_sha256") != EXPECTED_RESOURCES[RESOURCE_DEFAULT_FLOWERS]["sha256"]):
+            raise ValueError("default_flowers_exact_binding_required")
+        portrait_path = _resource_path(resources, RESOURCE_DEFAULT_FLOWERS)
+    else:
+        portrait_path = _artifact_manifest_entry(
             artifact_manifest,
-            artifact_ref=accepted_artifact_ref,
+            artifact_ref=str(image["accepted_artifact_ref"]),
             source_asset_id=source_asset_id,
-            expected_sha256=str(
-                image[
-                    "asset_sha256"
-                ]
-            ),
+            expected_sha256=str(image["asset_sha256"]),
         )
-    )
 
     branded_logo_path = None
     branded_logo_info = None
@@ -3616,7 +3621,7 @@ def _build_one_job(
             revision,
         "renderer_slice":
             (
-                str(front["family"]) + "_PORTRAIT_"
+                str(front["family"]) + "_" + str(image["mode"]) + "_"
                 + signature_variant
                 + "_V0_1"
             ),
@@ -3633,7 +3638,7 @@ def _build_one_job(
         "front_occasion":
             front_occasion_meta,
         "inside_image_mode":
-            "PORTRAIT",
+            str(image["mode"]),
         "signature_variant":
             signature_variant,
         "occasion_text_regenerated":

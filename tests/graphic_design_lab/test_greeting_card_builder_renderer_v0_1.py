@@ -38,6 +38,7 @@ def test_first_slice_is_explicit_and_bounded():
     )
     assert SUPPORTED_IMAGE_MODES == (
         "PORTRAIT",
+        "DEFAULT_ASSET",
     )
     assert SUPPORTED_SIGNATURE_VARIANTS == (
         "GRIGO",
@@ -487,7 +488,7 @@ def base_job():
         ),
         (
             "image",
-            "DEFAULT_ASSET",
+            "UNSUPPORTED_IMAGE_MODE",
             "inside_image_mode_not_implemented",
         ),
         (

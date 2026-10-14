@@ -6,6 +6,9 @@ from collections.abc import Mapping
 from copy import deepcopy
 from typing import Any
 
+from app.graphic_design_lab.greeting_card_private_resources import (
+    EXPECTED_RESOURCES, RESOURCE_DEFAULT_FLOWERS,
+)
 from app.graphic_design_lab.greeting_card_constructor_bundle import (
     compute_bundle_sha256,
     validate_accepted_constructor_bundle,
@@ -95,11 +98,18 @@ def validate_builder_payload_v1(
                 f"{prefix}.inside_image.accepted_artifact_ref:"
                 "required_for_portrait"
             )
-    elif mode == "DEFAULT_ASSET" and artifact_ref is not None:
-        errors.append(
-            f"{prefix}.inside_image.accepted_artifact_ref:"
-            "forbidden_for_default_asset"
-        )
+    elif mode == "DEFAULT_ASSET":
+        if artifact_ref is not None:
+            errors.append(
+                f"{prefix}.inside_image.accepted_artifact_ref:"
+                "forbidden_for_default_asset"
+            )
+        # Only the registered, SHA-pinned server-owned image is supported.
+        if (asset_id != "flowers.default.v1"
+                or asset_sha256 != EXPECTED_RESOURCES[RESOURCE_DEFAULT_FLOWERS]["sha256"]):
+            errors.append(
+                f"{prefix}.inside_image:default_resource_identity_mismatch"
+            )
 
     # Sender display text and attached signatory artwork are CANONICAL,
     # selected solely by signature_variant_id. Incoming extra/legacy lines,
@@ -208,6 +218,22 @@ def validate_builder_ready_bundle_v1(
                         f"{prefix}.builder_v1.inside_image.asset_sha256:"
                         "must_match_pass_through_provenance"
                     )
+
+        elif image.get("mode") == "DEFAULT_ASSET":
+            # Default flowers bypass Creator, never the real operator review.
+            # Visual source identity is already bound by the accepted bundle.
+            if visual.get("acceptance_basis") != "SOURCE_ASSET_OPERATOR_REVIEW_PASS":
+                errors.append(
+                    f"{prefix}.builder_v1.inside_image:default_operator_review_required"
+                )
+            if visual.get("provenance_sha256") != image.get("asset_sha256"):
+                errors.append(
+                    f"{prefix}.builder_v1.inside_image:default_visual_digest_mismatch"
+                )
+            if visual.get("source_asset_id") != image.get("asset_id"):
+                errors.append(
+                    f"{prefix}.builder_v1.inside_image:default_visual_source_mismatch"
+                )
 
         sender = _mapping(payload.get("sender_text"))
         if (

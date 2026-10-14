@@ -153,9 +153,16 @@ def test_same_artifact_ref_cannot_be_portrait_and_logo(package_case):
         handoff.inspect_zip(*save())
 
 
-def test_unsupported_image_mode_keeps_fail_closed(package_case):
+def test_unreviewed_noncanonical_default_asset_still_blocks(package_case):
     bundle, _, _, save = package_case
     bundle['jobs'][0]['builder_v1']['inside_image']['mode'] = 'DEFAULT_ASSET'
+    with pytest.raises(handoff.HandoffBlocked, match='default_flowers_review_or_identity_invalid'):
+        handoff.inspect_zip(*save())
+
+
+def test_unknown_image_mode_keeps_fail_closed(package_case):
+    bundle, _, _, save = package_case
+    bundle['jobs'][0]['builder_v1']['inside_image']['mode'] = 'UNSUPPORTED_IMAGE_MODE'
     with pytest.raises(handoff.HandoffBlocked, match='image_mode_not_supported_in_handoff_v0_1'):
         handoff.inspect_zip(*save())
 

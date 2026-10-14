@@ -21,7 +21,7 @@ variant_gate_cases:
   - {id: standard_herasymenko, front: STANDARD, image: PORTRAIT, signature: HERASYMENKO, branding: ABSENT, expected: ALLOWED}
   - {id: dual_not_enabled, front: STANDARD, image: PORTRAIT, signature: DUAL_GRIGO_HERASYMENKO, branding: ABSENT, expected: BLOCKED}
   - {id: recipient_branding_overlay, front: RECIPIENT_BRANDING_OVERLAY, image: PORTRAIT, signature: GRIGO, branding: PRESENT, expected: BLOCKED}
-  - {id: default_asset_flowers, front: STANDARD, image: DEFAULT_ASSET, signature: GRIGO, branding: ABSENT, expected: BLOCKED}
+  - {id: default_asset_flowers, front: STANDARD, image: DEFAULT_ASSET, signature: GRIGO, branding: ABSENT, expected: ALLOWED}
   - {id: bilingual_front, front: BILINGUAL_OCCASION, image: PORTRAIT, signature: GRIGO, branding: ABSENT, expected: BLOCKED}
 required_v1_future_proofs:
   - MULTI_JOB_FULL_BATCH
@@ -33,5 +33,6 @@ required_v1_future_proofs:
   - MACHINE_TEXT_FIDELITY_AND_VISUAL_QC
 notes:
   - PROBE_IS_UNIT_LEVEL_LAYOUT_MEASUREMENT_NOT_FINISHED_CUSTOMER_PDF
+  - DEFAULT_ASSET_VARIANT_GATE_ONLY_PROVES_MODE_SUPPORT_NOT_SHA_OR_OPERATOR_APPROVAL
   - NO_PRIVATE_CUSTOMER_TEXT_IN_TEST_MATRIX
   - CASE_FAILURE_MAY_BE_A_REAL_CAPABILITY_GAP_NOT_A_TEST_HARNESS_FAILURE
