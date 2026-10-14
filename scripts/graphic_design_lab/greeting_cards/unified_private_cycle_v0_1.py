@@ -8,7 +8,10 @@ customer source, accepts synthetic jobs, or enables candidate-only DUAL runtime.
 from __future__ import annotations
 
 import argparse
-from contextlib import redirect_stdout
+from contextlib import contextmanager, redirect_stdout
+import fcntl
+import os
+import stat
 from datetime import datetime, timezone
 from hashlib import sha256
 import io
@@ -202,12 +205,100 @@ def record_closeout(manifest: Path, checked: dict[str, Any], job_count: int) -> 
     return receipt
 
 
-def run_private(package: Path, config: Path) -> dict[str, Any]:
+@contextmanager
+def operator_cycle_lock():
+    """Serialize complete private cycles; kernel releases the lock on process exit."""
+    lock_root = inside_tmp(OUTPUT_ROOT)
+    lock_root.mkdir(parents=True, exist_ok=True)
+    flags = os.O_CREAT | os.O_RDWR | os.O_NOFOLLOW | os.O_CLOEXEC
+    try:
+        fd = os.open(lock_root / '.operator_cycle.lock', flags, 0o600)
+    except OSError as exc:
+        raise UnifiedBlocked('cycle_lock_open_failed') from exc
+    try:
+        if not stat.S_ISREG(os.fstat(fd).st_mode):
+            raise UnifiedBlocked('cycle_lock_not_regular_file')
+        try:
+            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError as exc:
+            raise UnifiedBlocked('unified_cycle_already_running') from exc
+        except OSError as exc:
+            raise UnifiedBlocked('cycle_lock_acquire_failed') from exc
+        try:
+            yield
+        finally:
+            fcntl.flock(fd, fcntl.LOCK_UN)
+    finally:
+        os.close(fd)
+
+
+def _verified_prior_success(report_path: Path, expected_sha: str) -> None:
+    """A prior PASS only counts after its immutable evidence revalidates."""
+    report = json.loads(report_path.read_text(encoding='utf-8'))
+    if (report.get('schema_version') != SCHEMA
+            or report.get('status') != 'PRIVATE_CYCLE_PASS_REQUIRES_VISUAL_REVIEW'
+            or report.get('source_zip_sha256') != expected_sha
+            or report.get('client_published') is not False
+            or report.get('production_approved') is not False):
+        raise UnifiedBlocked('prior_success_report_invalid')
+    original_copy = report_path.parent / 'source' / handoff.HANDOFF_FILENAME
+    if not original_copy.is_file() or file_sha(original_copy) != expected_sha:
+        raise UnifiedBlocked('prior_source_copy_invalid')
+    manifest_name = report.get('formal_closeout_manifest')
+    receipt_name = report.get('closeout_receipt')
+    if not all(isinstance(n, str) and n.startswith('tmp/') for n in (manifest_name, receipt_name)):
+        raise UnifiedBlocked('prior_evidence_paths_invalid')
+    manifest = inside_tmp(ROOT / manifest_name)
+    receipt = inside_tmp(ROOT / receipt_name)
+    if not manifest.is_file() or not receipt.is_file():
+        raise UnifiedBlocked('prior_evidence_missing')
+    if file_sha(receipt) != report.get('closeout_receipt_sha256'):
+        raise UnifiedBlocked('prior_receipt_digest_invalid')
+    expected = closeout.compile_closeout(manifest)
+    saved = json.loads(receipt.read_text(encoding='utf-8'))
+    require_closeout(expected, report['job_count'])
+    if saved != expected or expected.get('manifest_sha256') != file_sha(manifest):
+        raise UnifiedBlocked('prior_evidence_revalidation_failed')
+
+
+def prior_successful_cycles(source_sha: str) -> int:
+    """Read-only idempotency check for past successful executions."""
+    if not SHA_RE.fullmatch(source_sha):
+        raise UnifiedBlocked('source_checksum_invalid')
+    runs = inside_tmp(OUTPUT_ROOT) / 'runs'
+    count = 0
+    if not runs.is_dir():
+        return 0
+    for path in sorted(runs.glob('*/unified_cycle_result.json')):
+        if path.is_symlink() or not path.is_file() or path.stat().st_size > 1024 * 1024:
+            raise UnifiedBlocked('historical_cycle_report_unsafe')
+        try:
+            doc = json.loads(path.read_text(encoding='utf-8'))
+        except (OSError, ValueError) as exc:
+            raise UnifiedBlocked('historical_cycle_report_unreadable') from exc
+        if not isinstance(doc, dict):
+            raise UnifiedBlocked('historical_cycle_report_not_mapping')
+        if (doc.get('source_zip_sha256') == source_sha
+                and doc.get('status') == 'PRIVATE_CYCLE_PASS_REQUIRES_VISUAL_REVIEW'):
+            _verified_prior_success(path, source_sha)
+            count += 1
+    return count
+
+
+def run_private(package: Path, config: Path, *, allow_repeat: bool = False) -> dict[str, Any]:
+    with operator_cycle_lock():
+        return _run_private_locked(package, config, allow_repeat=allow_repeat)
+
+
+def _run_private_locked(package: Path, config: Path, *, allow_repeat: bool) -> dict[str, Any]:
     stage = 'PREFLIGHT'
     root: Path | None = None
     try:
         inspection = source_preflight(package, config)
         source_sha = inspection['archive_sha256']
+        stage = 'REPEAT_POLICY'
+        if prior_successful_cycles(source_sha) and not allow_repeat:
+            raise UnifiedBlocked('source_already_completed_requires_allow_repeat')
         stamp = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
         root = inside_tmp(OUTPUT_ROOT / 'runs' / (stamp + '-' + source_sha[:10]))
         root.mkdir(parents=True, exist_ok=False)
@@ -231,6 +322,9 @@ def run_private(package: Path, config: Path) -> dict[str, Any]:
         evidence = make_manifest(existing_run, result, local, manifest_path)
         checked = closeout.compile_closeout(manifest_path)
         require_closeout(checked, inspection['jobs'])
+        stage = 'PRE_RECORD_SOURCE_CHECK'
+        if file_sha(local) != source_sha or file_sha(package) != source_sha:
+            raise UnifiedBlocked('source_changed_before_receipt_record')
         stage = 'FORMAL_CLOSEOUT_RECORD'
         receipt = record_closeout(manifest_path, checked, inspection['jobs'])
         stage = 'FINAL_SOURCE_CHECK'
@@ -255,6 +349,7 @@ def run_private(package: Path, config: Path) -> dict[str, Any]:
             'customer_approved': False,
             'client_published': False,
             'dual_runtime_enabled': False,
+            'repeat_authorized_by_operator': allow_repeat,
             'next_action': 'OPERATOR_VISUAL_REVIEW_AND_PRINT_PREFLIGHT',
         }
         atomic_json_exclusive(root / 'unified_cycle_result.json', output)
@@ -265,11 +360,13 @@ def run_private(package: Path, config: Path) -> dict[str, Any]:
             code = type(error).__name__
         action = {
             'PREFLIGHT': 'CHECK_ACCEPTED_HANDOFF_ZIP_AND_PRIVATE_RESOURCE_CONFIG',
+            'REPEAT_POLICY': 'REVIEW_EXISTING_CYCLE_AND_USE_EXPLICIT_REPEAT_OPT_IN',
             'COPY_SOURCE': 'CHECK_PRIVATE_TMP_AND_SOURCE_INTEGRITY',
             'PREFLIGHT_PRIVATE_COPY': 'CHECK_SOURCE_ARCHIVE_DIGEST',
             'PRIVATE_HANDOFF_BUILDER': 'INSPECT_HANDOFF_BUILDER_BLOCKER_PRIVATELY',
             'FORMAL_CLOSEOUT_CHECK': 'INSPECT_CONSTRUCTOR_HANDOFF_REVIEW_EVIDENCE',
             'FORMAL_CLOSEOUT_RECORD': 'INSPECT_CLOSEOUT_RECEIPT_BLOCKER',
+            'PRE_RECORD_SOURCE_CHECK': 'CHECK_SOURCE_INTEGRITY_BEFORE_RECEIPT',
             'FINAL_SOURCE_CHECK': 'CHECK_SOURCE_MUTATION_OR_INTEGRITY',
         }.get(stage, 'OPERATOR_INVESTIGATE')
         if root is not None and root.is_dir():
@@ -290,15 +387,19 @@ def main() -> int:
     parser.add_argument('--mode', required=True, choices=('preflight', 'run'))
     parser.add_argument('--package', required=True, type=Path)
     parser.add_argument('--config', type=Path, default=handoff.CONFIG)
+    parser.add_argument('--allow-repeat', action='store_true',
+                        help='Explicitly permit a new private run for an already verified source')
     args = parser.parse_args()
     try:
+        if args.allow_repeat and args.mode != 'run':
+            raise UnifiedBlocked('allow_repeat_run_mode_only')
         if args.mode == 'preflight':
             inspection = source_preflight(args.package, args.config)
             print('GDL_GC10_UNIFIED_PREFLIGHT=PASS')
             print('JOB_COUNT=' + str(inspection['jobs']))
             print('CLIENT_PUBLISHED=false')
         else:
-            result = run_private(args.package, args.config)
+            result = run_private(args.package, args.config, allow_repeat=args.allow_repeat)
             report = result['summary']
             print('GDL_GC10_UNIFIED_PRIVATE_CYCLE=PASS_REQUIRES_VISUAL_REVIEW')
             print('JOB_COUNT=' + str(report['job_count']))

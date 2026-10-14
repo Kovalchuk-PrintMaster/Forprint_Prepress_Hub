@@ -403,11 +403,13 @@ gdl-greeting-card-dual-full-card-candidate:
 GDL_GC10_UNIFIED_PRIVATE_CLI ?= scripts/graphic_design_lab/greeting_cards/unified_private_cycle_v0_1.py
 GDL_GC10_PACKAGE ?= $(PACKAGE)
 GDL_GC10_CONFIG ?= tmp/gdl_intake_handoff_runtime_v0_1/local_config.json
+GDL_GC10_ALLOW_REPEAT ?= false
 .PHONY: gdl-greeting-card-unified-private-preflight gdl-greeting-card-unified-private-cycle
 gdl-greeting-card-unified-private-preflight:
 	@test -n "$(GDL_GC10_PACKAGE)" || (echo "Set PACKAGE=/path/to/gdl_intake_handoff.zip"; exit 2)
 	$(PYTHON) $(GDL_GC10_UNIFIED_PRIVATE_CLI) --mode preflight --package "$(GDL_GC10_PACKAGE)" --config "$(GDL_GC10_CONFIG)"
 gdl-greeting-card-unified-private-cycle:
 	@test -n "$(GDL_GC10_PACKAGE)" || (echo "Set PACKAGE=/path/to/gdl_intake_handoff.zip"; exit 2)
-	$(PYTHON) $(GDL_GC10_UNIFIED_PRIVATE_CLI) --mode run --package "$(GDL_GC10_PACKAGE)" --config "$(GDL_GC10_CONFIG)"
+	@test "$(GDL_GC10_ALLOW_REPEAT)" = "false" -o "$(GDL_GC10_ALLOW_REPEAT)" = "true" || (echo "Set GDL_GC10_ALLOW_REPEAT=false|true"; exit 2)
+	$(PYTHON) $(GDL_GC10_UNIFIED_PRIVATE_CLI) --mode run --package "$(GDL_GC10_PACKAGE)" --config "$(GDL_GC10_CONFIG)" $(if $(filter true,$(GDL_GC10_ALLOW_REPEAT)),--allow-repeat,)
 # END GC-E2E-10 UNIFIED PRIVATE CYCLE V0.1
