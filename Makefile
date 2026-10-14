@@ -387,3 +387,13 @@ gdl-greeting-card-dual-page4-candidate:
 	@test -n "$(PRIOR_COMPONENT_REPORT)" || (echo "Set PRIOR_COMPONENT_REPORT=tmp/private_component_report.json"; exit 2)
 	@test -n "$(OUTPUT)" || (echo "Set OUTPUT=tmp/private_page4_proof"; exit 2)
 	$(PYTHON) $(GDL_GC09_DUAL_PAGE4_CANDIDATE_CLI) --manifest "$(RESOURCE_MANIFEST)" --prior-component-report "$(PRIOR_COMPONENT_REPORT)" --output-root "$(OUTPUT)"
+
+# GC09D private DUAL full-card candidate; no standard runtime or publish.
+GDL_GC09_DUAL_FULL_CARD_CANDIDATE_CLI ?= scripts/graphic_design_lab/greeting_cards/dual_full_card_candidate_v0_1.py
+GDL_GC09_DUAL_CANDIDATE_MODE ?= preflight
+.PHONY: gdl-greeting-card-dual-full-card-candidate
+gdl-greeting-card-dual-full-card-candidate:
+	@test -n "$(INPUTS_CONFIG)" || (echo "INPUTS_CONFIG is required"; exit 2)
+	@test -n "$(PRIOR_PAGE4_REPORT)" || (echo "PRIOR_PAGE4_REPORT is required"; exit 2)
+	@test -n "$(OUTPUT)" || (echo "OUTPUT is required"; exit 2)
+	$(PYTHON) $(GDL_GC09_DUAL_FULL_CARD_CANDIDATE_CLI) --mode "$(GDL_GC09_DUAL_CANDIDATE_MODE)" --inputs-config "$(INPUTS_CONFIG)" --prior-page4-report "$(PRIOR_PAGE4_REPORT)" --output-root "$(OUTPUT)"

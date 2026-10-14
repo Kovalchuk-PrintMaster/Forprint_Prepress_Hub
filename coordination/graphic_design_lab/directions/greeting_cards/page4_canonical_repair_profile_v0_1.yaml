@@ -32,6 +32,10 @@ single_sender:
     start_y_pdf_mm: 224.5
     variant_signatory_source: PROJECT_CANONICAL_PRIVATE_PDF_SHA256_VERIFIED
     signature_geometry: VERIFIED_REFERENCE_IMAGE_BBOX_UNCHANGED
+dual_sender:
+  DUAL_GRIGO_HERASYMENKO:
+    start_y_pdf_mm: 213.965
+    identity: EXACT_SOURCE_VERIFIED_DUAL_SENDER_BBOX_FIRST_ROW
 sender_content_order: [closing_phrase, sender_name, sender_role_in_original_relative_order]
 sender_text_policy:
   intake_sender_lines_rendered: false

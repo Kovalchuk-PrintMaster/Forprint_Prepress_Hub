@@ -19,12 +19,12 @@ REGISTRY_PATH = (Path(__file__).resolve().parents[2] / "coordination" / "graphic
                  / "directions" / "greeting_cards" / "canonical_sender_blocks_v0_1.yaml")
 
 
-def _expected_for_variant(variant_id: str) -> dict[str, Any]:
+def _expected_for_variant(variant_id: str, *, dual_candidate: bool = False) -> dict[str, Any]:
     import yaml
     doc = yaml.safe_load(REGISTRY_PATH.read_text(encoding="utf-8"))
     if not isinstance(doc, dict) or doc.get("schema_version") != "gdl_greeting_card_canonical_sender_blocks_v0_1":
         raise ValueError("canonical_sender_registry_invalid")
-    if variant_id == "DUAL_GRIGO_HERASYMENKO":
+    if variant_id == "DUAL_GRIGO_HERASYMENKO" and not dual_candidate:
         raise ValueError("canonical_sender_dual_runtime_disabled")
     variants = doc.get("variants")
     if not isinstance(variants, dict) or variant_id not in variants:
@@ -43,9 +43,9 @@ def _sha256_file(path: Path) -> str:
     return h.hexdigest()
 
 
-def source_sender_rows(variant_id: str, source_path: Path) -> list[dict[str, Any]]:
+def source_sender_rows(variant_id: str, source_path: Path, *, dual_candidate: bool = False) -> list[dict[str, Any]]:
     """Fail closed unless source text and its geometry match the frozen audit."""
-    expected = _expected_for_variant(variant_id)
+    expected = _expected_for_variant(variant_id, dual_candidate=dual_candidate)
     if _sha256_file(source_path) != expected["source_sha256"]:
         raise ValueError("canonical_sender_source_sha256_mismatch:" + variant_id)
     rows: list[dict[str, Any]] = []

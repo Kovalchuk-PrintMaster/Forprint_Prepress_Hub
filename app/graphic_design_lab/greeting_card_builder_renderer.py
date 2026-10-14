@@ -52,6 +52,7 @@ from app.graphic_design_lab.greeting_card_private_resources import (
     RESOURCE_GREETING_FONT,
     RESOURCE_REFERENCE_PDF,
     RESOURCE_SIGNATURE_HERASYMENKO,
+    RESOURCE_SIGNATURE_DUAL,
     validate_and_resolve_private_resources,
 )
 
@@ -66,6 +67,7 @@ RENDER_REPORT_SCHEMA = (
 SUPPORTED_FRONT_FAMILIES = ("STANDARD", "RECIPIENT_BRANDING_OVERLAY")
 SUPPORTED_IMAGE_MODES = ("PORTRAIT",)
 SUPPORTED_SIGNATURE_VARIANTS = ("GRIGO", "HERASYMENKO")
+DUAL_CANDIDATE_VARIANT = "DUAL_GRIGO_HERASYMENKO"
 
 PT_PER_MM = 72.0 / 25.4
 MM_PER_PT = 25.4 / 72.0
@@ -150,7 +152,7 @@ GRIGO_REPLAY_VECTOR_SHA256 = (
 )
 
 
-def _page4_runtime_profile(signature_variant: str) -> dict[str, Any]:
+def _page4_runtime_profile(signature_variant: str, *, dual_candidate: bool = False) -> dict[str, Any]:
     """Numeric reference profile, never Illustrator screenshot heuristics."""
     raw = yaml.safe_load(PAGE4_PROFILE_PATH.read_text(encoding='utf-8'))
     if not isinstance(raw, dict) or raw.get('schema_version') != 'gdl_gc_page4_canonical_repair_v0_1':
@@ -159,6 +161,14 @@ def _page4_runtime_profile(signature_variant: str) -> dict[str, Any]:
         raise ValueError('page4_watermark_opacity_unexpected')
     if raw.get('greeting_bbox_pdf_mm') != [27.0, 32.0, 187.0, 212.0]:
         raise ValueError('page4_greeting_geometry_contract_mismatch')
+    if signature_variant == DUAL_CANDIDATE_VARIANT:
+        if not dual_candidate:
+            raise ValueError('dual_page4_runtime_disabled')
+        dual = raw.get('dual_sender')
+        row = dual.get(DUAL_CANDIDATE_VARIANT) if isinstance(dual, dict) else None
+        if not isinstance(row, dict) or row.get('start_y_pdf_mm') != 213.965:
+            raise ValueError('dual_page4_sender_profile_unapproved')
+        return dict(raw)
     sender = raw.get('single_sender')
     if not isinstance(sender, dict):
         raise ValueError('page4_sender_profile_missing')
@@ -2577,12 +2587,16 @@ def _required_resource_ids_for_bundle(
         required.append(
             RESOURCE_SIGNATURE_HERASYMENKO
         )
+    if DUAL_CANDIDATE_VARIANT in variants:
+        required.append(RESOURCE_SIGNATURE_DUAL)
 
     return required
 
 
 def _validate_first_slice_job(
     job: Mapping[str, Any],
+    *,
+    dual_candidate: bool = False,
 ) -> None:
     data = _mapping(job)
     payload = _mapping(
@@ -2627,7 +2641,7 @@ def _validate_first_slice_job(
         sender.get(
             "signature_variant_id"
         )
-        not in SUPPORTED_SIGNATURE_VARIANTS
+        not in (SUPPORTED_SIGNATURE_VARIANTS + ((DUAL_CANDIDATE_VARIANT,) if dual_candidate else ()))
     ):
         raise ValueError(
             "builder_v0_1_signature_variant_not_implemented:"
@@ -2894,6 +2908,7 @@ def _verified_signature_report_provenance(
     grigo_source_verified: bool,
     source_validation: dict[str, Any] | None,
     rendered_validation: dict[str, Any],
+    dual_candidate: bool = False,
 ) -> bool:
     """Return authenticated only after both source and output checks agree.
 
@@ -2901,7 +2916,9 @@ def _verified_signature_report_provenance(
     PDF-byte encoding is intentionally not an identity requirement for the
     HERASYMENKO image: RGBA pixel SHA256 and soft-mask identity are authoritative.
     """
-    if signature_variant not in SUPPORTED_SIGNATURE_VARIANTS:
+    if signature_variant not in SUPPORTED_SIGNATURE_VARIANTS and not (
+        dual_candidate and signature_variant == DUAL_CANDIDATE_VARIANT
+    ):
         raise ValueError("signature_report_variant_unsupported")
     if (
         not isinstance(rendered_validation, dict)
@@ -2915,6 +2932,20 @@ def _verified_signature_report_provenance(
             or rendered_validation.get("source_hash_validated_before_replay") is not True
         ):
             raise ValueError("signature_report_authentication_incomplete")
+        return True
+
+    if signature_variant == DUAL_CANDIDATE_VARIANT:
+        if (not isinstance(source_validation, dict)
+            or source_validation.get('status') != 'PASS'
+            or source_validation.get('component_count') != 2
+            or source_validation.get('composite_sha256') != rendered_validation.get('source_composite_sha256')
+            or source_validation.get('rgba_pixel_sha256') != rendered_validation.get('rgba_pixel_sha256')
+            or source_validation.get('expected_native_vector_sha256') != rendered_validation.get('output_native_vector_sha256')
+            or rendered_validation.get('output_vector_count') != 7
+            or rendered_validation.get('soft_mask') != 'PASS'
+            or rendered_validation.get('source_overlap_transparent') is not True
+            or rendered_validation.get('output_overlap_transparent') is not True):
+            raise ValueError('dual_signature_report_authentication_incomplete')
         return True
 
     if not isinstance(source_validation, dict):
@@ -2948,12 +2979,13 @@ def _build_one_job(
     artifact_manifest:
         Mapping[str, Any],
     output_dir: Path,
+    dual_candidate: bool = False,
 ) -> dict[str, Any]:
     data = _mapping(
         job
     )
     _validate_first_slice_job(
-        data
+        data, dual_candidate=dual_candidate
     )
 
     payload = _mapping(
@@ -3053,6 +3085,11 @@ def _build_one_job(
                 RESOURCE_SIGNATURE_HERASYMENKO,
             )
         )
+
+    if signature_variant == DUAL_CANDIDATE_VARIANT:
+        if not dual_candidate:
+            raise ValueError('dual_builder_runtime_disabled')
+        signature_source_path = _resource_path(resources, RESOURCE_SIGNATURE_DUAL)
 
     job_id = str(
         data["job_id"]
@@ -3240,7 +3277,7 @@ def _build_one_job(
         signature_overlay = None
         page4_authoring_removed = []
 
-        page4_profile = _page4_runtime_profile(signature_variant)
+        page4_profile = _page4_runtime_profile(signature_variant, dual_candidate=dual_candidate)
         source_signature_verified = False
         if signature_variant == 'GRIGO':
             _inspect_grigo_signature(reference[3])
@@ -3265,6 +3302,7 @@ def _build_one_job(
             raise ValueError("canonical_sender_source_missing")
         sender_lines = source_sender_rows(
             signature_variant, canonical_sender_source,
+            dual_candidate=dual_candidate,
         )
 
         (
@@ -3277,7 +3315,9 @@ def _build_one_job(
             font_path=greeting_font_path,
             sender_line_count=len(sender_lines),
             fixed_sender_y_mm=float(
-                page4_profile['single_sender'][signature_variant]['start_y_pdf_mm']
+                (page4_profile['dual_sender'][signature_variant]['start_y_pdf_mm']
+                 if signature_variant == DUAL_CANDIDATE_VARIANT
+                 else page4_profile['single_sender'][signature_variant]['start_y_pdf_mm'])
             ),
         )
 
@@ -3329,6 +3369,61 @@ def _build_one_job(
                         signature_source,
                     )
                 )
+
+        elif signature_variant == DUAL_CANDIDATE_VARIANT:
+            from app.graphic_design_lab.greeting_card_dual_component_candidate_v0_1 import (
+                replay_vector_paths, _canonical_dual_sender_source_check,
+                _verify_transparent_sender_overlap,
+            )
+            from app.graphic_design_lab.greeting_card_embedded_components import (
+                DUAL_GRIGO_DRAWING_INDICES, DUAL_HERASYMENKO_BBOX_MM,
+                _inspect_dual_signature,
+            )
+            assert signature_source_path is not None
+            with pymupdf.open(signature_source_path) as dual_source:
+                dual_page = dual_source[3]
+                source_signature_validation = _inspect_dual_signature(dual_page)
+                source_verified_sender = _canonical_dual_sender_source_check(
+                    dual_page, _sha256_file(signature_source_path))
+                if source_verified_sender.get('row_count') != 6:
+                    raise ValueError('dual_builder_canonical_sender_count_mismatch')
+                dual_image = _find_image(dual_page, HERASYMENKO_SIGNATURE_IMAGE_DIGEST_HEX)
+                if dual_image is None:
+                    raise ValueError('dual_builder_image_missing')
+                source_rgba = _pdf_image_rgba_pixel_identity(dual_page, int(dual_image['xref']))
+                overlap_source = _verify_transparent_sender_overlap(
+                    dual_page, dual_image,
+                    _load_yaml_mapping(
+                        Path(__file__).resolve().parents[2] /
+                        'coordination/graphic_design_lab/directions/greeting_cards/canonical_sender_blocks_v0_1.yaml',
+                        label='canonical_sender_registry',
+                    )['variants'][DUAL_CANDIDATE_VARIANT]['bboxes_pdf_mm'],
+                )
+                if overlap_source.get('status') != 'TRANSPARENT_REGION':
+                    raise ValueError('dual_builder_source_overlap_not_transparent')
+                selected = [dual_page.get_drawings()[i] for i in DUAL_GRIGO_DRAWING_INDICES]
+                # Independent scratch replay provides the exact expected native-vector digest.
+                scratch = pymupdf.open()
+                try:
+                    scratch_page = scratch.new_page(width=dual_page.rect.width, height=dual_page.rect.height)
+                    replay_vector_paths(scratch_page, selected)
+                    scratch_drawings = scratch_page.get_drawings()
+                    expected_native_digest = _signature_cluster_sha256(
+                        scratch_drawings, union=_cluster_union(scratch_drawings))
+                finally:
+                    scratch.close()
+                replay_vector_paths(page4, selected)
+                _insert_digest_image(
+                    dual_source, dual_page, page4,
+                    HERASYMENKO_SIGNATURE_IMAGE_DIGEST_HEX,
+                    destination=_rect_mm(list(DUAL_HERASYMENKO_BBOX_MM)),
+                )
+                signature_source_validation = {
+                    **source_signature_validation,
+                    'rgba_pixel_sha256': source_rgba['rgba_pixel_sha256'],
+                    'expected_native_vector_sha256': expected_native_digest,
+                    'canonical_sender_source': source_verified_sender['status'],
+                }
 
         else:
             raise ValueError(
@@ -3411,6 +3506,48 @@ def _build_one_job(
                 )
             )
 
+        elif signature_variant == DUAL_CANDIDATE_VARIANT:
+            from app.graphic_design_lab.greeting_card_dual_page4_candidate_v0_1 import (
+                _checked_output_with_text,
+            )
+            from app.graphic_design_lab.greeting_card_dual_component_candidate_v0_1 import (
+                _verify_transparent_sender_overlap,
+            )
+            if signature_source_validation is None:
+                raise ValueError('dual_builder_source_signature_validation_missing')
+            output_signature = _checked_output_with_text(
+                rendered_document[3],
+                signature_source_validation['rgba_pixel_sha256'],
+            )
+            if output_signature['output_native_vector_sha256'] != signature_source_validation['expected_native_vector_sha256']:
+                raise ValueError('dual_builder_output_native_vector_digest_mismatch')
+            from app.graphic_design_lab.greeting_card_embedded_components import (
+                HERASYMENKO_SIGNATURE_PIXEL_SIZE, DUAL_HERASYMENKO_BBOX_MM,
+            )
+            imgs = [i for i in rendered_document[3].get_image_info(hashes=True, xrefs=True)
+                    if (int(i.get('width', 0)), int(i.get('height', 0))) == HERASYMENKO_SIGNATURE_PIXEL_SIZE
+                    and all(abs(x - y) <= 0.06 for x, y in zip(
+                        [round(float(c) * MM_PER_PT, 3) for c in i['bbox']],
+                        DUAL_HERASYMENKO_BBOX_MM))]
+            if len(imgs) != 1:
+                raise ValueError('dual_builder_output_signature_image_count_mismatch')
+            reg = _load_yaml_mapping(
+                Path(__file__).resolve().parents[2] /
+                'coordination/graphic_design_lab/directions/greeting_cards/canonical_sender_blocks_v0_1.yaml',
+                label='canonical_sender_registry',
+            )['variants'][DUAL_CANDIDATE_VARIANT]
+            overlap = _verify_transparent_sender_overlap(rendered_document[3], imgs[0], reg['bboxes_pdf_mm'])
+            if overlap.get('status') != 'TRANSPARENT_REGION':
+                raise ValueError('dual_builder_output_visible_overlap')
+            output_signature.update({
+                'signature_variant_id': DUAL_CANDIDATE_VARIANT,
+                'component_id': 'component.signature.dual_grigo_herasymenko.embedded_composite.v1',
+                'source_composite_sha256': signature_source_validation['composite_sha256'],
+                'rgba_pixel_sha256': signature_source_validation['rgba_pixel_sha256'],
+                'source_overlap_transparent': True,
+                'output_overlap_transparent': True,
+            })
+
         else:
             raise ValueError(
                 "post_render_signature_variant_not_implemented:"
@@ -3422,6 +3559,7 @@ def _build_one_job(
         grigo_source_verified=source_signature_verified,
         source_validation=signature_source_validation,
         rendered_validation=output_signature,
+        dual_candidate=dual_candidate,
     )
 
     page3_soft_mask_evidence = (
@@ -3517,8 +3655,7 @@ def _build_one_job(
             signature_variant
             == "GRIGO",
         "signature_exact_private_source_used":
-            signature_variant
-            == "HERASYMENKO",
+            signature_variant in ("HERASYMENKO", DUAL_CANDIDATE_VARIANT),
         "locked_back_page_transplanted":
             True,
         "authoring_layer_blocks_removed": {
@@ -3576,7 +3713,9 @@ def _build_one_job(
                     "GRIGO_VECTOR_CLIP"
                     if signature_variant
                     == "GRIGO"
-                    else "HERASYMENKO_EXACT_IMAGE_COMPONENT"
+                    else ("HERASYMENKO_EXACT_IMAGE_COMPONENT"
+                          if signature_variant == "HERASYMENKO"
+                          else "DUAL_SOURCE_VERIFIED_NATIVE_VECTORS_AND_MASKED_IMAGE")
                 )
             ),
         "soft_mask_devicegray_normalized_count":
@@ -3618,7 +3757,8 @@ def _build_one_job(
         "page4_sender_order": [item['id'] for item in sender_lines],
         "page4_sender_geometry_profile": "CANONICAL_SOURCE_CANDIDATE_INTERNAL_REVIEW",
         "page4_signature_source_authenticated": source_signature_verified,
-        "page4_hidden_template_sender_paths": 0 if signature_variant == 'GRIGO' else None,
+        "page4_hidden_template_sender_paths": 0 if signature_variant in ('GRIGO', DUAL_CANDIDATE_VARIANT) else None,
+        "dual_candidate_only": dual_candidate and signature_variant == DUAL_CANDIDATE_VARIANT,
         "page4_greeting_blank_rows_removed": (
             greeting_text != greeting_text_original.strip()
         ),
@@ -3686,6 +3826,7 @@ def build_bundle(
     artifact_manifest_path: Path,
     signature_catalog_path: Path,
     output_dir: Path,
+    dual_candidate: bool = False,
 ) -> dict[str, Any]:
     bundle_path = (
         bundle_path.expanduser().resolve()
@@ -3769,6 +3910,20 @@ def build_bundle(
             )
         )
 
+    variants_in_bundle = {
+        str(_mapping(_mapping(job).get('signature_selection')).get('variant_id'))
+        for job in _list(bundle.get('jobs'))
+    }
+    # Candidate path must never publish into SMB or another working directory.
+    if dual_candidate:
+        allowed_root = (Path(__file__).resolve().parents[2] / 'tmp').resolve()
+        if output_dir == allowed_root or allowed_root not in output_dir.parents:
+            raise ValueError('dual_candidate_output_outside_project_tmp')
+        if DUAL_CANDIDATE_VARIANT not in variants_in_bundle:
+            raise ValueError('dual_candidate_requires_dual_job')
+    elif DUAL_CANDIDATE_VARIANT in variants_in_bundle:
+        raise ValueError('dual_builder_runtime_disabled')
+
     resources = (
         validate_and_resolve_private_resources(
             resource_manifest,
@@ -3801,6 +3956,7 @@ def build_bundle(
                 resources=resources,
                 artifact_manifest=artifact_manifest,
                 output_dir=output_dir,
+                dual_candidate=dual_candidate,
             )
         )
 
