@@ -261,10 +261,52 @@ def _verified_prior_success(report_path: Path, expected_sha: str) -> None:
         raise UnifiedBlocked('prior_evidence_revalidation_failed')
 
 
+def require_no_unresolved_finalization(source_sha: str) -> None:
+    """Fail closed on a durable receipt-write intent with no verified terminal PASS.
+
+    The marker is written *before* invoking the immutable closeout writer.
+    Thus SIGKILL or a subprocess error cannot silently turn an uncertain
+    receipt into permission to launch another private Builder cycle.
+    """
+    if not SHA_RE.fullmatch(source_sha):
+        raise UnifiedBlocked('source_checksum_invalid')
+    runs = inside_tmp(OUTPUT_ROOT) / 'runs'
+    if not runs.is_dir():
+        return
+    for marker in sorted(runs.glob('*/closeout_record_intent.json')):
+        marker = inside_tmp(marker)
+        if marker.is_symlink() or not marker.is_file() or marker.stat().st_size > 4096:
+            raise UnifiedBlocked('finalization_marker_unsafe')
+        try:
+            value = json.loads(marker.read_text(encoding='utf-8'))
+        except (ValueError, OSError) as exc:
+            raise UnifiedBlocked('finalization_marker_unreadable') from exc
+        if not isinstance(value, dict) or value.get('schema_version') != SCHEMA:
+            raise UnifiedBlocked('finalization_marker_invalid')
+        fingerprint = value.get('source_zip_sha256')
+        if not isinstance(fingerprint, str) or not SHA_RE.fullmatch(fingerprint):
+            raise UnifiedBlocked('finalization_marker_source_invalid')
+        if fingerprint != source_sha:
+            continue
+        report_path = marker.parent / 'unified_cycle_result.json'
+        if (report_path.is_symlink() or not report_path.is_file()
+                or report_path.stat().st_size > 1024 * 1024):
+            raise UnifiedBlocked('unresolved_closeout_finalization_requires_review')
+        try:
+            result = json.loads(report_path.read_text(encoding='utf-8'))
+        except (OSError, ValueError) as exc:
+            raise UnifiedBlocked('unresolved_closeout_finalization_requires_review') from exc
+        if (not isinstance(result, dict)
+                or result.get('status') != 'PRIVATE_CYCLE_PASS_REQUIRES_VISUAL_REVIEW'
+                or result.get('source_zip_sha256') != source_sha):
+            raise UnifiedBlocked('unresolved_closeout_finalization_requires_review')
+
+
 def prior_successful_cycles(source_sha: str) -> int:
     """Read-only idempotency check for past successful executions."""
     if not SHA_RE.fullmatch(source_sha):
         raise UnifiedBlocked('source_checksum_invalid')
+    require_no_unresolved_finalization(source_sha)
     runs = inside_tmp(OUTPUT_ROOT) / 'runs'
     count = 0
     if not runs.is_dir():
@@ -293,6 +335,8 @@ def run_private(package: Path, config: Path, *, allow_repeat: bool = False) -> d
 def _run_private_locked(package: Path, config: Path, *, allow_repeat: bool) -> dict[str, Any]:
     stage = 'PREFLIGHT'
     root: Path | None = None
+    source_sha: str | None = None
+    receipt: Path | None = None
     try:
         inspection = source_preflight(package, config)
         source_sha = inspection['archive_sha256']
@@ -326,6 +370,18 @@ def _run_private_locked(package: Path, config: Path, *, allow_repeat: bool) -> d
         if file_sha(local) != source_sha or file_sha(package) != source_sha:
             raise UnifiedBlocked('source_changed_before_receipt_record')
         stage = 'FORMAL_CLOSEOUT_RECORD'
+        # Durable intent before the closeout subprocess writes an immutable receipt.
+        # Keep this marker after PASS for crash recovery, never delete it.
+        atomic_json_exclusive(root / 'closeout_record_intent.json', {
+            'schema_version': SCHEMA,
+            'status': 'RECEIPT_RECORD_INTENT',
+            'source_zip_sha256': source_sha,
+            'manifest_sha256': file_sha(manifest_path),
+            'job_count': inspection['jobs'],
+            'customer_approved': False,
+            'production_approved': False,
+            'client_published': False,
+        })
         receipt = record_closeout(manifest_path, checked, inspection['jobs'])
         stage = 'FINAL_SOURCE_CHECK'
         if file_sha(local) != source_sha or file_sha(package) != source_sha:
@@ -371,12 +427,23 @@ def _run_private_locked(package: Path, config: Path, *, allow_repeat: bool) -> d
         }.get(stage, 'OPERATOR_INVESTIGATE')
         if root is not None and root.is_dir():
             try:
-                atomic_json_exclusive(root / 'unified_cycle_result.json', {
+                blocked = {
                     'schema_version': SCHEMA, 'status': 'BLOCKED',
                     'blocked_stage': stage, 'error_code': code,
                     'next_action': action, 'production_approved': False,
                     'customer_approved': False, 'client_published': False,
-                })
+                }
+                pending = root / 'closeout_record_intent.json'
+                if pending.is_file():
+                    blocked['requires_operator_reconciliation'] = True
+                    blocked['next_action'] = 'RECONCILE_PENDING_RECEIPT_BEFORE_ANY_REPEAT'
+                    blocked['closeout_finalization_marker'] = relative_tmp(pending)
+                    if source_sha is not None:
+                        blocked['source_zip_sha256'] = source_sha
+                    if receipt is not None and receipt.is_file():
+                        blocked['closeout_receipt'] = relative_tmp(receipt)
+                        blocked['closeout_receipt_sha256'] = file_sha(receipt)
+                atomic_json_exclusive(root / 'unified_cycle_result.json', blocked)
             except (OSError, ValueError):
                 pass
         raise UnifiedBlocked(stage.lower() + '_blocked') from None
