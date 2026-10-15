@@ -112,10 +112,14 @@ GREETING_REFERENCE_LINE_ADVANCE_MM = 8.0
 GREETING_LINE_ADVANCE_RATIO = (
     GREETING_REFERENCE_LINE_ADVANCE_MM / GREETING_REFERENCE_FONT_SIZE_MM
 )
+# Bounded review-only fallback: preserve original tiers, never shrink below 16 pt.
+# Approved by operator for first INTERNAL visual review; not print acceptance.
 GREETING_FONT_SIZE_TIERS_PT = (
     GREETING_REFERENCE_FONT_SIZE_MM * PT_PER_MM,
     18.5,
     17.0,
+    16.5,
+    16.0,
 )
 SENDER_START_Y_VARIANTS_MM = (
     214.0,

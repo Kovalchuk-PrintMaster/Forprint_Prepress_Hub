@@ -18,7 +18,7 @@ def test_illustrator_reference_font_size_and_leading(monkeypatch):
     assert math.isclose(b.GREETING_LINE_ADVANCE_RATIO, 8.0 / 7.0)
     assert math.isclose(b._greeting_pdf_lineheight(Path('dummy')), 8.0 / 7.0 / 0.9, rel_tol=1e-10)
     assert tuple(b.GREETING_FONT_SIZE_TIERS_PT) == tuple(sorted(b.GREETING_FONT_SIZE_TIERS_PT, reverse=True))
-    assert b.GREETING_FONT_SIZE_TIERS_PT[-1] == 17.0
+    assert b.GREETING_FONT_SIZE_TIERS_PT[1:] == (18.5, 17.0, 16.5, 16.0)
 
 
 def test_both_fit_and_final_pdf_use_identical_leading():

@@ -426,3 +426,26 @@ gdl-greeting-card-smb-queue:
 	@test -n "$(GDL_GC14_WORKSPACE_RELATIVE_B64)" || (echo "Set WORKSPACE_RELATIVE_B64=..."; exit 2)
 	$(PYTHON) $(GDL_GC14_QUEUE_CLI) --mode run --share "$(GDL_GC14_SHARE)" --workspace-relative-b64 "$(GDL_GC14_WORKSPACE_RELATIVE_B64)"
 # END GC14 CLIENT SMB WORKSPACE INPUT QUEUE V0.1
+
+# BEGIN GC15-B FLOWERS STAGING PROMOTION V0.1
+# Operator-reviewed transition only; never auto-approves customer/production.
+GDL_GC15B_FLOWERS_PROMOTION_CLI ?= scripts/graphic_design_lab/greeting_cards/flowers_staging_promotion_v0_1.py
+GDL_GC15B_STAGING_SOURCE ?= $(PACKAGE)
+.PHONY: gdl-greeting-card-flowers-prepare gdl-greeting-card-flowers-promote
+gdl-greeting-card-flowers-prepare:
+	@test -n "$(GDL_GC15B_STAGING_SOURCE)" || (echo "Set PACKAGE=<SMB input staging ZIP>"; exit 2)
+	$(PYTHON) $(GDL_GC15B_FLOWERS_PROMOTION_CLI) --mode prepare --source "$(GDL_GC15B_STAGING_SOURCE)"
+gdl-greeting-card-flowers-promote:
+	@test -n "$(GDL_GC15B_STAGING_SOURCE)" || (echo "Set PACKAGE=<SMB input staging ZIP>"; exit 2)
+	@test -n "$(ACK)" -a -n "$(REVIEWER)" || (echo "Set ACK=<from prepare> REVIEWER=<operator>"; exit 2)
+	$(PYTHON) $(GDL_GC15B_FLOWERS_PROMOTION_CLI) --mode promote --source "$(GDL_GC15B_STAGING_SOURCE)" --ack-token "$(ACK)" --reviewer "$(REVIEWER)"
+# END GC15-B FLOWERS STAGING PROMOTION V0.1
+
+# BEGIN GC15B SHA-SCOPED GC14 BLOCKED REENTRY V0.4
+.PHONY: gdl-greeting-card-smb-queue-retry-source
+gdl-greeting-card-smb-queue-retry-source:
+	@test -n "$(SHARE)" || (echo "Set SHARE=In_Progress"; exit 2)
+	@test -n "$(WORKSPACE_RELATIVE_B64)" || (echo "Set WORKSPACE_RELATIVE_B64=..."; exit 2)
+	@test -n "$(SOURCE_SHA256)" || (echo "Set SOURCE_SHA256=<exact ZIP digest>"; exit 2)
+	$(PYTHON) $(GDL_GC14_QUEUE_CLI) --mode run --share "$(SHARE)" --workspace-relative-b64 "$(WORKSPACE_RELATIVE_B64)" --retry-blocked-sha256 "$(SOURCE_SHA256)"
+# END GC15B SHA-SCOPED GC14 BLOCKED REENTRY V0.4

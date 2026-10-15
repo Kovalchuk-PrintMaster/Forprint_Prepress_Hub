@@ -329,7 +329,11 @@ def process_one(source: Path, out: Path, *, retry_blocked: bool = False) -> str:
     return status
 
 
-def run(workspace: Path, *, retry_blocked: bool = False) -> dict[str, int]:
+def run(workspace: Path, *, retry_blocked: bool = False,
+        retry_blocked_sha256: str | None = None) -> dict[str, int]:
+    if retry_blocked_sha256 is not None:
+        if (retry_blocked or not SHA_PATTERN.fullmatch(retry_blocked_sha256)):
+            raise QueueBlocked('scoped_retry_arguments_invalid')
     if workspace.name != '_forprint_automation':
         raise QueueBlocked('invalid_workspace_root')
     inp, out = workspace / 'input', workspace / 'output'
@@ -338,6 +342,14 @@ def run(workspace: Path, *, retry_blocked: bool = False) -> dict[str, int]:
     counts: dict[str, int] = {}
     with workspace_lock(workspace):
         sources = sorted(inp.iterdir(), key=lambda p: p.name.casefold())
+        if retry_blocked_sha256 is not None:
+            # Exact one-archive reentry: reject a missing or duplicate pinned source.
+            matches = [p for p in sources
+                       if p.suffix.lower() == '.zip'
+                       and not p.is_symlink() and p.is_file()
+                       and sha_file(p) == retry_blocked_sha256]
+            if len(matches) != 1:
+                raise QueueBlocked('scoped_retry_source_not_unique')
         for candidate in sources:
             if candidate.suffix.lower() != '.zip':
                 continue
@@ -345,7 +357,11 @@ def run(workspace: Path, *, retry_blocked: bool = False) -> dict[str, int]:
                 outcome = 'SKIPPED_UNSAFE_ENTRY'
             else:
                 try:
-                    outcome = process_one(candidate, out, retry_blocked=retry_blocked)
+                    allow_retry = retry_blocked or (
+                        retry_blocked_sha256 is not None
+                        and sha_file(candidate) == retry_blocked_sha256
+                    )
+                    outcome = process_one(candidate, out, retry_blocked=allow_retry)
                 except Exception:
                     # Uncertain incomplete run cannot silently continue as success.
                     outcome = 'NEEDS_RECONCILIATION'
@@ -367,6 +383,7 @@ def main() -> int:
     a.add_argument('--workspace-relative-b64', required=True)
     a.add_argument('--mode', choices=('check', 'run'), required=True)
     a.add_argument('--retry-blocked', action='store_true')
+    a.add_argument('--retry-blocked-sha256')
     args = a.parse_args()
     try:
         workspace = workspace_path(args.share, args.workspace_relative_b64)
@@ -376,7 +393,8 @@ def main() -> int:
             print('OUTPUT_EXISTS=' + str((workspace / 'output').is_dir()).lower())
             print('INTAKE_EXISTS=' + str((workspace / 'intake').is_dir()).lower())
         else:
-            result = run(workspace, retry_blocked=args.retry_blocked)
+            result = run(workspace, retry_blocked=args.retry_blocked,
+                         retry_blocked_sha256=args.retry_blocked_sha256)
             if result.get('NEEDS_RECONCILIATION') or result.get('SKIPPED_UNSAFE_ENTRY'):
                 return 2
         return 0
