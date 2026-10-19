@@ -1,0 +1,61 @@
+schema_version: gdl_gc_workflow_contract_candidate_v0_1
+workflow_id: greeting_card_standard
+version: v1_candidate
+execution_mode: INTERACTIVE_OPERATOR_BRIDGE
+steps:
+- id: W01
+  owner: INTAKE_AI
+  input: source text/images/logos and operator intent
+  output: confirmed requirements and missing-data classification
+  acceptance: no invented client facts, all required items mapped to source
+- id: W02
+  owner: INTAKE_AI
+  input: requirements needing visual creation/repair
+  output: structured Creator instruction including constraints and review criteria
+  acceptance: unambiguous imagery task with acceptance parameters
+- id: W03
+  owner: CREATOR_AI
+  input: structured prompt/asset refs
+  output: image/asset candidate
+  acceptance: machine contract plus visual-quality evaluation by Intake
+- id: W04
+  owner: INTAKE_AI
+  input: creator candidate
+  output: accepted asset OR defect-specific rework instruction
+  acceptance: repeat until specification met, anti-loop escalation if stagnation
+- id: W05
+  owner: INTAKE_AI
+  input: confirmed content+approved assets
+  output: bounded Handoff ZIP for operator
+  acceptance: archive integrity, provenance, content fidelity, complete manifest
+- id: W06
+  owner: OPERATOR
+  input: Handoff ZIP
+  output: manual upload to SMB input
+  acceptance: explicit transfer and launch, NOT full dispatcher
+- id: W07
+  owner: SERVER_PDF_BUILDER / EXPERIMENTAL_NATIVE_WORKER
+  input: validated Handoff + product profile
+  output: full PDF and previews; AI optional
+  acceptance: integrity + full content + geometry + backend-specific tests
+- id: W08
+  owner: SYSTEM_DIAGNOSTICS
+  input: produced artifacts and step checks
+  output: conditional PNG problem zone map + TXT with element IDs
+  acceptance: all flags localized; no false clean status
+- id: W09
+  owner: OPERATOR
+  input: PDF, optional AI, warnings, evidence
+  output: accept / request local fix / propose systemic fix
+  acceptance: record decision in machine-readable registry
+policies:
+  creator_attempt_limit: NO_FIXED_LIMIT; record attempts; detect stagnation
+  individual_failures: ISOLATED_PER_ORDER
+  rerun: FAILED_ORDER_ONLY
+  outcome: REVIEW_ONLY
+  publisher: NO_CUSTOMER_OR_PRODUCTION_WRITE
+future_changes:
+- full AI-to-SMB handoff via dispatcher
+- worker pool/failover
+- automatic imposition
+- cloud API

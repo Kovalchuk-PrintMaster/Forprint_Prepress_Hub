@@ -1,0 +1,32 @@
+schema_version: gdl_gc_source_inventory_candidate_v0_1
+as_of: '2026-10-18'
+verified_from:
+- id: E01
+  source: operator server log 2026-10-16
+  claim: r006 generation; 652 passed governance, 16 targeted tests, 4 PDFs, 16 PNG, source unchanged, no production or
+    client approval
+  limits: not current state of s01 after 16 Oct; GC16–17.2 uncommitted
+- id: E02
+  source: operator Illustrator screenshots 2026-10-16
+  claim: GC18-A2 greeting center visually and native layers include 1 greeting AreaText plus four sender rows
+  limits: no machine-verified end-to-end Windows Worker report
+- id: E03
+  source: ForPrint_GC15B_Layout_Maps_Resources_Skeleton_v0_1.zip
+  claim: historical measured 214x301 PDF skeleton, 4 page block maps and 150x180 target
+  limits: old page4 candidate originally marked unimplemented, newer GC18 proof supersedes only native text behavior
+- id: E04
+  source: GitHub Kovalchuk-PrintMaster/Forprint_Prepress_Hub at HEAD 75b19ef...
+  claim: geometry_zones_v0_1.yaml physical_1 front, physical_2 back, physical_3 inside photo, physical_4 inside greeting;
+    source baseline width 160
+  limits: remote committed HEAD is older than s01 uncommitted GC16–GC17.2
+- id: E05
+  source: GC18-A1 and GC18-A2 local ZIP archives and user AI file
+  claim: native JSX proof, 150x180 AreaText and centered appearance
+  limits: Action variability, native Windows error 87 unresolved
+- id: E06
+  source: user dialogue 17–18 Oct 2026
+  claim: goal-driven principles D01–D30; operator approved product direction
+  limits: not yet committed or published as canonical server governance
+known_git_base: 75b19efb9141713ab0608f18131941706661272e
+known_client_workspace: _forprint_automation (user-operated, no unique copies of canonical tools)
+privacy: Do not include raw private customer PDFs, logos, greetings, signatures or RDP credentials in public Git.

@@ -1,0 +1,177 @@
+schema_version: gdl_gc_goal_driven_roadmap_candidate_v0_1
+status: PROPOSED_AWAITING_REAL_CODE_RECONCILIATION
+priority: target-first, use evidence; do not blindly execute
+phases:
+- id: R0
+  title: Evidence freeze & integration preflight
+  status: CONFIRM_CURRENT_STATE
+  microsteps:
+  - id: R0.1
+    objective: Звірити HEAD / незакомічені GC16–GC17.2 й чинні конфлікти
+    acceptance_check: git status, diff, HEAD, tests, no write
+    required_evidence: git inventory + conflict list
+    state: PLANNED_UNVERIFIED
+    depends_on: []
+  - id: R0.2
+    objective: Звірити поточні YAML, коди Builder та фактичні Make/CLI entrypoints
+    acceptance_check: repo paths and tests inspected
+    required_evidence: path-based reconciliation matrix
+    state: PLANNED_UNVERIFIED
+    depends_on: []
+  - id: R0.3
+    objective: Зареєструвати пакет як candidate без втручання в runtime
+    acceptance_check: no namespace collision; operator approves location
+    required_evidence: dry-run & review receipt
+    state: PLANNED_UNVERIFIED
+    depends_on: []
+- id: R1
+  title: Goal / skeleton / contracts
+  status: REQUIRES_REVIEW
+  microsteps:
+  - id: R1.1
+    objective: Затвердити goal + межі + трициклове приймання
+    acceptance_check: goal authority confirmation
+    required_evidence: goal review record
+    state: PLANNED_UNVERIFIED
+    depends_on:
+    - R0.3
+  - id: R1.2
+    objective: Звірити чотири фізичні сторінки і semantic IDs
+    acceptance_check: compare code + GC15B geometry & r006 evidence
+    required_evidence: canonical skeleton crosswalk
+    state: PLANNED_UNVERIFIED
+    depends_on:
+    - R0.3
+  - id: R1.3
+    objective: Звірити P01 branding variants, P03 flowers/photo, P04 signatures
+    acceptance_check: source-provenance and reference mappings
+    required_evidence: resource/variant matrix
+    state: PLANNED_UNVERIFIED
+    depends_on:
+    - R0.3
+  - id: R1.4
+    objective: Узгодити LayoutSpec як одне джерело PDF/AI
+    acceptance_check: identical geometry fields, backend parity plan
+    required_evidence: LayoutSpec draft + tests
+    state: PLANNED_UNVERIFIED
+    depends_on:
+    - R0.3
+  - id: R1.5
+    objective: Створити реєстр requirements та Active Assistant Context Pack
+    acceptance_check: index + stable versions, no duplication
+    required_evidence: contract registry proof
+    state: PLANNED_UNVERIFIED
+    depends_on:
+    - R0.3
+- id: R2
+  title: Intake ↔ Creator control
+  status: NEEDS_EMPIRICAL_EVIDENCE
+  microsteps:
+  - id: R2.1
+    objective: Аудит існуючих Intake instruction kits і Creator result formats
+    acceptance_check: exact source material and provenance
+    required_evidence: prompt/contract inventory
+    state: PLANNED_UNVERIFIED
+    depends_on: []
+  - id: R2.2
+    objective: Машинна модель rework loop із порівнянням дефектів
+    acceptance_check: demonstrated short/long retry sequence
+    required_evidence: rework scenario trace
+    state: PLANNED_UNVERIFIED
+    depends_on: []
+  - id: R2.3
+    objective: Handoff ZIP contract і source fidelity
+    acceptance_check: zip integrity, exact text and source-linked assets
+    required_evidence: independent Handoff validator
+    state: PLANNED_UNVERIFIED
+    depends_on: []
+  - id: R2.4
+    objective: Валідація складних фото/логотипів
+    acceptance_check: negative visual cases and acceptance
+    required_evidence: visual sample report
+    state: PLANNED_UNVERIFIED
+    depends_on: []
+- id: R3
+  title: Renderer & operator review
+  status: PARTIAL_BASE_EXISTS
+  microsteps:
+  - id: R3.1
+    objective: 'PDF backend: регресія чинної 4-page композиції'
+    acceptance_check: same physical order and no damage
+    required_evidence: pdf comparison
+    state: PLANNED_UNVERIFIED
+    depends_on: []
+  - id: R3.2
+    objective: 'Native AI backend: A2→ A3 native build from LayoutSpec'
+    acceptance_check: one TextFrame; 4 sender lines; center and save/reopen
+    required_evidence: AI evidence + screenshot
+    state: PLANNED_UNVERIFIED
+    depends_on: []
+  - id: R3.3
+    objective: Windows worker agent прототип на 192.168.50.69
+    acceptance_check: session lifecycle, local staging, ACK/error
+    required_evidence: isolated Windows run evidence
+    state: PLANNED_UNVERIFIED
+    depends_on: []
+  - id: R3.4
+    objective: Два backend outputs із спільного source
+    acceptance_check: geometry and content parity
+    required_evidence: pdf vs native renderer diff
+    state: PLANNED_UNVERIFIED
+    depends_on: []
+  - id: R3.5
+    objective: Умовні diagnostic PNG+TXT, severity, scoped job retry
+    acceptance_check: visual map correctly points to actual element ID
+    required_evidence: diagnostic test artifacts
+    state: PLANNED_UNVERIFIED
+    depends_on: []
+- id: R4
+  title: Acceptance & repeatability
+  status: NOT_STARTED
+  microsteps:
+  - id: R4.1
+    objective: 'Операторська процедура review: accept/local fix/system proposal'
+    acceptance_check: trace of one decision and effect scope
+    required_evidence: decision record
+    state: PLANNED_UNVERIFIED
+    depends_on: []
+  - id: R4.2
+    objective: Перший end-to-end тест із реальними даними
+    acceptance_check: one successful order (not counted as 3 prematurely)
+    required_evidence: complete evidence package
+    state: PLANNED_UNVERIFIED
+    depends_on: []
+  - id: R4.3
+    objective: Три різні наскрізні сценарії поспіль
+    acceptance_check: three source-authentic PASS, no manual repair
+    required_evidence: three-cycle operator signoff
+    state: PLANNED_UNVERIFIED
+    depends_on: []
+  - id: R4.4
+    objective: Операторська команда відновлення `_forprint_automation`
+    acceptance_check: delete/recreate fixture without lost canonical resources
+    required_evidence: restore test in scratch copy
+    state: PLANNED_UNVERIFIED
+    depends_on: []
+- id: R5
+  title: Reuse and next architecture
+  status: AFTER_R4
+  microsteps:
+  - id: R5.1
+    objective: Пакетна інвентаризація reusable candidates
+    acceptance_check: no missing candidate, classify duplicates
+    required_evidence: reuse assessment
+    state: PLANNED_UNVERIFIED
+    depends_on: []
+  - id: R5.2
+    objective: Порівняти існуючий Tool Library registry та кандидати
+    acceptance_check: reuse/update/quarantine/retire evidence
+    required_evidence: registry reconciliation
+    state: PLANNED_UNVERIFIED
+    depends_on: []
+  - id: R5.3
+    objective: Запланувати v2 logos, workflow composer, Worker failover, API
+    acceptance_check: no premature v1 dependency, operator scope
+    required_evidence: future roadmap candidates
+    state: PLANNED_UNVERIFIED
+    depends_on: []

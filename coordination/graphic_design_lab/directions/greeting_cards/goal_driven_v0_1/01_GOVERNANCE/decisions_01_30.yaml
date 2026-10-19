@@ -1,0 +1,269 @@
+schema_version: gdl_gc_decision_registry_candidate_v0_1
+status: REVIEW_CANDIDATE
+decision_count: 30
+decisions:
+- id: GDL-GC-D01
+  title: Ціль визначає задачі
+  rule: Погоджена кінцева мета та критерії успіху керують реальними/синтетичними кроками; спосіб досягнення адаптується,
+    мета — тільки за рішенням керівника.
+  decision_status: AGREED_IN_CONVERSATION
+  repository_integration: NOT_YET_VERIFIED_OR_MERGED
+  change_authority: project_owner_for_goal_or_major_phase; scoped_policy_for_technical_steps
+  source: user_dialogue_2026-10-17_to_2026-10-18
+  notes: Перевірити конкретний код/контракт перед адаптацією реалізації.
+- id: GDL-GC-D02
+  title: Три різні повні цикли
+  rule: Пілот приймається після трьох послідовних різних наскрізних замовлень із правильним фінальним результатом без
+    ручного ремонту між стадіями; автоматичні Creator-ретраї дозволені.
+  decision_status: AGREED_IN_CONVERSATION
+  repository_integration: NOT_YET_VERIFIED_OR_MERGED
+  change_authority: project_owner_for_goal_or_major_phase; scoped_policy_for_technical_steps
+  source: user_dialogue_2026-10-17_to_2026-10-18
+  notes: Перевірити конкретний код/контракт перед адаптацією реалізації.
+- id: GDL-GC-D03
+  title: PDF — головний вихід
+  rule: Фінальний операторський/друкарський документ — PDF. AI зберігається як редагований робочий оригінал там, де формується
+    Illustrator.
+  decision_status: AGREED_IN_CONVERSATION
+  repository_integration: NOT_YET_VERIFIED_OR_MERGED
+  change_authority: project_owner_for_goal_or_major_phase; scoped_policy_for_technical_steps
+  source: user_dialogue_2026-10-17_to_2026-10-18
+  notes: Перевірити конкретний код/контракт перед адаптацією реалізації.
+- id: GDL-GC-D04
+  title: Скелет листівки
+  rule: Базову композицію, сторінки, логотипи, фото, рамки, підписи та координати фіксуємо з чинного конструктора; не
+    редизайнимо.
+  decision_status: AGREED_IN_CONVERSATION
+  repository_integration: NOT_YET_VERIFIED_OR_MERGED
+  change_authority: project_owner_for_goal_or_major_phase; scoped_policy_for_technical_steps
+  source: user_dialogue_2026-10-17_to_2026-10-18
+  notes: Перевірити конкретний код/контракт перед адаптацією реалізації.
+- id: GDL-GC-D05
+  title: Довгі привітання
+  rule: Увесь підтверджений текст вміщувати зменшенням кегля в заданій зоні; потенційна нечитабельність => видиме попередження
+    з ID, без мовчазного скорочення.
+  decision_status: AGREED_IN_CONVERSATION
+  repository_integration: NOT_YET_VERIFIED_OR_MERGED
+  change_authority: project_owner_for_goal_or_major_phase; scoped_policy_for_technical_steps
+  source: user_dialogue_2026-10-17_to_2026-10-18
+  notes: Перевірити конкретний код/контракт перед адаптацією реалізації.
+- id: GDL-GC-D06
+  title: Управлінське приймання
+  rule: Машина доводить виконання технічно; керівник/оператор приймає остаточне рішення про придатність до визначеного
+    режиму використання.
+  decision_status: AGREED_IN_CONVERSATION
+  repository_integration: NOT_YET_VERIFIED_OR_MERGED
+  change_authority: project_owner_for_goal_or_major_phase; scoped_policy_for_technical_steps
+  source: user_dialogue_2026-10-17_to_2026-10-18
+  notes: Перевірити конкретний код/контракт перед адаптацією реалізації.
+- id: GDL-GC-D07
+  title: Чинний порядок сторінок
+  rule: Фізичний порядок PDF не змінювати; він обраний для чинної друкарської збірки. Логічну назву сторінки відділяти
+    від її фізичного номера.
+  decision_status: AGREED_IN_CONVERSATION
+  repository_integration: NOT_YET_VERIFIED_OR_MERGED
+  change_authority: project_owner_for_goal_or_major_phase; scoped_policy_for_technical_steps
+  source: user_dialogue_2026-10-17_to_2026-10-18
+  notes: Перевірити конкретний код/контракт перед адаптацією реалізації.
+- id: GDL-GC-D08
+  title: Три замовлення перевіряють весь Intake–Creator–Builder
+  rule: Головний ризик — машинні інструкції та взаємодія Intake/Creator; перевіряти весь ланцюг, а не тільки Builder.
+  decision_status: AGREED_IN_CONVERSATION
+  repository_integration: NOT_YET_VERIFIED_OR_MERGED
+  change_authority: project_owner_for_goal_or_major_phase; scoped_policy_for_technical_steps
+  source: user_dialogue_2026-10-17_to_2026-10-18
+  notes: Перевірити конкретний код/контракт перед адаптацією реалізації.
+- id: GDL-GC-D09
+  title: Сервер зберігає знання
+  rule: Інструменти, правила, підписи, рамки, бібліотеки логотипів, контракти й ресурси зберігаються відновлювано на
+    сервері, не як єдина копія в клієнтській теці.
+  decision_status: AGREED_IN_CONVERSATION
+  repository_integration: NOT_YET_VERIFIED_OR_MERGED
+  change_authority: project_owner_for_goal_or_major_phase; scoped_policy_for_technical_steps
+  source: user_dialogue_2026-10-17_to_2026-10-18
+  notes: Перевірити конкретний код/контракт перед адаптацією реалізації.
+- id: GDL-GC-D10
+  title: Intake керує Creator до якості
+  rule: Intake формує/уточнює ТЗ для Creator, перевіряє й повторює стільки разів, скільки потрібно; кількість спроб сама
+    по собі не є дефектом.
+  decision_status: AGREED_IN_CONVERSATION
+  repository_integration: NOT_YET_VERIFIED_OR_MERGED
+  change_authority: project_owner_for_goal_or_major_phase; scoped_policy_for_technical_steps
+  source: user_dialogue_2026-10-17_to_2026-10-18
+  notes: Перевірити конкретний код/контракт перед адаптацією реалізації.
+- id: GDL-GC-D11
+  title: Антизациклення й інструкції
+  rule: Повторювані дефекти/відсутність прогресу мають породжувати діагностику та покращення стартового ТЗ/промптів;
+    невдалий результат не оголошувати PASS.
+  decision_status: AGREED_IN_CONVERSATION
+  repository_integration: NOT_YET_VERIFIED_OR_MERGED
+  change_authority: project_owner_for_goal_or_major_phase; scoped_policy_for_technical_steps
+  source: user_dialogue_2026-10-17_to_2026-10-18
+  notes: Перевірити конкретний код/контракт перед адаптацією реалізації.
+- id: GDL-GC-D12
+  title: Відновлення теки тільки за командою
+  rule: Відтворювати клієнтську автоматизаційну папку з серверного еталона командою оператора; не потрібно відновлювати
+    кожний історичний PDF.
+  decision_status: AGREED_IN_CONVERSATION
+  repository_integration: NOT_YET_VERIFIED_OR_MERGED
+  change_authority: project_owner_for_goal_or_major_phase; scoped_policy_for_technical_steps
+  source: user_dialogue_2026-10-17_to_2026-10-18
+  notes: Перевірити конкретний код/контракт перед адаптацією реалізації.
+- id: GDL-GC-D13
+  title: Достатня готовність ТЗ
+  rule: Не вимагати ідеальної деталізації; головне — ясна мета, критерії успіху та відсутність блокувальних прогалин.
+    Необрані способи реалізації допустимі.
+  decision_status: AGREED_IN_CONVERSATION
+  repository_integration: NOT_YET_VERIFIED_OR_MERGED
+  change_authority: project_owner_for_goal_or_major_phase; scoped_policy_for_technical_steps
+  source: user_dialogue_2026-10-17_to_2026-10-18
+  notes: Перевірити конкретний код/контракт перед адаптацією реалізації.
+- id: GDL-GC-D14
+  title: Каталог ТЗ
+  rule: Машинний реєстр версіонованих ТЗ із ID, станом, зв’язками з реалізаціями; активні — у context pack, завершені
+    доступні для пошуку і повторного використання.
+  decision_status: AGREED_IN_CONVERSATION
+  repository_integration: NOT_YET_VERIFIED_OR_MERGED
+  change_authority: project_owner_for_goal_or_major_phase; scoped_policy_for_technical_steps
+  source: user_dialogue_2026-10-17_to_2026-10-18
+  notes: Перевірити конкретний код/контракт перед адаптацією реалізації.
+- id: GDL-GC-D15
+  title: Навчання на діалогах
+  rule: Історія Intake↔Creator слугує джерелом вдосконалення інструкцій/контрольних прикладів; автоматизація на основі
+    консольного контуру — майбутня незалежна інтеграція.
+  decision_status: AGREED_IN_CONVERSATION
+  repository_integration: NOT_YET_VERIFIED_OR_MERGED
+  change_authority: project_owner_for_goal_or_major_phase; scoped_policy_for_technical_steps
+  source: user_dialogue_2026-10-17_to_2026-10-18
+  notes: Перевірити конкретний код/контракт перед адаптацією реалізації.
+- id: GDL-GC-D16
+  title: Goal + macro/micro roadmap
+  rule: Людина визначає результат і ключові межі; помічниця синтетично генерує загальну карту й детальні мікрокроки з
+    доказами та статусами.
+  decision_status: AGREED_IN_CONVERSATION
+  repository_integration: NOT_YET_VERIFIED_OR_MERGED
+  change_authority: project_owner_for_goal_or_major_phase; scoped_policy_for_technical_steps
+  source: user_dialogue_2026-10-17_to_2026-10-18
+  notes: Перевірити конкретний код/контракт перед адаптацією реалізації.
+- id: GDL-GC-D17
+  title: Переоцінка всього roadmap
+  rule: Після суттєвої зміни перевіряти всі залежності/дублікати/зайві кроки, але не блокувати незалежну роботу без причини.
+  decision_status: AGREED_IN_CONVERSATION
+  repository_integration: NOT_YET_VERIFIED_OR_MERGED
+  change_authority: project_owner_for_goal_or_major_phase; scoped_policy_for_technical_steps
+  source: user_dialogue_2026-10-17_to_2026-10-18
+  notes: Перевірити конкретний код/контракт перед адаптацією реалізації.
+- id: GDL-GC-D18
+  title: Аналіз AI-діалогів — окремий майбутній контур
+  rule: Збереження чатів і автоматичний аналіз у зовнішній консолі/диспетчері планується окремо, не блокуючи Design Lab;
+    не змішувати ownership.
+  decision_status: AGREED_IN_CONVERSATION
+  repository_integration: NOT_YET_VERIFIED_OR_MERGED
+  change_authority: project_owner_for_goal_or_major_phase; scoped_policy_for_technical_steps
+  source: user_dialogue_2026-10-17_to_2026-10-18
+  notes: Перевірити конкретний код/контракт перед адаптацією реалізації.
+- id: GDL-GC-D19
+  title: Синтетичний Step Acceptance
+  rule: 'Для кожного кроку визначити релевантні види доказів: візуальні, функціональні, швидкісні, інтеграційні, safety;
+    PASS лише за потрібних доказів.'
+  decision_status: AGREED_IN_CONVERSATION
+  repository_integration: NOT_YET_VERIFIED_OR_MERGED
+  change_authority: project_owner_for_goal_or_major_phase; scoped_policy_for_technical_steps
+  source: user_dialogue_2026-10-17_to_2026-10-18
+  notes: Перевірити конкретний код/контракт перед адаптацією реалізації.
+- id: GDL-GC-D20
+  title: Нова помічниця проводить ревізію
+  rule: Спочатку читання → інвентаризація коду/тестів → аналіз недоліків/дублювання → огляд технологій → пропозиції →
+    тільки потім дозволене виконання.
+  decision_status: AGREED_IN_CONVERSATION
+  repository_integration: NOT_YET_VERIFIED_OR_MERGED
+  change_authority: project_owner_for_goal_or_major_phase; scoped_policy_for_technical_steps
+  source: user_dialogue_2026-10-17_to_2026-10-18
+  notes: Перевірити конкретний код/контракт перед адаптацією реалізації.
+- id: GDL-GC-D21
+  title: Reuse не відволікає від продукту
+  rule: Під час виконання позначати кандидатів; інструменти виділяти й оцінювати пакетно наприкінці, без паралельної
+    великої бібліотечної роботи.
+  decision_status: AGREED_IN_CONVERSATION
+  repository_integration: NOT_YET_VERIFIED_OR_MERGED
+  change_authority: project_owner_for_goal_or_major_phase; scoped_policy_for_technical_steps
+  source: user_dialogue_2026-10-17_to_2026-10-18
+  notes: Перевірити конкретний код/контракт перед адаптацією реалізації.
+- id: GDL-GC-D22
+  title: BLOCKER vs IMPROVEMENT
+  rule: Невірне/небезпечне — блокує залежну роботу; оптимізація — пропозиція, не привід безкінечно ремонтувати весь проєкт.
+  decision_status: AGREED_IN_CONVERSATION
+  repository_integration: NOT_YET_VERIFIED_OR_MERGED
+  change_authority: project_owner_for_goal_or_major_phase; scoped_policy_for_technical_steps
+  source: user_dialogue_2026-10-17_to_2026-10-18
+  notes: Перевірити конкретний код/контракт перед адаптацією реалізації.
+- id: GDL-GC-D23
+  title: TECHNICAL_PASS не дорівнює ACCEPTED
+  rule: Автоматичний технічний успіх дозволяє незалежні кроки, але візуально або управлінськи залежні дії чекають необхідного
+    review.
+  decision_status: AGREED_IN_CONVERSATION
+  repository_integration: NOT_YET_VERIFIED_OR_MERGED
+  change_authority: project_owner_for_goal_or_major_phase; scoped_policy_for_technical_steps
+  source: user_dialogue_2026-10-17_to_2026-10-18
+  notes: Перевірити конкретний код/контракт перед адаптацією реалізації.
+- id: GDL-GC-D24
+  title: Бібліотечний review після 3 циклів
+  rule: Після проходження трьох наскрізних замовлень провести batch assessment універсальних інструментів, зіставити
+    реєстр, не вводити дублікати мовчки.
+  decision_status: AGREED_IN_CONVERSATION
+  repository_integration: NOT_YET_VERIFIED_OR_MERGED
+  change_authority: project_owner_for_goal_or_major_phase; scoped_policy_for_technical_steps
+  source: user_dialogue_2026-10-17_to_2026-10-18
+  notes: Перевірити конкретний код/контракт перед адаптацією реалізації.
+- id: GDL-GC-D25
+  title: Інтерактивний Intake→input
+  rule: Для пілота ручний перенос ZIP і операторський запуск `input` — нормально; повністю автоматичний диспетчер відкладено.
+  decision_status: AGREED_IN_CONVERSATION
+  repository_integration: NOT_YET_VERIFIED_OR_MERGED
+  change_authority: project_owner_for_goal_or_major_phase; scoped_policy_for_technical_steps
+  source: user_dialogue_2026-10-17_to_2026-10-18
+  notes: Перевірити конкретний код/контракт перед адаптацією реалізації.
+- id: GDL-GC-D26
+  title: PDF без обов’язкового автоматичного спуску
+  rule: Найближча мета — правильний чотиристорінковий PDF у чинному порядку; автоматизацію Enap/спуску виділяємо пізніше.
+  decision_status: AGREED_IN_CONVERSATION
+  repository_integration: NOT_YET_VERIFIED_OR_MERGED
+  change_authority: project_owner_for_goal_or_major_phase; scoped_policy_for_technical_steps
+  source: user_dialogue_2026-10-17_to_2026-10-18
+  notes: Перевірити конкретний код/контракт перед адаптацією реалізації.
+- id: GDL-GC-D27
+  title: Візуальна карта й TXT при відхиленнях
+  rule: Якщо є підозра чи дефект — разом із можливими PDF віддати PNG-мапу проблемних ID-зон і TXT пояснення для відповідних
+    листівок; при OK не перевантажувати оператора.
+  decision_status: AGREED_IN_CONVERSATION
+  repository_integration: NOT_YET_VERIFIED_OR_MERGED
+  change_authority: project_owner_for_goal_or_major_phase; scoped_policy_for_technical_steps
+  source: user_dialogue_2026-10-17_to_2026-10-18
+  notes: Перевірити конкретний код/контракт перед адаптацією реалізації.
+- id: GDL-GC-D28
+  title: Часткова готовність пакета
+  rule: Правильні листівки не блокуються через одну помилкову; збійні ізолюються, мають діагностику та scoped retry;
+    не видавати неповний файл як готовий.
+  decision_status: AGREED_IN_CONVERSATION
+  repository_integration: NOT_YET_VERIFIED_OR_MERGED
+  change_authority: project_owner_for_goal_or_major_phase; scoped_policy_for_technical_steps
+  source: user_dialogue_2026-10-17_to_2026-10-18
+  notes: Перевірити конкретний код/контракт перед адаптацією реалізації.
+- id: GDL-GC-D29
+  title: Зворотний зв’язок оператора
+  rule: Локальна корекція окремого замовлення відділена від системної зміни правил; відгук структуровано прив’язати до
+    ID/версії/причини.
+  decision_status: AGREED_IN_CONVERSATION
+  repository_integration: NOT_YET_VERIFIED_OR_MERGED
+  change_authority: project_owner_for_goal_or_major_phase; scoped_policy_for_technical_steps
+  source: user_dialogue_2026-10-17_to_2026-10-18
+  notes: Перевірити конкретний код/контракт перед адаптацією реалізації.
+- id: GDL-GC-D30
+  title: Єдиний LayoutSpec
+  rule: PDF Builder та Illustrator Worker повинні читати один продуктово-геометричний контракт; фактичний існуючий скелет
+    — вихідна база без глобального редизайну.
+  decision_status: AGREED_IN_CONVERSATION
+  repository_integration: NOT_YET_VERIFIED_OR_MERGED
+  change_authority: project_owner_for_goal_or_major_phase; scoped_policy_for_technical_steps
+  source: user_dialogue_2026-10-17_to_2026-10-18
+  notes: Перевірити конкретний код/контракт перед адаптацією реалізації.

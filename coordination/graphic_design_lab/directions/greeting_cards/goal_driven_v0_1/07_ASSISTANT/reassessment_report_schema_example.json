@@ -1,0 +1,21 @@
+{
+  "schema_version": "gdl_project_reassessment_example_v0_1",
+  "goal_ref": "GDL-GC-V1",
+  "repo_head": "READ_CURRENT",
+  "working_tree_status": "READ_CURRENT",
+  "read_contracts": [
+    "goal",
+    "decisions",
+    "skeleton",
+    "roadmap"
+  ],
+  "baseline_verified": [],
+  "gaps": [],
+  "duplicate_code_candidates": [],
+  "broken_handoffs": [],
+  "technology_proposals": [],
+  "global_roadmap_impact": [],
+  "proposed_next_step": null,
+  "required_operator_decisions": [],
+  "authority": "PROPOSAL_ONLY"
+}

@@ -1,0 +1,31 @@
+schema_version: gdl_gc_operator_diagnostic_contract_v0_1
+status: PROPOSED_NOT_IMPLEMENTED
+trigger: nonempty warnings_or_failures_per_job
+always_emit:
+- all constructible PDF/PNG previews
+- internal machine evidence
+conditional_emit:
+- diagnostics/<job_id>_zone_map.png
+- diagnostics/<job_id>_issues.txt
+zone_map:
+  source: same product skeleton and element ID coordinates as renderer
+  labels: Pxx.SEMANTIC_ID
+  colors: visually distinct by severity with legend
+  no_client_facing_export: do not embed diagnostic overlays into final PDF
+issue_record_fields:
+- job_id
+- element_id
+- severity
+- check_id
+- observed
+- expected
+- operator_action
+- can_print
+- source_artifact
+outcomes:
+  OK: no operator-facing diagnostics
+  REVIEW_REQUIRED: constructible PDF + map + TXT; user decides
+  BLOCKED: do not label invalid artifact as print-ready; give diagnostics and any safe partial products
+batches: per-job scoped failure + summary; successful jobs not blocked
+readability: reduce font to fit full text, warning if below threshold; hard overflow/lost text blocks correctness
+no_false_success: true

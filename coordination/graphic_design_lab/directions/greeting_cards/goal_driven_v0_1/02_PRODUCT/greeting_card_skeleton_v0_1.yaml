@@ -1,0 +1,114 @@
+schema_version: gdl_gc_product_skeleton_candidate_v0_1
+status: DESIGN_RECONCILIATION_REQUIRED
+basis:
+- 2026-10-18 operator discussions (semantic commitments)
+- GC15B source archive ForPrint_GC15B_Layout_Maps_Resources_Skeleton_v0_1.zip, geometry_reference_v0_1.yaml (measured
+  PDF, historical)
+- remote Git HEAD 75b19ef geometry_zones_v0_1.yaml (historical committed geometry)
+- GC16/GC17.2 private server logs and GC18 screenshot evidence (not merged)
+page_coordinate_system:
+  units: mm
+  origin: TOP_LEFT_PHYSICAL_PDF
+  physical_pdf:
+  - 214
+  - 301
+  trim:
+  - 210
+  - 297
+  trim_offset_each_side: 2
+  source_status: VERIFIED_HISTORICAL_NOT_AUTOMATIC_RUNTIME
+physical_order:
+- page: 1
+  functional_id: P01_FRONT
+  role: обкладинка
+  logical_role: PAGE_1_FRONT
+- page: 2
+  functional_id: P02_BACK
+  role: зворот обкладинки
+  logical_role: PAGE_4_BACK
+- page: 3
+  functional_id: P03_PHOTO
+  role: внутрішнє фото
+  logical_role: PAGE_2_INSIDE_IMAGE
+- page: 4
+  functional_id: P04_GREETING
+  role: внутрішнє привітання
+  logical_role: PAGE_3_INSIDE_GREETING
+elements:
+- id: P01.SENDER_LOGO
+  behavior: circular_sender_logo; scaled/raised with recipient-logo variant
+  geometry: SOURCE_EXISTING_BUILDER_NEEDS_RECONCILIATION
+- id: P01.RECIPIENT_LOGO
+  behavior: optional, positioned between title and sender logo; source Intake
+  geometry: SOURCE_EXISTING_BUILDER_NEEDS_RECONCILIATION
+- id: P01.OCCASION_TITLE
+  behavior: birthday or anniversary wording
+  geometry: EXISTING_BUILDER_REFERENCE
+- id: P02.FIXED_ART
+  behavior: unchanged back artwork
+  geometry: PRESERVE_EXISTING
+- id: P03.PHOTO
+  behavior: approved user/Creator source or flowers.default.v1 fallback
+  geometry: REUSE_EXISTING_MASK_CROP_FRAME
+- id: P04.FRAME
+  behavior: preserve current frame
+  geometry: HISTORICAL_REFERENCE_BBOX
+  historical_bbox_pdf_mm:
+  - 5.5
+  - 6.9
+  - 208.5
+  - 294.1
+- id: P04.WATERMARK
+  behavior: same graphic; GC16 target opacity 0.25 vs historical 0.5
+  geometry: HISTORICAL_REFERENCE_BBOX
+  historical_bbox_pdf_mm:
+  - 19.9
+  - 56.4
+  - 194.1
+  - 238.0
+- id: P04.GREETING_BODY
+  behavior: entire text one AreaText in native Illustrator, horizontal+vertical center; shrink-to-fit full text; flag
+    low readability
+  geometry: GC16_CANDIDATE_AND_GC18_A2_VISUAL_TARGET
+  target_bbox_pdf_mm:
+  - 32.0
+  - 32.0
+  - 182.0
+  - 212.0
+  target_width_mm: 150
+  target_height_mm: 180
+  old_bbox_pdf_mm:
+  - 27.0
+  - 32.0
+  - 187.0
+  - 212.0
+- id: P04.SENDER_TEXT
+  behavior: source-verified canonical sender text in separate stable line IDs (GRIGO/HERASYMENKO/DUAL pending)
+  geometry: PRESERVE_SOURCE_GEOMETRY
+  historical_bbox_pdf_mm:
+  - 31.0
+  - 224.5
+  - 101.0
+  - 256.5
+- id: P04.SIGNATURE_ART
+  behavior: distinct graphic signature; no invented signature; source verified
+  geometry: PRESERVE_SOURCE_GEOMETRY
+  historical_herasymenko_bbox_pdf_mm:
+  - 82.9
+  - 214.9
+  - 128.3
+  - 274.1
+sender_variants:
+  GRIGO: verified earlier
+  HERASYMENKO: verified earlier
+  DUAL_GRIGO_HERASYMENKO: CANDIDATE_ONLY_RUNTIME_DISABLED_AT_LAST_KNOWN_SOURCE
+asset_registry_future:
+  flowers_fallback: flowers.default.v1
+  org_logos: v2 registry with machine/visual descriptors; no unverified automatic selection
+  frames: 2 mentioned as existing types; verify source paths and identities
+no_redefine:
+- new_page_order
+- automatic_redesign
+- invent_client_text
+- invent_signature
+- activate_dual_runtime

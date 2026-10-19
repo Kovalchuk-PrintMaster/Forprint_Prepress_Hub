@@ -1,0 +1,47 @@
+schema_version: gdl_reusable_tool_registry_seed_v0_1
+status: CANDIDATES_NOT_CANONICAL
+policy: tag while developing, batch extract after three end-to-end accepted orders
+candidates:
+- id: pdf_greeting_card_renderer
+  source: app/graphic_design_lab/greeting_card_builder_renderer.py
+  reuse_state: FUNCTIONAL_IN_PRODUCT_NOT_PORTABLE_VERIFIED
+  contracts_pending:
+  - single shared LayoutSpec
+  - PDF structural tests
+  - generic parameter signature
+- id: native_illustrator_area_text
+  source: GC18-A1/A2 isolated JSX evidence
+  reuse_state: VISUAL_PROOF_ONLY
+  contracts_pending:
+  - font fallback
+  - save/reopen
+  - complete pagination
+  - failure transparency
+- id: visual_zone_diagnostics
+  source: operator proposal 2026-10-18
+  reuse_state: PROPOSED_ONLY
+  contracts_pending:
+  - shared element IDs
+  - PDF/PNG match
+  - severity policy
+- id: asset_signature_dispatch
+  source: existing greeting card Builder / canonical sender registry
+  reuse_state: EXISTING_PRODUCT_SCOPED
+  contracts_pending:
+  - dual runtime gate
+  - private provenance
+- id: intake_creator_rework
+  source: current intake/creator interaction
+  reuse_state: NEEDS_AUDIT
+  contracts_pending:
+  - prompt contracts
+  - retry progress analysis
+  - quality criteria
+- id: client_workspace_restore
+  source: operator requirement
+  reuse_state: PROPOSED_ONLY
+  contracts_pending:
+  - source authoritative server content
+  - dry run
+  - non-destructive overwrite semantics
+dedup_policy: COMPARE existing registry → REUSE/ADAPT/ADD/QUARANTINE/RETIRE_CANDIDATE; never overwrite working tool silently

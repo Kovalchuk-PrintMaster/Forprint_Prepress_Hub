@@ -1,0 +1,45 @@
+schema_version: gdl_goal_contract_candidate_v0_1
+goal_id: GDL-GC-V1
+status: OPERATOR_AGREED_CONCEPT_NOT_REPO_INTEGRATED
+strategic_goal: Повторювана керована генерація листівок із підтверджених даних Intake/Creator за незмінною продуктовою
+  моделлю, з правильним PDF та машинною/візуальною діагностикою; окремо зберігати редагований AI за підтримки Worker.
+success_condition:
+  required_distinct_orders: 3
+  successive_successes: 3
+  manual_result_repairs_between_stages: 0
+  creator_automated_retries: ALLOWED_WITH_EVIDENCE
+  operator_final_decision: REQUIRED
+  acceptance: approved spec correct across content, layout, assets, PDF & workflow
+product_version: V1_EXPERIMENTAL
+runtime_scope: GRAPHIC_DESIGN_LAB_ISOLATED
+excluded_from_v1:
+- automatic_AI_chat_to_server_dispatch
+- cloud_illustrator_api
+- automatic_imposition_Enap
+- promotion_to_production_prepress
+- automatic_customer_delivery
+- full_failover_cluster
+frozen_intent:
+- current_page_mapping
+- current_base_composition
+- real_asset_provenance
+- no_automatic_content_fabrication
+- full_text_preservation
+- operator_governance
+allowed_iteration:
+- bounded_geometry_refinement
+- implementation_choice
+- retry_prompt_refinement
+- nonbreaking_tool_improvements
+outputs:
+- four_page_pdf_review
+- editable_ai_when_native_worker_used
+- png_previews
+- conditional_diagnostic_png_and_txt
+- machine_evidence
+human_authority:
+  goal_change: operator_explicit_approval
+  major_phase_acceptance: operator_explicit_approval
+  technical_step: contract_evidence_policy
+  git_integration: separate_policy
+  production_release: separate_policy

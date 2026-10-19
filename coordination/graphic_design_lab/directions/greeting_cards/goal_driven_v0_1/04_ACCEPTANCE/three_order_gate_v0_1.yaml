@@ -1,0 +1,39 @@
+schema_version: gdl_gc_three_order_gate_candidate_v0_1
+status: DESIGNED_NOT_EXECUTED
+count: 3
+must_be: three distinct end-to-end orders, consecutive accepted runs
+manual_bridge: allowed between AI Intake and server input
+creator_automated_retries: allowed / audited
+manual_patch_of_result: not allowed for accepting uninterrupted cycle
+variants:
+- scenario: STANDARD
+  coverage:
+  - standard greeting
+  - standard imagery/fallback
+  - sender profile
+- scenario: LONG_TEXT
+  coverage:
+  - shrink-to-fit
+  - conditional warning if needed
+  - exact text fidelity
+- scenario: RECIPIENT_LOGO
+  coverage:
+  - optional recipient branding
+  - logo-specific scaling
+  - full PDF & asset integrity
+selection: scenario descriptions are test design candidates; actual customer orders and approvals must be explicitly
+  confirmed
+per_order_requirements:
+- intake trace
+- creator result/proof or no-creator decision
+- handoff ZIP and SHA256
+- server run ID
+- all PDF/PNG and hash
+- conditional diagnostic
+- operator acceptance
+pass_conditions:
+- 3 distinct cases
+- all accepted without manual artifact repair
+- each satisfies spec and operator decision
+- auto creator retries do not reduce acceptance by count alone
+not_yet_done: true

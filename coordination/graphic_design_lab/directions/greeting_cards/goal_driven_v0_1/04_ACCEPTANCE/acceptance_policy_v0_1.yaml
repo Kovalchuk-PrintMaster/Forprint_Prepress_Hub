@@ -1,0 +1,72 @@
+schema_version: gdl_step_acceptance_policy_v0_1
+status: PROPOSED_CONTRACT_FRAMEWORK
+lifecycle:
+- PLANNED
+- IN_PROGRESS
+- TECHNICAL_PASS
+- REVIEW_REQUIRED
+- ACCEPTED
+- BLOCKED
+- UNVERIFIED
+- DEFERRED
+evidence_types:
+- TEST
+- SCHEMA_VALIDATION
+- INTEGRITY_HASH
+- RUNTIME_REPORT
+- VISUAL_PROOF
+- RENDER_COMPARISON
+- METRIC_BEFORE_AFTER
+- NEGATIVE_TEST
+- DEPENDENCY_CHECK
+- OPERATOR_DECISION
+step_contract_required_fields:
+- step_id
+- goal_ref
+- inputs
+- expected_output
+- invariants
+- positive_checks
+- negative_checks
+- evidence_paths
+- review_type
+- next_gate
+- retry_policy
+rules:
+- Evidence required by a contract must exist before TECHNICAL_PASS.
+- Visual results require actual render/Illustrator review, not Python tests alone.
+- Performance optimization requires baseline, repeatable measurement and correctness regression.
+- No missing evidence may be silently assumed passed.
+- Operator approval, Git permission and print release are independent gates.
+- Review-required steps do not block unrelated technical work.
+examples:
+- kind: illustrator_area_text
+  checks:
+  - actual one TextFrame, size 150x180 mm
+  - center alignment confirmed in Illustrator
+  - 4 independent sender line IDs
+  - saved and reopened AI
+  - source text fidelity
+  evidence:
+  - native AI artifact
+  - machine report
+  - operator screenshot or renderer proof
+- kind: intake_creator
+  checks:
+  - full approved content retained
+  - asset visibly meets brief
+  - retry history audited
+  - no invented logo/source
+  evidence:
+  - asset
+  - structured prompt
+  - comparative evaluation
+- kind: speedup
+  checks:
+  - same workload, functional result
+  - repeated runs / noise limits
+  - regression tests
+  evidence:
+  - baseline timings
+  - candidate timings
+  - verification report
