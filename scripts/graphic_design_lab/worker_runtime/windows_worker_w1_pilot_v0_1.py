@@ -85,7 +85,7 @@ def check_contract(raw: dict[str, Any]) -> dict[str, Any]:
             or ws.get('cleaning_client_output') != 'FORBIDDEN_UNTIL_HISTORY_DECOUPLED'):
         raise W1Blocked('workspace_migration_or_privacy_unresolved')
     windows = _mapping(c.get('windows'))
-    if windows.get('root') != 'D:\\ForPrint\\Automation':
+    if windows.get('root') != 'D:\\ForPrint_Automation\\GraficsDesignLab\\Automation':
         raise W1Blocked('windows_local_root_unexpected')
     if any(windows.get(key) != key for key in WINDOWS_DIRS):
         raise W1Blocked('windows_layout_invalid')
@@ -237,7 +237,7 @@ def synthetic_smoke(repo: Path, contract: dict[str, Any]) -> dict[str, str]:
     attempt = 'a0001'
     # Create and delete ONLY a fresh synthetic scratch under this project's tmp/.
     with tempfile.TemporaryDirectory(prefix='gdl-w1-synthetic-', dir=tmp) as scratch:
-        workspace = Path(scratch) / 'D_ForPrint_Automation_SIMULATED'
+        workspace = Path(scratch) / 'D_ForPrint_Automation_GraficsDesignLab_SIMULATED'
         for d in WINDOWS_DIRS:
             (workspace / d).mkdir(parents=True)
         local = workspace.joinpath(*windows_attempt_relative(task, attempt).parts)

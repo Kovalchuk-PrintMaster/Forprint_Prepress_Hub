@@ -45,9 +45,16 @@ def result_fixture(tmp_path):
 def test_real_contract_fails_closed_and_is_a_proposal():
     raw = contract()
     assert w.check_contract(raw)['authority']['portfolio_worker_owner'] == 'BLUEPRINT_DECISION_PENDING'
-    assert raw['windows']['root'] == 'D:\\ForPrint\\Automation'
+    assert raw['windows']['root'] == 'D:\\ForPrint_Automation\\GraficsDesignLab\\Automation'
     assert raw['workspace']['service_root_status'].startswith('NOT_CREATED')
     assert raw['cleanup']['no_automatic_deletion'] is True
+
+
+def test_legacy_worker_root_is_explicitly_rejected():
+    legacy = deepcopy(contract())
+    legacy['windows']['root'] = 'D:\\ForPrint\\Automation'
+    with pytest.raises(w.W1Blocked, match='windows_local_root_unexpected'):
+        w.check_contract(legacy)
 
 
 @pytest.mark.parametrize('part,key,value', [

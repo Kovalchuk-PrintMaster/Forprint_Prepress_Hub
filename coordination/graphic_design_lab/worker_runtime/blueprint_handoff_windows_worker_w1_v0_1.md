@@ -17,7 +17,14 @@ Status: **GDL PILOT CANDIDATE; BLUEPRINT AUTHORITY PENDING**. This is a review r
 2. What is the authoritative Task/Attempt/Worker Result schema and fencing/lease owner? Reuse validated CF-10/Handoff/Worker Result semantics; do not construct a parallel authoritative framework inside GDL.
 3. What is the approved independent terminal result ledger location? Current GC14 dedup relies on `output/*/source_info.json` and `report.json`; these cannot be deleted or moved before migration and replay tests.
 4. Where should private SMB service data live, and which Windows/Samba identities may read/write it? User observed Linux mode `2777` for `_forprint_automation` and `test`, so copying a private JSX there is unsafe until effective Samba permissions are confirmed and a protected area is approved.
-5. Is `D:\ForPrint\Automation` acceptable as a cross-program local layout? It is a local implementation candidate, not a portfolio-wide enforced policy.
+5. Is `D:\ForPrint_Automation\GraficsDesignLab\Automation` acceptable as a cross-program local layout? It is a local implementation candidate, not a portfolio-wide enforced policy.
+
+## 2026-10-20 operator-selected pilot root
+
+- Windows local workspace for **this GDL pilot only**: `D:\ForPrint_Automation\GraficsDesignLab\Automation`. The spelling `GraficsDesignLab` is operator-selected and must not be silently normalized.
+- `D:\ForPrint_Automation` is reserved as a possible umbrella for multiple independent module workspaces; it is not itself an active portfolio Worker or an approved shared global authority.
+- The path replacement supersedes the original W1 pilot candidate `D:\ForPrint\Automation`. Neither root is created by this documentation change.
+- Illustrator, Acrobat and CorelDRAW adapters may share GDL pilot runtime rules, but global runtime ownership, deployment and queue authority remain deferred pending Blueprint review.
 
 ## Scope of W1 artifacts
 

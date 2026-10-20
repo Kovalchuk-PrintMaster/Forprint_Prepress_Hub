@@ -27,7 +27,7 @@ workspace:
   gc14_migration_state: NOT_STARTED
   cleaning_client_output: FORBIDDEN_UNTIL_HISTORY_DECOUPLED
 windows:
-  root: 'D:\ForPrint\Automation'
+  root: 'D:\ForPrint_Automation\GraficsDesignLab\Automation'
   runtime: runtime
   jobs: jobs
   cache: cache
