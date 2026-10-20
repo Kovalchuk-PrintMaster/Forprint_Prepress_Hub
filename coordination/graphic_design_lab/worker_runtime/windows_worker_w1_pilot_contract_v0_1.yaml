@@ -1,0 +1,104 @@
+schema_version: gdl_windows_worker_w1_pilot_contract_v0_1
+status: PILOT_PROPOSAL_PENDING_BLUEPRINT_REVIEW
+scope: GDL_SYNTHETIC_FOUNDATION_ONLY
+authority:
+  owner: FORPRINT_PREPRESS_HUB_GDL_PILOT
+  portfolio_worker_owner: BLUEPRINT_DECISION_PENDING
+  s01: TASK_ORIGIN_AND_INDEPENDENT_VERIFIER_FUTURE
+  windows_worker: BOUNDED_EXECUTOR_ONLY_FUTURE
+  dispatcher: NOT_IMPLEMENTED
+  planning: NOT_IMPLEMENTED
+  git_commit_push: NEVER_WORKER_AUTOMATIC
+  automatic_acceptance: false
+  production_publish: false
+  client_workspace_mutation: false
+  worker_launch: false
+  client_smb_2777_private_data_safe: false
+workspace:
+  client_existing_input: input
+  client_existing_output: output
+  service_root_candidate: .forprint
+  service_root_status: NOT_CREATED_PENDING_SAMBA_ACCESS_AND_GC14_MIGRATION
+  forbidden_client_roots:
+    - runtime
+    - windows_temp
+    - per_attempt_scratch
+  existing_gc14_source_of_truth: output/source_info.json_and_report.json
+  gc14_migration_state: NOT_STARTED
+  cleaning_client_output: FORBIDDEN_UNTIL_HISTORY_DECOUPLED
+windows:
+  root: 'D:\ForPrint\Automation'
+  runtime: runtime
+  jobs: jobs
+  cache: cache
+  logs: logs
+  config: config
+  job_structure:
+    - input
+    - work
+    - export
+  work_dir_pattern: 'jobs/<task-id>/<attempt-id>/{input,work,export}'
+  one_active_attempt_per_worker: true
+  interactive_user_session_required_for_gui: true
+  startup_candidate: TASK_SCHEDULER_AT_INTERACTIVE_USER_LOGON
+  after_reboot_without_logon: WAITING_FOR_INTERACTIVE_SESSION
+  recovery_policy: RESTART_INCOMPLETE_ATTEMPTS_FROM_SCRATCH
+  local_complete_unuploaded: VERIFY_THEN_REUPLOAD_WITHOUT_RERENDER
+  sessions_supported_proven: false
+  windows_host_initialized: false
+  network_copy_uses_sha256: true
+  local_staging_before_execution: true
+  live_smb_execution: false
+  adapter_candidates:
+    - illustrator
+    - acrobat
+    - coreldraw
+  adapters_implemented: []
+identity:
+  task_id_pattern: '^[a-z][a-z0-9-]{3,63}$'
+  attempt_id_pattern: '^a[0-9]{4}$'
+  source_sha256_pattern: '^[a-f0-9]{64}$'
+  adapter_id_pattern: '^[a-z][a-z0-9_]{1,47}$'
+  immutable_task_binding: true
+  attempt_fencing_required_before_retry: true
+  result_sha_required: true
+states:
+  - QUEUED
+  - CLAIMED
+  - RUNNING
+  - RESULT_LOCAL_COMPLETE
+  - RESULT_UPLOADED
+  - VERIFIED
+  - ACCEPTED
+  - RETRY_REQUIRED
+  - WAITING_FOR_WORKER
+  - WAITING_FOR_INTERACTIVE_SESSION
+  - NEEDS_RECONCILIATION
+  - BLOCKED
+terminal_acceptance:
+  worker_rc_zero_not_sufficient: true
+  requires_independent_verification: true
+  requires_expected_artifact_sha: true
+  requires_task_and_attempt_binding: true
+  requires_explicit_human_authority_after_verification: true
+recovery_decisions:
+  - DO_NOT_RERUN
+  - WAIT_FOR_FENCING
+  - VERIFY_AND_REUPLOAD
+  - START_NEW_ATTEMPT
+  - MANUAL_REVIEW
+cleanup:
+  policy: REPORT_ONLY_NOT_IMPLEMENTED
+  avoid_deleting_unuploaded_local_results: true
+  avoid_deleting_inflight_or_ambiguous_attempts: true
+  avoid_deleting_unverified_or_blocked_evidence: true
+  server_independent_terminal_ledger_required: true
+  never_delete_canonical_resources_on_age: true
+  no_automatic_deletion: true
+pilot:
+  gc18_source_sha256: 90efe86afb294ddf130bc9a09affe0f99780ab5abeb0f15be316b005f4c60064
+  task_id: gc18-05f27c156f91d0fc6cdef465
+  native_page4_scope: P04_BODY_ONLY
+  private_jsx_stays_outside_git: true
+  existing_native_proof: PRIVATE_JSX_PREPARED_NOT_EXECUTED
+  next_boundary: BLUEPRINT_REVIEW_AND_WINDOWS_CAPABILITY_PROOF
