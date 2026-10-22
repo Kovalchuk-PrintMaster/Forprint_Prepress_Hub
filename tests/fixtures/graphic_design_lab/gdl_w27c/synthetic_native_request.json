@@ -1,0 +1,30 @@
+{
+  "schema_version": "gdl_illustrator_task_request_v0_1",
+  "task_id": "gdl-w27c-native-001",
+  "attempt_id": "a0001",
+  "adapter_id": "illustrator",
+  "data_class": "SYNTHETIC_ONLY",
+  "script": {
+    "path": "input/main.jsx",
+    "bytes": 3791,
+    "sha256": "98780bcd7939df58f16aa0e123ced5efc4956ed43cc6438d0516b43d4d819902"
+  },
+  "inputs": [],
+  "expected_outputs": [
+    {
+      "path": "export/native_result.ai",
+      "kind": "native_ai",
+      "required": true
+    },
+    {
+      "path": "export/worker_result.json",
+      "kind": "machine_result",
+      "required": true
+    }
+  ],
+  "authority": {
+    "worker_launch": false,
+    "production_publish": false,
+    "automatic_accept": false
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "schema_version": "gdl_w27c_native_candidate_contract_v0_1",
+  "status": "LOCAL_SYNTHETIC_CANDIDATE_PENDING_EXECUTION_AUTHORIZATION",
+  "task_id": "gdl-w27c-native-001",
+  "attempt_id": "a0001",
+  "adapter_id": "illustrator",
+  "jsx_sha256": "98780bcd7939df58f16aa0e123ced5efc4956ed43cc6438d0516b43d4d819902",
+  "jsx_bytes": 3791,
+  "jsx_entry": "input/main.jsx",
+  "required_outputs": [
+    "export/native_result.ai",
+    "export/worker_result.json"
+  ],
+  "runner_implementation": "NOT_IMPLEMENTED",
+  "launch_authorized": false,
+  "blueprint_review_pending": true,
+  "customer_data_allowed": false,
+  "automatic_accept": false,
+  "production_publish": false,
+  "cleanup_allowed": false
+}
