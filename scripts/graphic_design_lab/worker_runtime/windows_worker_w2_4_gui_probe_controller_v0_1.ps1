@@ -27,22 +27,47 @@ function Is-DirSafe([string]$p) {
     }
     return $true
 }
-function Assert-StrictRoot {
-    $parent='D:\ForPrint_Automation'
-    if (-not (Is-DirSafe $parent) -or -not (Is-DirSafe $Root) -or
-        -not (Is-DirSafe (Join-Path $Root 'jobs'))) { Stop-Probe 'WORKSPACE_MISSING' }
-    $allowed=@('S-1-5-18','S-1-5-32-544')
-    foreach ($p in @($parent,$Root,(Join-Path $Root 'jobs'))) {
-        $acl=Get-Acl -LiteralPath $p
-        if ($p -eq $parent -and -not $acl.AreAccessRulesProtected) { Stop-Probe 'ROOT_ACL_NOT_PROTECTED' }
-        $rules=@($acl.GetAccessRules($true,$true,[Security.Principal.SecurityIdentifier]))
-        if ($rules.Count -eq 0) { Stop-Probe 'ROOT_ACL_EMPTY' }
-        foreach ($r in $rules) {
-            if ($allowed -notcontains $r.IdentityReference.Value -or
-                $r.AccessControlType -ne [Security.AccessControl.AccessControlType]::Allow) {
-                Stop-Probe 'ROOT_ACL_UNSAFE'
+$OperatorSid = 'S-1-5-21-3087849371-1068859030-1179031902-1001'
+# Approved GDL W2 local-pilot ACL: SYSTEM/Admin=FullControl; Work=ReadAndExecute.
+# This is not a portfolio-wide worker ownership or production policy.
+function Assert-ApprovedAcl([string]$Path, [bool]$ExpectedProtected) {
+    $acl = Get-Acl -LiteralPath $Path -ErrorAction Stop
+    if ($acl.GetOwner([Security.Principal.SecurityIdentifier]).Value -ne 'S-1-5-32-544') { throw 'W2_ACL_OWNER_CHANGED' }
+    if ([bool]$acl.AreAccessRulesProtected -ne $ExpectedProtected) { throw 'W2_ACL_INHERITANCE_MISMATCH' }
+    $rules = @($acl.GetAccessRules($true,$true,[Security.Principal.SecurityIdentifier]))
+    if ($rules.Count -ne 3) { throw 'W2_ACL_UNEXPECTED_RULE_COUNT' }
+    $expect=@('S-1-5-18','S-1-5-32-544',$OperatorSid)
+    $seen=@{}
+    $wantFlags = [Security.AccessControl.InheritanceFlags]::ContainerInherit -bor [Security.AccessControl.InheritanceFlags]::ObjectInherit
+    $full = [int][Security.AccessControl.FileSystemRights]::FullControl
+    $rx = [int][Security.AccessControl.FileSystemRights]::ReadAndExecute
+    $sync = [int][Security.AccessControl.FileSystemRights]::Synchronize
+    foreach ($r in $rules) {
+        $who=$r.IdentityReference.Value
+        if ($expect -notcontains $who -or $seen.ContainsKey($who)) { throw 'W2_ACL_UNEXPECTED_PRINCIPAL' }
+        $seen[$who]=$true
+        if ($r.AccessControlType -ne [Security.AccessControl.AccessControlType]::Allow -or
+            $r.InheritanceFlags -ne $wantFlags -or
+            $r.PropagationFlags -ne [Security.AccessControl.PropagationFlags]::None -or
+            [bool]$r.IsInherited -eq $ExpectedProtected) { throw 'W2_ACL_RULE_FLAGS_UNSAFE' }
+        $rights=[int]$r.FileSystemRights
+        if ($who -eq $OperatorSid) {
+            if (($rights -band $rx) -ne $rx -or ($rights -band (-bnot ($rx -bor $sync))) -ne 0) {
+                throw 'W2_ACL_OPERATOR_NOT_READ_EXECUTE'
             }
+        } elseif (($rights -band $full) -ne $full -or ($rights -band (-bnot $full)) -ne 0) {
+            throw 'W2_ACL_PRIVILEGED_FULL_CONTROL_MISSING'
         }
+    }
+    foreach ($who in $expect) { if (-not $seen.ContainsKey($who)) { throw 'W2_ACL_REQUIRED_PRINCIPAL_MISSING' } }
+    return $true
+}
+function Assert-StrictRoot {
+    foreach ($p in @('D:\ForPrint_Automation', $Root, (Join-Path $Root 'jobs'))) {
+        if (-not (Is-DirSafe $p)) { Stop-Probe 'WORKSPACE_MISSING' }
+        $protected = ($p -eq 'D:\ForPrint_Automation')
+        try { [void](Assert-ApprovedAcl $p $protected) }
+        catch { Stop-Probe 'WORKSPACE_ACL_POLICY_MISMATCH' }
     }
 }
 function Active-WorkSession {

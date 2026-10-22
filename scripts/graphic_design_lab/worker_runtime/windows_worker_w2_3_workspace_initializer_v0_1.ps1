@@ -8,7 +8,7 @@ $Shared = 'D:\ForPrint_Automation'
 $Lab = 'D:\ForPrint_Automation\GraficsDesignLab'
 $Dirs = @('runtime','jobs','cache','logs','config')
 $All = @($Shared, $Lab, $Root) + @($Dirs | ForEach-Object { Join-Path $Root $_ })
-$AllowedSids = @('S-1-5-18', 'S-1-5-32-544')
+$AllowedSids = @('S-1-5-18', 'S-1-5-32-544', 'S-1-5-21-3087849371-1068859030-1179031902-1001')
 
 function Block([string]$Reason) {
     throw "W2_3_BLOCKED:$Reason"
@@ -22,23 +22,43 @@ function Check-Path([string]$Path) {
     return $true
 }
 
-function Test-StrictAcl([string]$Path, [bool]$ExpectedProtected) {
-    $acl = Get-Acl -LiteralPath $Path
-    if ([bool]$acl.AreAccessRulesProtected -ne $ExpectedProtected) { Block 'ACL_INHERITANCE_UNEXPECTED' }
-    $rules = @($acl.GetAccessRules($true, $true, [Security.Principal.SecurityIdentifier]))
-    if ($rules.Count -eq 0) { Block 'ACL_RULES_EMPTY' }
-    foreach ($rule in $rules) {
-        if ($AllowedSids -notcontains $rule.IdentityReference.Value) { Block 'ACL_UNEXPECTED_PRINCIPAL' }
-        if ($rule.AccessControlType -ne [Security.AccessControl.AccessControlType]::Allow) { Block 'ACL_UNEXPECTED_DENY' }
+$OperatorSid = 'S-1-5-21-3087849371-1068859030-1179031902-1001'
+# Approved GDL W2 local-pilot ACL: SYSTEM/Admin=FullControl; Work=ReadAndExecute.
+# This is not a portfolio-wide worker ownership or production policy.
+function Assert-ApprovedAcl([string]$Path, [bool]$ExpectedProtected) {
+    $acl = Get-Acl -LiteralPath $Path -ErrorAction Stop
+    if ($acl.GetOwner([Security.Principal.SecurityIdentifier]).Value -ne 'S-1-5-32-544') { throw 'W2_ACL_OWNER_CHANGED' }
+    if ([bool]$acl.AreAccessRulesProtected -ne $ExpectedProtected) { throw 'W2_ACL_INHERITANCE_MISMATCH' }
+    $rules = @($acl.GetAccessRules($true,$true,[Security.Principal.SecurityIdentifier]))
+    if ($rules.Count -ne 3) { throw 'W2_ACL_UNEXPECTED_RULE_COUNT' }
+    $expect=@('S-1-5-18','S-1-5-32-544',$OperatorSid)
+    $seen=@{}
+    $wantFlags = [Security.AccessControl.InheritanceFlags]::ContainerInherit -bor [Security.AccessControl.InheritanceFlags]::ObjectInherit
+    $full = [int][Security.AccessControl.FileSystemRights]::FullControl
+    $rx = [int][Security.AccessControl.FileSystemRights]::ReadAndExecute
+    $sync = [int][Security.AccessControl.FileSystemRights]::Synchronize
+    foreach ($r in $rules) {
+        $who=$r.IdentityReference.Value
+        if ($expect -notcontains $who -or $seen.ContainsKey($who)) { throw 'W2_ACL_UNEXPECTED_PRINCIPAL' }
+        $seen[$who]=$true
+        if ($r.AccessControlType -ne [Security.AccessControl.AccessControlType]::Allow -or
+            $r.InheritanceFlags -ne $wantFlags -or
+            $r.PropagationFlags -ne [Security.AccessControl.PropagationFlags]::None -or
+            [bool]$r.IsInherited -eq $ExpectedProtected) { throw 'W2_ACL_RULE_FLAGS_UNSAFE' }
+        $rights=[int]$r.FileSystemRights
+        if ($who -eq $OperatorSid) {
+            if (($rights -band $rx) -ne $rx -or ($rights -band (-bnot ($rx -bor $sync))) -ne 0) {
+                throw 'W2_ACL_OPERATOR_NOT_READ_EXECUTE'
+            }
+        } elseif (($rights -band $full) -ne $full -or ($rights -band (-bnot $full)) -ne 0) {
+            throw 'W2_ACL_PRIVILEGED_FULL_CONTROL_MISSING'
+        }
     }
-    foreach ($sid in $AllowedSids) {
-        $found = @($rules | Where-Object {
-            $_.IdentityReference.Value -eq $sid -and
-            (($_.FileSystemRights -band [Security.AccessControl.FileSystemRights]::FullControl) -eq [Security.AccessControl.FileSystemRights]::FullControl)
-        })
-        if ($found.Count -eq 0) { Block 'ACL_FULL_CONTROL_MISSING' }
-    }
+    foreach ($who in $expect) { if (-not $seen.ContainsKey($who)) { throw 'W2_ACL_REQUIRED_PRINCIPAL_MISSING' } }
     return $true
+}
+function Test-StrictAcl([string]$Path, [bool]$ExpectedProtected) {
+    return (Assert-ApprovedAcl $Path $ExpectedProtected)
 }
 
 function New-StrictRootAcl {
@@ -49,7 +69,7 @@ function New-StrictRootAcl {
         $sid = [Security.Principal.SecurityIdentifier]::new($sidString)
         $rule = [Security.AccessControl.FileSystemAccessRule]::new(
             $sid,
-            [Security.AccessControl.FileSystemRights]::FullControl,
+            $(if ($sidString -eq $OperatorSid) { [Security.AccessControl.FileSystemRights]::ReadAndExecute } else { [Security.AccessControl.FileSystemRights]::FullControl }),
             $inherit,
             [Security.AccessControl.PropagationFlags]::None,
             [Security.AccessControl.AccessControlType]::Allow

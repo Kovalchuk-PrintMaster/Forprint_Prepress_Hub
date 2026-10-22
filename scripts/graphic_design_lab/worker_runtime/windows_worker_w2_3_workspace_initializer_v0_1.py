@@ -54,9 +54,23 @@ def source_check() -> str:
         raise WorkspaceBlocked('Pilot authority has changed')
     if contract.get('windows', {}).get('windows_host_initialized') is not False:
         raise WorkspaceBlocked('W1 description must not claim initialization')
+    policy = contract.get('windows', {}).get('access_control', {})
+    if (policy.get('policy_id') != 'gdl_windows_operator_read_execute_v0_2'
+            or policy.get('operator_sid') != 'S-1-5-21-3087849371-1068859030-1179031902-1001'
+            or policy.get('operator_access') != 'ReadAndExecute'
+            or policy.get('expected_aces', {}).get(policy['operator_sid']) != 'ReadAndExecute'
+            or policy.get('expected_aces', {}).get('S-1-5-18') != 'FullControl'
+            or policy.get('expected_aces', {}).get('S-1-5-32-544') != 'FullControl'
+            or len(policy.get('expected_aces', {})) != 3
+            or policy.get('root_owner') != r'BUILTIN\Administrators'
+            or policy.get('root_inheritance_protected') is not True
+            or policy.get('child_directories_inherit') is not True):
+        raise WorkspaceBlocked('W1 operator ACL policy mismatch')
     source = PROBE.read_text(encoding='utf-8')
     if source.count('__FORPRINT_W2_3_MODE__') != 1 or f"$Root = '{WINDOWS_ROOT}'" not in source:
         raise WorkspaceBlocked('PowerShell W1 root / mode marker mismatch')
+    if ('$OperatorSid = ' not in source or 'Assert-ApprovedAcl' not in source or 'ReadAndExecute' not in source):
+        raise WorkspaceBlocked('W2.3 ACL guard missing')
     required = ('SetAccessRuleProtection($true, $false)',
                 'Directory]::CreateDirectory($Shared, (New-StrictRootAcl))',
                 "'S-1-5-18'", "'S-1-5-32-544'", "'PARTIAL_TREE_REVIEW_REQUIRED'",

@@ -50,6 +50,17 @@ def source_check() -> tuple[str, bytes]:
             or c.get('authority', {}).get('production_publish') is not False
             or c.get('cleanup', {}).get('no_automatic_deletion') is not True):
         raise GuiProbeBlocked('W1 pilot contract unsafe or incompatible')
+    policy = c.get('windows', {}).get('access_control', {})
+    if (policy.get('policy_id') != 'gdl_windows_operator_read_execute_v0_2'
+            or policy.get('operator_sid') != 'S-1-5-21-3087849371-1068859030-1179031902-1001'
+            or policy.get('expected_aces') != {
+                'S-1-5-18': 'FullControl',
+                'S-1-5-32-544': 'FullControl',
+                'S-1-5-21-3087849371-1068859030-1179031902-1001': 'ReadAndExecute'}
+            or policy.get('root_owner') != r'BUILTIN\Administrators'
+            or policy.get('root_inheritance_protected') is not True
+            or policy.get('child_directories_inherit') is not True):
+        raise GuiProbeBlocked('W1 operator ACL policy mismatch')
     ps = SOURCE.read_text(encoding='ascii')
     payload = PAYLOAD.read_bytes()
     if len(payload) > 16000 or len(ps) > 32000:
@@ -59,6 +70,8 @@ def source_check() -> tuple[str, bytes]:
             raise GuiProbeBlocked('controller injection marker missing/duplicated')
     if f"$Root = '{WINDOWS_ROOT}'" not in ps:
         raise GuiProbeBlocked('Windows local path mismatch')
+    if 'Assert-ApprovedAcl' not in ps or "$OperatorSid = 'S-1-5-21-3087849371-1068859030-1179031902-1001'" not in ps:
+        raise GuiProbeBlocked('W2.4 ACL guard missing')
     for marker in (TASK_NAME, TASK_ID, ATTEMPT_ID, 'New-ScheduledTaskPrincipal',
                    '-LogonType Interactive', 'Register-ScheduledTask',
                    'Start-ScheduledTask', 'no automatic cleanup',

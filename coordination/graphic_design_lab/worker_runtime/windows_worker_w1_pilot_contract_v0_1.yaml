@@ -49,6 +49,23 @@ windows:
   network_copy_uses_sha256: true
   local_staging_before_execution: true
   live_smb_execution: false
+  access_control:
+    policy_id: gdl_windows_operator_read_execute_v0_2
+    approval_scope: GDL_W2_LOCAL_PILOT_ONLY
+    root_inheritance_protected: true
+    child_directories_inherit: true
+    root_owner: BUILTIN\Administrators
+    expected_aces:
+      S-1-5-18: FullControl
+      S-1-5-32-544: FullControl
+      S-1-5-21-3087849371-1068859030-1179031902-1001: ReadAndExecute
+    operator_account: 'PREPRESS\Work'
+    operator_sid: 'S-1-5-21-3087849371-1068859030-1179031902-1001'
+    operator_access: ReadAndExecute
+    operator_must_not_have_modify_or_full_control: true
+    worker_scheduled_run_level: Highest
+    customer_data_isolation_required_separately: true
+    no_automatic_deletion: true
   adapter_candidates:
     - illustrator
     - acrobat
