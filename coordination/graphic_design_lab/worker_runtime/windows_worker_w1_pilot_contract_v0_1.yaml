@@ -50,7 +50,7 @@ windows:
   local_staging_before_execution: true
   live_smb_execution: false
   access_control:
-    policy_id: gdl_windows_operator_read_execute_v0_2
+    policy_id: gdl_windows_operator_full_control_dev_v0_3
     approval_scope: GDL_W2_LOCAL_PILOT_ONLY
     root_inheritance_protected: true
     child_directories_inherit: true
@@ -58,12 +58,20 @@ windows:
     expected_aces:
       S-1-5-18: FullControl
       S-1-5-32-544: FullControl
-      S-1-5-21-3087849371-1068859030-1179031902-1001: ReadAndExecute
+      S-1-5-21-3087849371-1068859030-1179031902-1001: FullControl
     operator_account: 'PREPRESS\Work'
     operator_sid: 'S-1-5-21-3087849371-1068859030-1179031902-1001'
-    operator_access: ReadAndExecute
-    operator_must_not_have_modify_or_full_control: true
-    worker_scheduled_run_level: Highest
+    operator_access: FullControl
+    operator_must_not_have_modify_or_full_control: false
+    dev_profile: true
+    dev_scope: 'D:\ForPrint_Automation'
+    dev_intent: TEMPORARY_LOCAL_TEST_AUTOMATION_ONLY
+    review_boundary: BEFORE_PRODUCTION_ENABLE_OR_PRIVATE_CUSTOMER_DATA
+    rollback_target: gdl_windows_operator_read_execute_v0_2
+    no_everyone_or_authenticated_users_aces: true
+    no_windows_uac_changes: true
+    no_smb_or_domain_permission_changes: true
+    worker_scheduled_run_level: PER_ADAPTER_EXPLICIT_WITH_TOKEN_VERIFICATION
     customer_data_isolation_required_separately: true
     no_automatic_deletion: true
   adapter_candidates:

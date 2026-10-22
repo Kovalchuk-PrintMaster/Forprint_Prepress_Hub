@@ -28,7 +28,7 @@ function Is-DirSafe([string]$p) {
     return $true
 }
 $OperatorSid = 'S-1-5-21-3087849371-1068859030-1179031902-1001'
-# Approved GDL W2 local-pilot ACL: SYSTEM/Admin=FullControl; Work=ReadAndExecute.
+# Approved GDL W2 local-pilot ACL: SYSTEM/Admin/Work=FullControl (DEV ONLY).
 # This is not a portfolio-wide worker ownership or production policy.
 function Assert-ApprovedAcl([string]$Path, [bool]$ExpectedProtected) {
     $acl = Get-Acl -LiteralPath $Path -ErrorAction Stop
@@ -52,8 +52,8 @@ function Assert-ApprovedAcl([string]$Path, [bool]$ExpectedProtected) {
             [bool]$r.IsInherited -eq $ExpectedProtected) { throw 'W2_ACL_RULE_FLAGS_UNSAFE' }
         $rights=[int]$r.FileSystemRights
         if ($who -eq $OperatorSid) {
-            if (($rights -band $rx) -ne $rx -or ($rights -band (-bnot ($rx -bor $sync))) -ne 0) {
-                throw 'W2_ACL_OPERATOR_NOT_READ_EXECUTE'
+            if (($rights -band $full) -ne $full -or ($rights -band (-bnot $full)) -ne 0) {
+                throw 'W2_ACL_OPERATOR_NOT_DEV_FULL'
             }
         } elseif (($rights -band $full) -ne $full -or ($rights -band (-bnot $full)) -ne 0) {
             throw 'W2_ACL_PRIVILEGED_FULL_CONTROL_MISSING'

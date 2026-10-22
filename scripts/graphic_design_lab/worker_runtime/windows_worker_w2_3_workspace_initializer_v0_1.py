@@ -55,10 +55,10 @@ def source_check() -> str:
     if contract.get('windows', {}).get('windows_host_initialized') is not False:
         raise WorkspaceBlocked('W1 description must not claim initialization')
     policy = contract.get('windows', {}).get('access_control', {})
-    if (policy.get('policy_id') != 'gdl_windows_operator_read_execute_v0_2'
+    if (policy.get('policy_id') != 'gdl_windows_operator_full_control_dev_v0_3'
             or policy.get('operator_sid') != 'S-1-5-21-3087849371-1068859030-1179031902-1001'
-            or policy.get('operator_access') != 'ReadAndExecute'
-            or policy.get('expected_aces', {}).get(policy['operator_sid']) != 'ReadAndExecute'
+            or policy.get('operator_access') != 'FullControl'
+            or policy.get('expected_aces', {}).get(policy['operator_sid']) != 'FullControl'
             or policy.get('expected_aces', {}).get('S-1-5-18') != 'FullControl'
             or policy.get('expected_aces', {}).get('S-1-5-32-544') != 'FullControl'
             or len(policy.get('expected_aces', {})) != 3

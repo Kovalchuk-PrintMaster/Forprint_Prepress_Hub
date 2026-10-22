@@ -20,6 +20,55 @@ w = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(w)
 
 
+# W2 ACL v0.2 RX migration is historical after W2 DEV v0.3 replaces the live W1 ACL.
+# Exercise its original contract against an isolated, in-memory-derived fixture,
+# never reenable or mutate the archived RX migration in the live DEV environment.
+ACTIVE_CONTRACT = ROOT / 'coordination/graphic_design_lab/worker_runtime/windows_worker_w1_pilot_contract_v0_1.yaml'
+DEV_POLICY = 'gdl_windows_operator_full_control_dev_v0_3'
+
+
+@pytest.fixture(autouse=True)
+def historical_rx_contract_only(tmp_path, monkeypatch):
+    live = yaml.safe_load(ACTIVE_CONTRACT.read_text(encoding='utf-8'))
+    policy = live['windows']['access_control']
+    assert policy['policy_id'] == DEV_POLICY
+    assert policy['rollback_target'] == w.POLICY
+    assert policy['dev_profile'] is True
+    assert policy['operator_sid'] == w.SID
+    assert policy['expected_aces'] == {
+        'S-1-5-18': 'FullControl',
+        'S-1-5-32-544': 'FullControl',
+        w.SID: 'FullControl',
+    }
+    assert live['authority']['worker_launch'] is False
+    assert live['authority']['production_publish'] is False
+
+    historical = deepcopy(live)
+    rx = deepcopy(policy)
+    rx.update({
+        'policy_id': w.POLICY,
+        'operator_access': 'ReadAndExecute',
+        'operator_must_not_have_modify_or_full_control': True,
+        'expected_aces': {
+            'S-1-5-18': 'FullControl',
+            'S-1-5-32-544': 'FullControl',
+            w.SID: 'ReadAndExecute',
+        },
+        'worker_scheduled_run_level': 'Highest',
+        'dev_profile': False,
+    })
+    historical['windows']['access_control'] = rx
+    fixture_path = tmp_path / 'historical_rx_v0_2_contract.yaml'
+    fixture_path.write_text(yaml.safe_dump(historical, allow_unicode=True), encoding='utf-8')
+    monkeypatch.setattr(w, 'CONTRACT', fixture_path)
+
+
+def test_historical_rx_tool_rejects_live_dev_contract(monkeypatch):
+    monkeypatch.setattr(w, 'CONTRACT', ACTIVE_CONTRACT)
+    with pytest.raises(w.MigrationBlocked, match='W1 ACL policy mismatched'):
+        w.source_check()
+
+
 def report(mode='check', state='READY_FOR_LEAST_PRIVILEGE_MIGRATION'):
     prior = 'LEGACY_OPERATOR_FULL_CONTROL' if state == 'READY_FOR_LEAST_PRIVILEGE_MIGRATION' else 'OPERATOR_READ_EXECUTE'
     if mode == 'apply':
@@ -168,7 +217,7 @@ def test_failed_ssh_is_never_retried_and_stderr_is_private(monkeypatch):
     assert 'PERSONAL_DATA' not in str(e.value)
 
 
-def test_existing_w2_guards_and_w25_native_evidence_unmodified():
+def test_current_dev_w2_guards_and_w25_native_evidence_preserved():
     p=SCRIPT.parent
     w24=(p/'windows_worker_w2_4_gui_probe_controller_v0_1.ps1').read_text()
     w25=(p/'windows_worker_w2_5_native_illustrator_controller_v0_1.ps1').read_text()
@@ -176,8 +225,8 @@ def test_existing_w2_guards_and_w25_native_evidence_unmodified():
     for content in (w24,w25,w23):
         assert f"$OperatorSid = '{w.SID}'" in content
         assert 'function Assert-ApprovedAcl' in content
-        assert 'ReadAndExecute' in content
-        assert 'W2_ACL_OPERATOR_NOT_READ_EXECUTE' in content
+        assert 'FullControl' in content
+        assert 'W2_ACL_OPERATOR_NOT_DEV_FULL' in content
     assert 'RESUME_START_ALREADY_CLAIMED' in w24
     assert 'SYNTHETIC_GUI_RESULT_REPORTED' in w24
     assert 'TASK_EXISTS_NO_RELAUNCH' in w25

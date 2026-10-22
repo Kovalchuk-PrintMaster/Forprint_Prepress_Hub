@@ -51,12 +51,12 @@ def source_check() -> tuple[str, bytes]:
             or c.get('cleanup', {}).get('no_automatic_deletion') is not True):
         raise GuiProbeBlocked('W1 pilot contract unsafe or incompatible')
     policy = c.get('windows', {}).get('access_control', {})
-    if (policy.get('policy_id') != 'gdl_windows_operator_read_execute_v0_2'
+    if (policy.get('policy_id') != 'gdl_windows_operator_full_control_dev_v0_3'
             or policy.get('operator_sid') != 'S-1-5-21-3087849371-1068859030-1179031902-1001'
             or policy.get('expected_aces') != {
                 'S-1-5-18': 'FullControl',
                 'S-1-5-32-544': 'FullControl',
-                'S-1-5-21-3087849371-1068859030-1179031902-1001': 'ReadAndExecute'}
+                'S-1-5-21-3087849371-1068859030-1179031902-1001': 'FullControl'}
             or policy.get('root_owner') != r'BUILTIN\Administrators'
             or policy.get('root_inheritance_protected') is not True
             or policy.get('child_directories_inherit') is not True):
