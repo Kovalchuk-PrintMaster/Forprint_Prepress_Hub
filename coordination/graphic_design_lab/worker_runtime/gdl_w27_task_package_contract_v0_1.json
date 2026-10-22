@@ -1,0 +1,14 @@
+{
+  "schema_version": "gdl_w27_task_package_contract_v0_1",
+  "state": "LOCAL_DRAFT_PENDING_BLUEPRINT_REVIEW",
+  "schema": "gdl_illustrator_task_package_v0_1",
+  "scope": "SYNTHETIC_ONLY",
+  "allowed_adapter": "illustrator",
+  "requires_blueprint_review": true,
+  "launch_allowed": false,
+  "production_publish_allowed": false,
+  "automatic_accept_allowed": false,
+  "source_root": "tmp",
+  "archive_root": "tmp",
+  "max_payload_bytes": 16777216
+}
