@@ -1,0 +1,23 @@
+{
+  "schema_version": "gdl_w27c3g_windows_fence_probe_contract_v0_1",
+  "state": "WINDOWS_ISOLATED_SYNTHETIC_FENCE_PROBE_REVIEW_ONLY",
+  "task_id": "gdl-w27g-synthetic-fence-001",
+  "attempt_id": "a0001",
+  "native_task_id": "gdl-w27c-native-001",
+  "native_attempt_id": "a0001",
+  "native_package_sha256": "d1949844b3ab2d68936facf8012e6b8fba1ecd1134597f2e6f4139ef1449b3e7",
+  "native_receipt_sha256": "0c025e0132795c7f0e7011fbe52fdf17c44f9f19fc01dcd34f77684e4b11e827",
+  "probe_location": "jobs/gdl-w27g-synthetic-fence-001/a0001/work/fence_probe.json",
+  "one_use_create_new": true,
+  "probe_requires_explicit_confirmation": true,
+  "probe_is_not_worker_claim": true,
+  "runner_launch_implemented": false,
+  "dispatch_authorized": false,
+  "execution_authorized": false,
+  "retry_authorized": false,
+  "automatic_cleanup": false,
+  "production_ready": false,
+  "customer_data_allowed": false,
+  "blueprint_review_pending": true,
+  "ps_source_sha256": "c3c1ea0071f32ebb631605dd018c47e3760809d9e6bb02e821dfe1096c69e15c"
+}
