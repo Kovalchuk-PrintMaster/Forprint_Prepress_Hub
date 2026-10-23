@@ -1,0 +1,23 @@
+{
+  "schema_version": "gdl_w27c3a_runner_source_contract_v0_1",
+  "state": "RUNNER_SOURCE_DRAFT_AUTHORITY_PENDING",
+  "task_id": "gdl-w27c-native-001",
+  "attempt_id": "a0001",
+  "package_sha256": "d1949844b3ab2d68936facf8012e6b8fba1ecd1134597f2e6f4139ef1449b3e7",
+  "jsx_sha256": "98780bcd7939df58f16aa0e123ced5efc4956ed43cc6438d0516b43d4d819902",
+  "expected_outputs": [
+    "export/native_result.ai",
+    "export/worker_result.json"
+  ],
+  "worker_result_schema": "gdl_w27c3_worker_result_contract_v0_1",
+  "template_sha256": "778b1caad373379aff7f789ca32dce66ee626a4a324950fac06e7b3888636ae2",
+  "source_review_only": true,
+  "runner_launch_implemented": false,
+  "execution_authorized": false,
+  "blueprint_review_pending": true,
+  "automatic_accept": false,
+  "production_publish": false,
+  "customer_data_allowed": false,
+  "cleanup_allowed": false,
+  "write_set": "NONE_ON_WINDOWS"
+}
