@@ -1,0 +1,22 @@
+{
+  "schema_version": "gdl_w27c3b_native_worker_contract_v0_1",
+  "state": "EXECUTION_ADAPTER_SOURCE_REVIEW_ONLY_AUTHORITY_PENDING",
+  "task_id": "gdl-w27c-native-001",
+  "attempt_id": "a0001",
+  "package_sha256": "d1949844b3ab2d68936facf8012e6b8fba1ecd1134597f2e6f4139ef1449b3e7",
+  "jsx_sha256": "98780bcd7939df58f16aa0e123ced5efc4956ed43cc6438d0516b43d4d819902",
+  "result_schema": "gdl_w27c3b_native_worker_result_v0_1",
+  "entrypoint_mode": "review",
+  "source_candidate_only": true,
+  "actual_runtime_execution_tested": false,
+  "launch_route_implemented": false,
+  "execution_authority_parser_implemented": false,
+  "execution_authorized": false,
+  "blueprint_review_pending": true,
+  "automatic_accept": false,
+  "production_publish": false,
+  "customer_data_allowed": false,
+  "cleanup_allowed": false,
+  "windows_mutation_by_review": false,
+  "runner_source_sha256": "8ef7a0298646295c24d2d091ce433ac0cfcdbb4831b05469c493ff6d3ce8b934"
+}
